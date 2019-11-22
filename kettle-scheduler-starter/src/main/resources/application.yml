@@ -1,0 +1,33 @@
+server:
+  port: 8085
+  servlet: # 访问路径
+    context-path: /${spring.application.name}
+  tomcat:
+    uri-encoding: UTF-8 # get请求中文乱码配置
+spring:
+  application:
+    name: kettle-scheduler
+  profiles:
+    active: dev # 激活分支
+    include: # 引入自定义配置文件
+      - swagger
+      - file
+  aop: # 设置动态代理方式为cglib
+    proxy-target-class: true
+  http:
+    encoding: # post请求中文乱码配置
+      enabled: true
+      charset: UTF-8
+      force: true
+      force-request: true
+      force-response: true
+  mvc: # 日期转换
+    date-format: yyyy-MM-dd HH:mm:ss
+  jackson: # json日期转换
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: always #json格式化的时候不显示值为空的属性字段
+  data:
+    redis:
+      repositories:
+        enabled: false #关闭redis持久化,只做缓存使用

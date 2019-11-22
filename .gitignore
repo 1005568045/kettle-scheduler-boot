@@ -1,0 +1,14 @@
+HELP.md
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### IntelliJ IDEA ###
+.idea
+.mvn
+target
+mvnw
+mvnw.cmd
+*.iws
+*.iml
+*.ipr
+rebel.xml

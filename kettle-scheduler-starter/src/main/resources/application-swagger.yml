@@ -1,0 +1,7 @@
+# 分组swagger配置
+swagger:
+  enabled: true # 开启swagger-ui, false-关闭ui
+  docket:
+    system:
+      title: 系统功能模块接口API
+      base-package: org.kettle.scheduler.system.biz.controller # 此处扫包必须是实现类

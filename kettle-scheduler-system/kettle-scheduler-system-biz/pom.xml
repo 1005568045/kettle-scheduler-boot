@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>kettle-scheduler-system</artifactId>
+        <groupId>org.kettle.scheduler</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kettle-scheduler-system-biz</artifactId>
+    <description>系统功能模块接口实现</description>
+
+    <dependencies>
+        <!--系统功能模块接口-->
+        <dependency>
+            <groupId>org.kettle.scheduler</groupId>
+            <artifactId>kettle-scheduler-system-api</artifactId>
+        </dependency>
+    </dependencies>
+</project>
