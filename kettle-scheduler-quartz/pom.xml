@@ -12,4 +12,16 @@
     <artifactId>kettle-scheduler-quartz</artifactId>
     <description>kettle-scheduler定时任务模块</description>
 
+    <dependencies>
+        <!--定时调度-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+        <!--自定义工具类-->
+        <dependency>
+            <groupId>org.kettle.scheduler</groupId>
+            <artifactId>kettle-scheduler-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>
