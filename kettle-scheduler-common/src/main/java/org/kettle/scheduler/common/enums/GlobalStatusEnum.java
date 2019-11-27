@@ -44,7 +44,11 @@ public enum GlobalStatusEnum implements BaseEnum<String> {
      */
     TIMEOUT("1111", "超时"),
     /**
-     * 系统处理业务的执行状态：超时
+     * 系统处理quartz定时任务执行状态：失败
+     */
+    QUARTZ_ERROR("9997", "定时任务执行异常"),
+    /**
+     * 系统处理ETL执行状态：失败
      */
     KETTLE_ERROR("9998", "ETL执行异常"),
     /**

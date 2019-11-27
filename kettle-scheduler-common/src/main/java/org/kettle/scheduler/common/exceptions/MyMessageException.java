@@ -4,6 +4,7 @@ package org.kettle.scheduler.common.exceptions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
+import org.kettle.scheduler.common.enums.base.BaseEnum;
 
 import java.text.MessageFormat;
 
@@ -27,9 +28,9 @@ public class MyMessageException extends RuntimeException {
         this(GlobalStatusEnum.FAIL, errorMsg);
     }
 
-    public MyMessageException(GlobalStatusEnum errorEnum, String errorMsg) {
+    public MyMessageException(BaseEnum errorEnum, String errorMsg) {
         super(MessageFormat.format("errorCode:{0}, errorMsg:{1}---->{2}", errorEnum.getCode(), errorEnum.getDesc(), errorMsg));
-        this.errorCode = errorEnum.getCode();
+        this.errorCode = errorEnum.getCode().toString();
         this.errorMsg = errorMsg;
     }
 
