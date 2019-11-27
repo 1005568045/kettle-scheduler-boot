@@ -1,10 +1,13 @@
 package org.kettle.scheduler.system.biz.service;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.api.request.UserReq;
 import org.kettle.scheduler.system.api.response.UserRes;
+import org.kettle.scheduler.system.biz.constant.Constant;
 import org.kettle.scheduler.system.biz.entity.User;
 import org.kettle.scheduler.system.biz.repository.UserRepository;
 import org.springframework.data.domain.*;
@@ -31,18 +34,28 @@ public class SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void add(UserReq req) {
         User user = BeanUtil.copyProperties(req, User.class);
+		user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
         userRepository.save(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Integer id) {
-        userRepository.deleteById(id);
+		Optional<User> optional = userRepository.findById(id);
+		if (!optional.isPresent()) {
+			throw new MyMessageException("删除对象不存在");
+		}
+		User user = optional.get();
+		if ("admin".equals(user.getAccount())) {
+			throw new MyMessageException("无法删除管理员账户");
+		}
+		userRepository.delete(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Integer> ids) {
         List<User> users = userRepository.findAllById(ids);
-        userRepository.deleteInBatch(users);
+		List<User> collect = users.stream().filter(user -> !"admin".equals(user.getAccount())).collect(Collectors.toList());
+		userRepository.deleteInBatch(collect);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -51,6 +64,8 @@ public class SysUserService {
         if (optional.isPresent()) {
             User user = optional.get();
             BeanUtil.copyProperties(req, user);
+            // 不能修改账户名称
+			user.setAccount(null);
             userRepository.save(user);
         }
     }
@@ -71,5 +86,19 @@ public class SysUserService {
     public UserRes getUserDetail(Integer id) {
         Optional<User> optional = userRepository.findById(id);
         return optional.map(user -> BeanUtil.copyProperties(user, UserRes.class)).orElse(null);
+    }
+
+    public User getUserByAccount(String account) {
+    	return userRepository.findByAccount(account);
+	}
+
+    public User findUserByAccountAndPassword(String account, String password) {
+        String pwd = DigestUtils.md5Hex(DigestUtils.md5(password + Constant.salt));
+        User user = userRepository.findByAccount(account);
+        if (user != null && user.getPassword().equals(pwd)) {
+            return user;
+        } else {
+            return null;
+        }
     }
 }

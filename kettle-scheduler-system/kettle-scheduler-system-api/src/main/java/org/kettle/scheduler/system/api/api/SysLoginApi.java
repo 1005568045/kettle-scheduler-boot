@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * 登录鉴权API
  *
@@ -24,20 +22,18 @@ public interface SysLoginApi {
      * 用户登录
      *
      * @param req {@link LoginReq}
-     * @param request http请求
      * @return {@link Result}
      */
     @ApiOperation(value = "用户登录")
-    @PostMapping("/in")
-    Result loginIn(@RequestBody LoginReq req, HttpServletRequest request);
+    @PostMapping("/in.shtml")
+    Result loginIn(@RequestBody LoginReq req);
 
     /**
      * 用户退出
      *
-     * @param request http请求
      * @return {@link Result}
      */
     @ApiOperation(value = "用户退出")
-    @GetMapping("/out")
-    Result loginOut(HttpServletRequest request);
+    @GetMapping("/out.shtml")
+	Result loginOut();
 }

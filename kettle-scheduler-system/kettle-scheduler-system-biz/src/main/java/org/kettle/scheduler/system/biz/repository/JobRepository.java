@@ -18,4 +18,11 @@ public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecifica
      * @return {@link List}
      */
     List<Job> findByCategoryIdAndJobNameLike(Integer categoryId, String jobName);
+
+    /**
+     * 根据运行状态查询作业信息
+     * @param jobStatus 运行状态{@link org.kettle.scheduler.system.api.enums.RunStatusEnum}
+     * @return {@link List}
+     */
+    List<Job> findByJobStatus(Integer jobStatus);
 }

@@ -20,7 +20,6 @@
         <module>kettle-scheduler-starter</module><!-- 启动模块 -->
         <module>kettle-scheduler-common</module><!-- 公共基础模块 -->
         <module>kettle-scheduler-quartz</module><!-- 定时任务模块 -->
-        <module>kettle-scheduler-file</module><!-- 文件服务模块 -->
         <module>kettle-scheduler-system</module><!-- 系统功能模块 -->
         <module>kettle-scheduler-core</module><!-- kettle核心功能模块 -->
     </modules>
@@ -32,6 +31,7 @@
         <!--管理jar的版本-->
         <jetbrains.annotations.version>17.0.0</jetbrains.annotations.version>
         <third.swagger.version>1.9.0.RELEASE</third.swagger.version>
+        <shiro.version>1.4.1</shiro.version>
     </properties>
 
     <dependencyManagement>
@@ -46,6 +46,12 @@
             <dependency>
                 <groupId>org.kettle.scheduler</groupId>
                 <artifactId>kettle-scheduler-core</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <!--quartz定时功能模块-->
+            <dependency>
+                <groupId>org.kettle.scheduler</groupId>
+                <artifactId>kettle-scheduler-quartz</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
@@ -72,6 +78,13 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
+        <!--安全管理框架-->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring-boot-web-starter</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+
         <!--数据库操作相关jar-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,6 +106,12 @@
             <groupId>com.spring4all</groupId>
             <artifactId>swagger-spring-boot-starter</artifactId>
             <version>${third.swagger.version}</version>
+        </dependency>
+
+        <!--configuration属性文件映射工具-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
     </dependencies>
 </project>

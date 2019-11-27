@@ -18,5 +18,15 @@
             <groupId>org.kettle.scheduler</groupId>
             <artifactId>kettle-scheduler-system-api</artifactId>
         </dependency>
+        <!--kettle核心功能模块-->
+        <dependency>
+            <groupId>org.kettle.scheduler</groupId>
+            <artifactId>kettle-scheduler-core</artifactId>
+        </dependency>
+        <!--quartz定时功能模块-->
+        <dependency>
+            <groupId>org.kettle.scheduler</groupId>
+            <artifactId>kettle-scheduler-quartz</artifactId>
+        </dependency>
     </dependencies>
 </project>

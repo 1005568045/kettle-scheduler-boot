@@ -21,4 +21,11 @@ public interface TransMonitorRepository extends JpaRepository<TransMonitor, Inte
      * @return {@link Page}
      */
     Page<TransMonitor> findByMonitorTransIdInAndMonitorStatus(List<Integer> transIds, Integer monitorStatus, Pageable pageable);
+
+    /**
+     * 根据转换ID查询监控信息
+     * @param transId 转换ID
+     * @return {@link TransMonitor}
+     */
+    TransMonitor findByMonitorTransId(Integer transId);
 }

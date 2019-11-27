@@ -6,7 +6,6 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysTransApi;
 import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
-import org.kettle.scheduler.system.biz.service.SysRepositoryService;
 import org.kettle.scheduler.system.biz.service.SysTransService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,11 +20,9 @@ import java.util.List;
 public class SysTransApiController implements SysTransApi {
 
     private final SysTransService transService;
-    private final SysRepositoryService repositoryService;
 
-    public SysTransApiController(SysTransService transService, SysRepositoryService repositoryService) {
+    public SysTransApiController(SysTransService transService) {
         this.transService = transService;
-        this.repositoryService = repositoryService;
     }
 
     /**

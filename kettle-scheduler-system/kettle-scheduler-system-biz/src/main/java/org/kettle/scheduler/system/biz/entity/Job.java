@@ -61,7 +61,7 @@ public class Job extends BasicEntity implements Serializable {
      * 定时策略（外键ID）
      */
     @Column(name = "job_quartz")
-    private Integer jobQuartz = 1;
+    private Integer jobQuartz;
 
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）

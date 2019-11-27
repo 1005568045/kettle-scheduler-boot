@@ -61,7 +61,7 @@ public class Trans extends BasicEntity implements Serializable {
      * 定时策略（外键ID）
      */
     @Column(name = "trans_quartz")
-    private Integer transQuartz = 1;
+    private Integer transQuartz;
 
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）

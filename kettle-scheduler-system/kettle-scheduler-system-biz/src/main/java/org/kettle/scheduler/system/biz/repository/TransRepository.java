@@ -15,7 +15,14 @@ public interface TransRepository extends JpaRepository<Trans, Integer>, JpaSpeci
      * 根据分类ID和转换名称模糊查询
      * @param categoryId 分类ID
      * @param transName 转换名称
-     * @return
+     * @return {@link List}
      */
     List<Trans> findByCategoryIdAndTransNameLike(Integer categoryId, String transName);
+
+    /**
+     * 根据状态查询有效的转换
+     * @param transStatus 运行状态{@link org.kettle.scheduler.system.api.enums.RunStatusEnum}
+     * @return {@link List}
+     */
+    List<Trans> findByTransStatus(Integer transStatus);
 }

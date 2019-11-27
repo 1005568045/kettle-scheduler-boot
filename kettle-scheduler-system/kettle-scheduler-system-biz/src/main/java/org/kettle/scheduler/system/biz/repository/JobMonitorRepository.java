@@ -21,4 +21,11 @@ public interface JobMonitorRepository extends JpaRepository<JobMonitor, Integer>
      * @return {@link Page}
      */
     Page<JobMonitor> findByMonitorJobIdInAndMonitorStatus(Collection<Integer> monitorJobId, Integer monitorStatus, Pageable pageable);
+
+    /**
+     * 根据作业ID查询当前作业的监控信息
+     * @param monitorJobId 作业ID
+     * @return {@link JobMonitor}
+     */
+    JobMonitor findByMonitorJobId(Integer monitorJobId);
 }

@@ -20,7 +20,7 @@ public class LoginReq {
      */
     @ApiModelProperty(value = "登录账号")
     @NotBlank(message = "登录账号不能是空")
-    private String userName;
+    private String username;
 
     /**
      * 密码

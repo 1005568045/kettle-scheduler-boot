@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.service;
 
+import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
@@ -91,5 +92,24 @@ public class SysTransMonitorService {
     public TransRecord getTransRecord(Integer transRecordId) {
         Optional<TransRecord> optional = recordRepository.findById(transRecordId);
         return optional.orElse(null);
+    }
+
+    public void updateMonitor(TransMonitor transMonitor, boolean success) {
+        TransMonitor monitor = monitorRepository.findByMonitorTransId(transMonitor.getMonitorTransId());
+        if (monitor == null) {
+            throw new MyMessageException("当前转换对应的监控对象不存在");
+        } else {
+            BeanUtil.copyProperties(transMonitor, monitor);
+            if (success) {
+                monitor.setMonitorSuccess(monitor.getMonitorSuccess() + 1);
+            } else {
+                monitor.setMonitorFail(monitor.getMonitorFail() + 1);
+            }
+            monitorRepository.save(monitor);
+        }
+    }
+
+    public void addTransRecord(TransRecord transRecord) {
+        recordRepository.save(transRecord);
     }
 }

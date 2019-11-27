@@ -18,10 +18,5 @@
             <groupId>org.kettle.scheduler</groupId>
             <artifactId>kettle-scheduler-common</artifactId>
         </dependency>
-        <!--kettle核心功能模块-->
-        <dependency>
-            <groupId>org.kettle.scheduler</groupId>
-            <artifactId>kettle-scheduler-core</artifactId>
-        </dependency>
     </dependencies>
 </project>

@@ -1,14 +1,12 @@
 package org.kettle.scheduler.system.biz.service;
 
+import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
-import org.kettle.scheduler.system.biz.entity.Category;
-import org.kettle.scheduler.system.biz.entity.Job;
-import org.kettle.scheduler.system.biz.entity.JobMonitor;
-import org.kettle.scheduler.system.biz.entity.JobRecord;
+import org.kettle.scheduler.system.biz.entity.*;
 import org.kettle.scheduler.system.biz.entity.basic.IdEntity;
 import org.kettle.scheduler.system.biz.repository.CategoryRepository;
 import org.kettle.scheduler.system.biz.repository.JobMonitorRepository;
@@ -91,5 +89,25 @@ public class SysJobMonitorService {
     public JobRecord getJobRecord(Integer jobRecordId) {
         Optional<JobRecord> optional = recordRepository.findById(jobRecordId);
         return optional.orElse(null);
+    }
+
+
+    public void updateMonitor(JobMonitor jobMonitor, boolean success) {
+        JobMonitor monitor = monitorRepository.findByMonitorJobId(jobMonitor.getMonitorJobId());
+        if (monitor == null) {
+            throw new MyMessageException("当前作业对应的监控对象不存在");
+        } else {
+            BeanUtil.copyProperties(jobMonitor, monitor);
+            if (success) {
+                monitor.setMonitorSuccess(monitor.getMonitorSuccess() + 1);
+            } else {
+                monitor.setMonitorFail(monitor.getMonitorFail() + 1);
+            }
+            monitorRepository.save(monitor);
+        }
+    }
+
+    public void addJobRecord(JobRecord jobRecord) {
+        recordRepository.save(jobRecord);
     }
 }
