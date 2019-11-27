@@ -23,6 +23,11 @@ public class Constant {
      */
     public static String salt;
 
+	/**
+	 * 加密次数
+	 */
+	public static Integer hashIterations;
+
 	public void setKettleSession(String kettleSession) {
 		Constant.kettleSession = kettleSession;
 	}
@@ -30,4 +35,8 @@ public class Constant {
 	public void setSalt(String salt) {
         Constant.salt = salt;
     }
+
+	public void setHashIterations(Integer hashIterations) {
+		Constant.hashIterations = hashIterations;
+	}
 }

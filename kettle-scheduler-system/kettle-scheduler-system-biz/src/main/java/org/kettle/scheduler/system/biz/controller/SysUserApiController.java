@@ -1,13 +1,16 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.groups.Insert;
 import org.kettle.scheduler.common.groups.Update;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
+import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.api.api.SysUserApi;
 import org.kettle.scheduler.system.api.request.UserReq;
 import org.kettle.scheduler.system.api.response.UserRes;
+import org.kettle.scheduler.system.biz.entity.User;
 import org.kettle.scheduler.system.biz.service.SysUserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -97,4 +100,20 @@ public class SysUserApiController implements SysUserApi {
     public Result<UserRes> getUserDetail(Integer id) {
         return Result.ok(userService.getUserDetail(id));
     }
+
+	/**
+	 * 根据用户名查询用户信息
+	 *
+	 * @param username 用户名
+	 * @return {@link Result}
+	 */
+	@Override
+	public Result<UserRes> getUserByUsername(String username) {
+		User user = userService.getUserByAccount(username);
+		if (user!=null) {
+			return Result.ok(BeanUtil.copyProperties(user, UserRes.class));
+		} else {
+			throw new MyMessageException("用户信息不存在");
+		}
+	}
 }

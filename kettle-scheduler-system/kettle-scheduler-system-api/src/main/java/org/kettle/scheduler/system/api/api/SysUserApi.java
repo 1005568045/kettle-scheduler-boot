@@ -79,4 +79,14 @@ public interface SysUserApi {
     @ApiOperation(value = "查询用户明细")
     @GetMapping("/getUserDetail")
     Result<UserRes> getUserDetail(@RequestParam("id") Integer id);
+
+	/**
+	 * 根据用户名查询用户信息
+	 *
+	 * @param username 用户名
+	 * @return {@link Result}
+	 */
+	@ApiOperation(value = "查询用户明细")
+	@GetMapping("/getUserByUsername.do")
+	Result<UserRes> getUserByUsername(@RequestParam("username") String username);
 }

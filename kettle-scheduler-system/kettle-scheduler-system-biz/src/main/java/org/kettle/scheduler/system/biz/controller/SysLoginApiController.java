@@ -7,15 +7,15 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.common.utils.AssertUtil;
 import org.kettle.scheduler.system.api.api.SysLoginApi;
 import org.kettle.scheduler.system.api.request.LoginReq;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 登录鉴权API
  *
  * @author lyf
  */
-@Controller
+@RestController
 public class SysLoginApiController implements SysLoginApi {
 
     /**

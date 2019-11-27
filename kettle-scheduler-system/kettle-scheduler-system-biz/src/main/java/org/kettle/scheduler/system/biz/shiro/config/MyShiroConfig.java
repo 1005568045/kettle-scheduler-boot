@@ -3,10 +3,7 @@ package org.kettle.scheduler.system.biz.shiro.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.kettle.scheduler.system.biz.shiro.realm.MyShiroRealm;
-import org.kettle.scheduler.system.biz.shiro.session.MyRedisSessionDAO;
-import org.kettle.scheduler.system.biz.shiro.session.MySessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,29 +53,6 @@ public class MyShiroConfig {
     }
 
     /**
-     * 自定义session的增删改查操作
-     *
-     * @return {@link org.kettle.scheduler.system.biz.shiro.session.MyRedisSessionDAO}
-     */
-    @Bean
-    public MyRedisSessionDAO myRedisSessionDAO() {
-        return new MyRedisSessionDAO();
-    }
-
-    /**
-     * 注入自定义sessionDAO到自定义的session会话管理器中
-     *
-     * @param myRedisSessionDAO 自定义sessionDAO
-     * @return {@link DefaultWebSessionManager}
-     */
-    @Bean
-    public MySessionManager myWebSessionManager(MyRedisSessionDAO myRedisSessionDAO) {
-        MySessionManager sessionManager = new MySessionManager();
-        sessionManager.setSessionDAO(myRedisSessionDAO);
-        return sessionManager;
-    }
-
-    /**
      * 全局安全管理器配置
      * 绑定Realm数据对象
      * 绑定自定义session会话管理
@@ -87,10 +61,9 @@ public class MyShiroConfig {
      * @return {@link DefaultWebSecurityManager}
      */
     @Bean
-    public DefaultWebSecurityManager globalSecurityManager(MyShiroRealm myShiroRealm, MySessionManager sessionManager) {
+    public DefaultWebSecurityManager globalSecurityManager(MyShiroRealm myShiroRealm) {
         DefaultWebSecurityManager webSecurityManager = new DefaultWebSecurityManager();
         webSecurityManager.setRealm(myShiroRealm);
-        webSecurityManager.setSessionManager(sessionManager);
         return webSecurityManager;
     }
 }

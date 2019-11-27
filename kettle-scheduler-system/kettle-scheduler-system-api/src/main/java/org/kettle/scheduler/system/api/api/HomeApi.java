@@ -25,7 +25,7 @@ public interface HomeApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "首页监控任务统计")
-    @PostMapping("/taskCount")
+    @PostMapping("/taskCount.do")
     Result<HomeMonitorTaskCountRes> taskCount();
 
     /**
@@ -34,6 +34,6 @@ public interface HomeApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "首页监控任务统计")
-    @PostMapping("/runStatus")
+    @PostMapping("/runStatus.do")
     Result<List<HomeMonitorTaskRunRes>> runStatus();
 }

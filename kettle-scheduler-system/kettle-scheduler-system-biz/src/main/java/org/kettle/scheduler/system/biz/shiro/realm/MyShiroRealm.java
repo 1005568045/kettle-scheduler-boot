@@ -27,13 +27,15 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Resource(type = SysUserService.class)
     private SysUserService userService;
 
-    // 告诉shiro如何根据获取到的用户信息中的密码和盐值来校验
-    {
+	/**
+	 * 告诉shiro如何根据获取到的用户信息中的密码和盐值来校验
+	 */
+	private void setEncryptInfo() {
         HashedCredentialsMatcher hashMatcher = new HashedCredentialsMatcher();
         // 加密算法的名称
         hashMatcher.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME);
         // 配置加密的次数
-        hashMatcher.setHashIterations(1024);
+        hashMatcher.setHashIterations(Constant.hashIterations);
         // 是否存储为16进制
         hashMatcher.setStoredCredentialsHexEncoded(true);
         this.setCredentialsMatcher(hashMatcher);
@@ -78,6 +80,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         // 把查询的信息放入验证对象中, getName()是获取当前Realm对象的名称
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         if (StringUtil.hasText(Constant.salt)) {
+			setEncryptInfo();
             // 如果存在盐, 就添加盐的验证
             info.setCredentialsSalt(ByteSource.Util.bytes(Constant.salt));
         }

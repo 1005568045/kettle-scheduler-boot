@@ -25,7 +25,7 @@ public interface SysLoginApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "用户登录")
-    @PostMapping("/in.shtml")
+    @PostMapping("/in.do")
     Result loginIn(@RequestBody LoginReq req);
 
     /**
@@ -34,6 +34,6 @@ public interface SysLoginApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "用户退出")
-    @GetMapping("/out.shtml")
+    @GetMapping("/out.do")
 	Result loginOut();
 }

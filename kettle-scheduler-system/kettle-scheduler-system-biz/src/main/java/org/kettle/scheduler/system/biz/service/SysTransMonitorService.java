@@ -47,11 +47,13 @@ public class SysTransMonitorService {
         // 默认排序
         pageable.getSort().and(Sort.by(Sort.Direction.DESC, "addTime"));
         // 查询分类信息
-        Optional<Category> optionalCategory = categoryRepository.findById(query.getCategoryId());
-        String categoryName = "";
-        if (optionalCategory.isPresent()) {
-            categoryName = optionalCategory.get().getCategoryName();
-        }
+		String categoryName = "";
+		if (query.getCategoryId() != null) {
+			Optional<Category> optionalCategory = categoryRepository.findById(query.getCategoryId());
+			if (optionalCategory.isPresent()) {
+				categoryName = optionalCategory.get().getCategoryName();
+			}
+		}
         // 获取Trans信息
         List<Trans> transList = transRepository.findByCategoryIdAndTransNameLike(query.getCategoryId(), query.getScriptName());
         List<Integer> transIds = transList.stream().map(IdEntity::getId).collect(Collectors.toList());

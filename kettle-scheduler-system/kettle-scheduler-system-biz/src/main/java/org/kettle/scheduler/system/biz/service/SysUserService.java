@@ -1,6 +1,6 @@
 package org.kettle.scheduler.system.biz.service;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
@@ -34,7 +34,7 @@ public class SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void add(UserReq req) {
         User user = BeanUtil.copyProperties(req, User.class);
-		user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
+		user.setPassword(new Sha256Hash(user.getPassword(),Constant.salt,Constant.hashIterations).toString());
         userRepository.save(user);
     }
 
@@ -91,14 +91,4 @@ public class SysUserService {
     public User getUserByAccount(String account) {
     	return userRepository.findByAccount(account);
 	}
-
-    public User findUserByAccountAndPassword(String account, String password) {
-        String pwd = DigestUtils.md5Hex(DigestUtils.md5(password + Constant.salt));
-        User user = userRepository.findByAccount(account);
-        if (user != null && user.getPassword().equals(pwd)) {
-            return user;
-        } else {
-            return null;
-        }
-    }
 }

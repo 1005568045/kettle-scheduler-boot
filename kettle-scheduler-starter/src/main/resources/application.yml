@@ -1,7 +1,7 @@
 server:
   port: 8085
   servlet: # 访问路径
-    context-path: /${spring.application.name}
+    context-path: /
   tomcat:
     uri-encoding: UTF-8 # get请求中文乱码配置
 spring:
@@ -37,3 +37,4 @@ spring:
 constant:
   salt: kettle-scw
   kettle-session: KETTLE-SESSION
+  hash-iterations: 10

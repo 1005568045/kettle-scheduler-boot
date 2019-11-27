@@ -6,6 +6,7 @@ import org.kettle.scheduler.system.api.response.HomeMonitorTaskCountRes;
 import org.kettle.scheduler.system.api.response.HomeMonitorTaskRunRes;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,11 @@ public class HomeApiController implements HomeApi {
      */
     @Override
     public Result<HomeMonitorTaskCountRes> taskCount() {
-        return null;
+		HomeMonitorTaskCountRes res = new HomeMonitorTaskCountRes();
+		res.setTotalTaskNum(10);
+		res.setJobTaskNum(2);
+		res.setTransTaskNum(8);
+        return Result.ok(res);
     }
 
     /**
@@ -32,6 +37,14 @@ public class HomeApiController implements HomeApi {
      */
     @Override
     public Result<List<HomeMonitorTaskRunRes>> runStatus() {
-        return null;
+		List<HomeMonitorTaskRunRes> list = new ArrayList<>();
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-20").setJobRunNum(5).setTransRunNum(2));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-21").setJobRunNum(1).setTransRunNum(12));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-22").setJobRunNum(3).setTransRunNum(5));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-23").setJobRunNum(8).setTransRunNum(6));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-24").setJobRunNum(6).setTransRunNum(8));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-25").setJobRunNum(2).setTransRunNum(12));
+		list.add(new HomeMonitorTaskRunRes().setRunTime("2019-11-26").setJobRunNum(4).setTransRunNum(20));
+		return Result.ok(list);
     }
 }
