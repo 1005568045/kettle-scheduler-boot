@@ -35,11 +35,11 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 
-    // /**
+	// /**
     //  * 已经在application.yml中统一配置：spring.jackson.default-property-inclusion: non_empty
     //  * 扩展消息转换器
     //  * 通过index来控制优先级，0优先级最高

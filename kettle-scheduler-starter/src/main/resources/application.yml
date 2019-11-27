@@ -11,7 +11,8 @@ spring:
     active: dev # 激活分支
     include: # 引入自定义配置文件
       - swagger
-      - file
+      - shiro
+      - kettle
   aop: # 设置动态代理方式为cglib
     proxy-target-class: true
   http:
@@ -31,3 +32,8 @@ spring:
     redis:
       repositories:
         enabled: false #关闭redis持久化,只做缓存使用
+  thymeleaf:
+    cache: false
+constant:
+  salt: kettle-scw
+  kettle-session: KETTLE-SESSION

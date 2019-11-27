@@ -1,0 +1,7 @@
+# 一些默认选项是开启的(默认生效)
+shiro:
+  loginUrl: / # 未经身份验证的用户重定向到登录页面时使用的登录URL
+  successUrl: /index.shtml # 用户登录后的默认登录页面
+  unauthorizedUrl: /error # 页面将用户重定向到未授权的位置（403页）
+  sessionManager:
+    sessionIdUrlRewritingEnabled: false # 启用会话URL重写支持

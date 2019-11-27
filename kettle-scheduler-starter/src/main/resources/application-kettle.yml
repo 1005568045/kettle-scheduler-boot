@@ -1,0 +1,3 @@
+kettle:
+  log-file-path: /logs/record
+  encoding: utf-8
