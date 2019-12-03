@@ -35,12 +35,12 @@ public class PageOut<T> extends PageHelper {
         this.content = content;
     }
 
-    public PageOut(List<T> content, int number, int size, long totalElements, int totalPages) {
+    public PageOut(List<T> content, int number, int size, long totalElements) {
         this.content = content;
         this.setNumber(number);
         this.setSize(size);
         this.totalElements = totalElements;
-        this.totalPages = totalPages;
+        this.totalPages = size <=0 ? 1 : (int) (totalElements/size) + 1;
     }
 
     /**

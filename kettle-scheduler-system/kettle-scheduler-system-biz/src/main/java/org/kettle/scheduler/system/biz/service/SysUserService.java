@@ -80,7 +80,7 @@ public class SysUserService {
         Page<User> pageList = userRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
         // 封装数据
         List<UserRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, UserRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public UserRes getUserDetail(Integer id) {

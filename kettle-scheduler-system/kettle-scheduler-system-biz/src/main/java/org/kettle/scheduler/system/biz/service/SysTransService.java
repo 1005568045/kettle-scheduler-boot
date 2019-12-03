@@ -101,7 +101,7 @@ public class SysTransService {
         Page<Trans> pageList = transRepository.findAll(example, pageable);
         // 封装数据
         List<TransRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, TransRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public TransRes getTransDetail(Integer id) {

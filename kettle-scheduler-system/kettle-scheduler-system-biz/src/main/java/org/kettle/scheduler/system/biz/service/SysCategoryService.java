@@ -60,7 +60,7 @@ public class SysCategoryService {
         Page<Category> pageList = categoryRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
         // 封装数据
         List<CategoryRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, CategoryRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public CategoryRes getCategoryDetail(Integer id) {

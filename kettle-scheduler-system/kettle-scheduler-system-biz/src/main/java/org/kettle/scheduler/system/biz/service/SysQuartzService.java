@@ -64,7 +64,7 @@ public class SysQuartzService {
         Page<Quartz> pageList = quartzRepository.findAll(example, pageable);
         // 封装数据
         List<QuartzRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, QuartzRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public QuartzRes getQuartzDetail(Integer id) {

@@ -93,7 +93,7 @@ public class SysJobService {
         Page<Job> pageList = jobRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
         // 封装数据
         List<JobRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, JobRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public JobRes getJobDetail(Integer id) {

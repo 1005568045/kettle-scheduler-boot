@@ -8,7 +8,8 @@
     <link rel="shortcut icon" th:href="@{/img/favicon.ico}" href="../static/img/favicon.ico">
     <link th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link th:href="@{/css/font-awesome.css}" href="../static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
-    <link th:href="@{/css/plugins/bootstrap-table/bootstrap-table.min.css}" href="../static/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link th:href="@{/css/plugins/bootstrap-table/bootstrap-table.min.css}"
+          href="../static/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link th:href="@{/css/animate.css}" href="../static/css/animate.css" rel="stylesheet">
     <link th:href="@{/css/style.css}" href="../static/css/style.css?v=4.1.0" rel="stylesheet">
 </head>
@@ -75,19 +76,7 @@
                             <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新列表
                         </button>
                     </div>
-                    <table id="transMonitorList" data-toggle="table" data-method="post"
-                           data-url="/sys/trans/monitor/findTransMonitorListByPage"
-                           data-query-params=queryParams data-query-params-type="limit"
-                           data-pagination="true"
-                           data-side-pagination="server" data-pagination-loop="false">
-                        <thead>
-                        <tr>
-                            <th data-field="monitorId">记录编号</th>
-                            <th data-field="monitorTrans" data-formatter="MonitorTransFormatter">转换名称</th>
-                            <th data-field="monitorSuccess">转换执行成功次数</th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <table id="transMonitorList"></table>
                 </div>
             </div>
         </div>
@@ -110,19 +99,7 @@
                             <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新列表
                         </button>
                     </div>
-                    <table id="jobMonitorList" data-toggle="table"
-                           data-url="main/getJobList.shtml"
-                           data-query-params=queryParams data-query-params-type="limit"
-                           data-pagination="true"
-                           data-side-pagination="server" data-pagination-loop="false">
-                        <thead>
-                        <tr>
-                            <th data-field="monitorId">记录编号</th>
-                            <th data-field="monitorJob" data-formatter="MonitorJobFormatter">作业名称</th>
-                            <th data-field="monitorSuccess">作业执行成功次数</th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <table id="jobMonitorList"></table>
                 </div>
             </div>
         </div>
@@ -150,9 +127,12 @@
 <script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
 <script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js?v=3.3.6"></script>
 <!-- Bootstrap table -->
-<script th:src="@{/js/plugins/bootstrap-table/bootstrap-table.min.js}" src="../static/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
-<script th:src="@{/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js}" src="../static/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
-<script th:src="@{/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}" src="../static/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script th:src="@{/js/plugins/bootstrap-table/bootstrap-table.min.js}"
+        src="../static/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script th:src="@{/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js}"
+        src="../static/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script th:src="@{/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"
+        src="../static/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 <!-- layer javascript -->
 <script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
 <!-- ECharts -->

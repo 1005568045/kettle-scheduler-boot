@@ -59,13 +59,17 @@ public class SysRepositoryService {
         // 排序
         Sort sort = page.getSorts().isEmpty() ? Sort.by(Sort.Direction.DESC, "addTime") : page.getSorts();
         // 查询
-        Repository rep = BeanUtil.copyProperties(query, Repository.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<Repository> example = Example.of(rep, matcher);
-        Page<Repository> pageList = repRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		Page<Repository> pageList = null;
+		if (query != null) {
+			Repository rep = BeanUtil.copyProperties(query, Repository.class);
+			Example<Repository> example = Example.of(rep, ExampleMatcher.matchingAll().withIgnoreCase());
+			pageList = repRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		} else {
+			pageList = repRepository.findAll(PageRequest.of(page.getNumber(), page.getSize(), sort));
+		}
         // 封装数据
         List<RepositoryRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, RepositoryRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements(), pageList.getTotalPages());
+        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 
     public RepositoryRes getRepositoryDetail(Integer id) {
