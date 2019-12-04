@@ -2,39 +2,41 @@ $(document).ready(function () {
 	// 加载资源库列表
     getRepositoryList();
 
-    window.actionEvents = {
-        'click #edit' : function(e, value, row, index) {
-            var repositoryId = row.repositoryId;
-            location.href = "view/repository/editUI.shtml?repositoryId=" + repositoryId;
-        },
-        'click #delete' : function(e, value, row, index) {
-            layer.confirm('确定删除该单位？', {
-                    btn: ['确定', '取消']
-                },
-                function(index){
-                    layer.close(index);
-                    $.ajax({
-                        type: 'POST',
-                        async: true,
-                        url: 'repository/database/delete.shtml',
-                        data: {
-                            "repositoryId": row.repositoryId
-                        },
-                        success: function (data) {
-                            location.replace(location.href);
-                        },
-                        error: function () {
-                            alert("系统出现问题，请联系管理员");
-                        },
-                        dataType: 'json'
-                    });
-                },
-                function(){
-                    layer.msg('取消操作');
-                }
-            );
-        }
-    };
+    $('#repositoryList').delegate('#edit','click',function(e) {
+        var $target = $(e.target);
+        var repositoryId = $target.data('id');
+        location.href = "view/repository/editUI.shtml?repositoryId=" + repositoryId;
+    });
+
+    $('#repositoryList').delegate('#delete', 'click', function(e) {
+        var $target = $(e.target);
+        var repositoryId = $target.data('id');
+        layer.confirm('确定删除该单位？', {
+                btn: ['确定', '取消']
+            },
+            function(index){
+                layer.close(index);
+                $.ajax({
+                    type: 'POST',
+                    async: true,
+                    url: 'repository/database/delete.shtml',
+                    data: {
+                        "repositoryId": row.repositoryId
+                    },
+                    success: function (data) {
+                        location.replace(location.href);
+                    },
+                    error: function () {
+                        alert("系统出现问题，请联系管理员");
+                    },
+                    dataType: 'json'
+                });
+            },
+            function(){
+                layer.msg('取消操作');
+            }
+        );
+    });
 });
 
 function getRepositoryList() {
@@ -55,13 +57,14 @@ function getRepositoryList() {
         search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
         strictSearch: false,
         showColumns: true,                  //是否显示所有的列
-        showRefresh: false,                  //是否显示刷新按钮
+        showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
-        clickToSelect: true,                //是否启用点击选中行
+        clickToSelect: false,                //是否启用点击选中行
         // height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "id",                     //每一行的唯一标识，一般为主键列
         showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
+        smartDisplay: false,
         detailView: false,                   //是否显示父子表
         responseHandler: function(res) {
             return {
@@ -110,7 +113,7 @@ function queryParams() {
 
 function actionFormatter(value, row, index) {
     return [
-        '<a class="btn btn-primary btn-xs" id="edit" type="button"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑</a>',
+        '<a class="btn btn-primary btn-xs" id="edit" type="button" data-id="'+ row.id +'"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑</a>',
         '&nbsp;&nbsp;',
         '<a class="btn btn-primary btn-xs" id="delete" type="button"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>'
     ].join('');
