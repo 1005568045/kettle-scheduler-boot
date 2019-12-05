@@ -1,17 +1,26 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import org.kettle.scheduler.common.enums.GlobalStatusEnum;
+import org.kettle.scheduler.common.exceptions.MyMessageException;
+import org.kettle.scheduler.common.groups.Insert;
+import org.kettle.scheduler.common.groups.Update;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.common.povo.TreeDTO;
 import org.kettle.scheduler.common.utils.FileUtil;
+import org.kettle.scheduler.common.utils.StringUtil;
+import org.kettle.scheduler.common.utils.ValidatorUtil;
+import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.kettle.scheduler.system.api.api.SysRepositoryApi;
 import org.kettle.scheduler.system.api.request.RepositoryReq;
 import org.kettle.scheduler.system.api.response.RepositoryRes;
 import org.kettle.scheduler.system.biz.service.SysRepositoryService;
 import org.pentaho.di.repository.RepositoryObjectType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.groups.Default;
 import java.util.List;
 
 /**
@@ -34,7 +43,10 @@ public class SysRepositoryApiController implements SysRepositoryApi {
      * @return {@link Result}
      */
     @Override
-    public Result add(RepositoryReq req) {
+    public Result add(@Validated({Insert.class, Default.class}) RepositoryReq req) {
+		// 根据选项进行参数验证
+		validatedRep(req);
+		// 添加资源库
         req.setRepBasePath(FileUtil.replaceSeparator(req.getRepBasePath()));
         repositoryService.add(req);
         return Result.ok();
@@ -71,7 +83,10 @@ public class SysRepositoryApiController implements SysRepositoryApi {
      * @return {@link Result}
      */
     @Override
-    public Result update(RepositoryReq req) {
+    public Result update(@Validated({Update.class, Default.class}) RepositoryReq req) {
+		// 根据选项进行参数验证
+		validatedRep(req);
+		// 修改
         repositoryService.update(req);
         return Result.ok();
     }
@@ -129,4 +144,38 @@ public class SysRepositoryApiController implements SysRepositoryApi {
     public Result<List<TreeDTO<String>>> findTransRepTreeById(Integer id) {
         return Result.ok(repositoryService.findRepTreeById(id, RepositoryObjectType.TRANSFORMATION));
     }
+
+	/**
+	 * 测试资源库链接
+	 *
+	 * @param req {@link RepositoryReq}
+	 * @return {@link Result}
+	 */
+	@Override
+	public Result testConnection(@Validated({Default.class}) RepositoryReq req) {
+		// 根据选项进行参数验证
+		validatedRep(req);
+		// 测试链接
+		repositoryService.testConnection(req);
+		return Result.ok();
+	}
+
+	private void validatedRep(RepositoryReq req) {
+		switch (RepTypeEnum.getEnum(req.getRepType())) {
+			case FILE:
+				String result1 = ValidatorUtil.validateWithString(req, RepositoryReq.FileRep.class);
+				if (!StringUtil.isEmpty(result1)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
+				}
+				break;
+			case DB:
+				String result2 = ValidatorUtil.validateWithString(req, RepositoryReq.DatabaseRep.class);
+				if (!StringUtil.isEmpty(result2)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getRepType()));
+		}
+	}
 }

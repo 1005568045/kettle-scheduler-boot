@@ -1,52 +1,95 @@
 $(document).ready(function () {
-	$.ajax({
-        type: 'POST',
-        async: false,
-        url: 'repository/database/getType.shtml',
-        data: {},
-        success: function (data) {
-        	for (var i=0; i<data.length; i++){
-        		$("#repositoryType").append('<option value="' + data[i].repositoryTypeCode + '">' + data[i].repositoryTypeDes + '</option>');
-        	}
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });	 
-	$.ajax({
-        type: 'POST',
-        async: false,
-        url: 'repository/database/getAccess.shtml',
-        data: {},
-        success: function (data) {
-        	for (var i=0; i<data.length; i++){
-        		$("#databaseAccess").append('<option value="' + data[i] + '">' + data[i] + '</option>');
-        	}
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });	
+    // 资源库下拉列表
+    getRepType();
+    // 数据库类型下拉列表
+    getDatabaseType();
+    // 数据库访问类型
+    getDatabaseAccessType();
+    // 提交按钮监听
+    submitListener();
 });
 
-var testConnection = function(){
-	var kRepository = new FormData(document.getElementById("RepositoryForm"));
+function getDatabaseType() {
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/enum/databaseType',
+        data: {},
+        success: function (data) {
+            var list = data.result;
+            for (var i=0; i<list.length; i++){
+                $("#dbType").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
+            }
+        },
+        error: function () {
+            alert("请求失败！请刷新页面重试");
+        },
+        dataType: 'json'
+    });
+}
+
+function getRepType() {
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/enum/repositoryType',
+        data: {},
+        success: function (data) {
+            var list = data.result;
+            for (var i=0; i<list.length; i++){
+                $("#repType").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
+            }
+        },
+        error: function () {
+            alert("请求失败！请刷新页面重试");
+        },
+        dataType: 'json'
+    });
+}
+
+function getDatabaseAccessType() {
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/enum/databaseAccessType',
+        data: {},
+        success: function (data) {
+            var list = data.result;
+            for (var i=0; i<list.length; i++){
+                $("#dbAccess").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
+            }
+        },
+        error: function () {
+            alert("请求失败！请刷新页面重试");
+        },
+        dataType: 'json'
+    });
+}
+
+function testConnection(){
+    // 获取表单数据
+    var data = {};
+    $.each($("form").serializeArray(), function (i, field) {
+        data[field.name] = field.value;
+    });
+
 	var returnType = false;
 	$.ajax({
         type: 'POST',
         async: false,
-        url: 'repository/database/ckeck.shtml',
-        data: kRepository,
-        processData:false,
-        contentType:false,
+        url: '/sys/repository/testConnection',
+        data: JSON.stringify(data),
+        contentType: "application/json;charset=UTF-8",
         success: function (data) {
-        	if (data.status == "success" && data.data == "success"){
+        	if (data.success){
         		returnType = true;
         		layer.msg("连接成功", {icon: 6});
         	}else {
-        		layer.msg("连接失败，请检查参数重试", {icon: 5});
+        	    if (data.code === '0002') {
+                    layer.msg(data.message, {icon: 5});
+                } else {
+                    layer.msg("连接失败，请检查参数重试", {icon: 5});
+                }
         	}
         },
         error: function () {
@@ -57,8 +100,84 @@ var testConnection = function(){
 	return returnType;
 }
 
+function submitListener() {
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    $("#RepositoryForm").validate({
+        rules: {
+            repName: {
+                required: true,
+                maxlength: 50
+            },
+            repType: {
+                required: true
+            },
+            repUsername: {
+                required: true,
+                maxlength: 50
+            },
+            repPassword: {
+                required: true,
+                maxlength: 50
+            }
+        },
+        messages: {
+            repName: {
+                required: icon + "请输入资源库名称",
+                maxlength: icon + "资源库名称不能超过50个字符"
+            },
+            repType: {
+                required: icon + "请选择资源库类型"
+            },
+            repUsername: {
+                required: icon + "请输入登录资源库用户名",
+                maxlength: icon + "登录资源库用户名不能超过50个字符"
+            },
+            repPassword: {
+                required: icon + "请输入登录资源库密码",
+                maxlength: icon + "登录资源库密码不能超过50个字符"
+            }
+        },
+        // 提交按钮监听 按钮必须type="submit"
+        submitHandler:function(form){
+            // 获取表单数据
+            var data = {};
+            $.each($("form").serializeArray(), function (i, field) {
+                data[field.name] = field.value;
+            });
+            //做判断
+            if (testConnection()){
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: '/sys/repository/add',
+                    data: JSON.stringify(data),
+                    contentType: "application/json;charset=UTF-8",
+                    success: function (res) {
+                        if (res.success){
+                            layer.msg('添加成功',{
+                                time: 1000,
+                                icon: 6
+                            });
+                            // 成功后跳转到列表页面
+                            setTimeout(function(){
+                                location.href = "/web/repository/list.shtml";
+                            },1000);
+                        }else {
+                            layer.msg(res.message, {icon: 2});
+                        }
+                    },
+                    error: function () {
+                        layer.msg(res.message, {icon: 5});
+                    },
+                    dataType: 'json'
+                });
+            }
+        }
+    });
+}
+
 $.validator.setDefaults({
-	highlight: function (element) {
+    highlight: function (element) {
         $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
     },
     success: function (element) {
@@ -73,114 +192,9 @@ $.validator.setDefaults({
         }
     },
     errorClass: "help-block m-b-none",
-    validClass: "help-block m-b-none"	
-});
-$().ready(function () {
-    var icon = "<i class='fa fa-times-circle'></i> ";
-    $("#RepositoryForm").validate({
-        rules: {
-        	repositoryName: {
-        		required: true,
-        		maxlength: 50
-        	},
-        	repositoryUsername: {
-        		required: true,
-        		maxlength: 50
-        	},
-        	repositoryPassword: {
-        		required: true,
-        		maxlength: 50
-        	},
-        	repositoryType: {
-        		required: true
-        	},
-        	databaseAccess: {
-        		required: true
-        	},
-        	databaseHost: {
-        		required: true,
-        		maxlength: 50
-        	},
-        	databasePort: {
-        		required: true,
-        		maxlength: 10
-        	},
-        	databaseName: {
-        		required: true,
-        		maxlength: 20
-        	},
-        	databaseUsername: {
-        		required: true,
-        		maxlength: 50
-        	},
-        	databasePassword: {
-        		required: true,
-        		maxlength: 50
-        	}
-        },
-        messages: {
-        	repositoryName: {
-        		required: icon + "请输入资源库名称",
-        		maxlength: icon + "资源库名称不能超过50个字符"
-        	},
-        	repositoryUsername: {
-        		required: icon + "请输入登录资源库用户名",
-        		maxlength: icon + "登录资源库用户名不能超过50个字符"
-        	},
-        	repositoryPassword: {
-        		required: icon + "请输入登录资源库密码",
-        		maxlength: icon + "登录资源库密码不能超过50个字符"
-        	},
-        	repositoryType: {
-        		required: icon + "请选择资源库类型"
-        	},
-        	databaseAccess: {
-        		required: icon + "请选择资源库数据库访问模式"
-        	},
-        	databaseHost: {
-        		required: icon + "请输入资源库数据库主机名或者IP地址",
-        		maxlength: icon + "作业描述不能超过50个字符"
-        	},
-        	databasePort: {
-        		required: icon + "请输入资源库数据库端口号",
-        		maxlength: icon + "资源库数据库端口号不能超过10个字符"
-        	},
-        	databaseName: {
-        		required: icon + "请输入资源库数据库名称",
-        		maxlength: icon + "资源库数据库名称不能超过20个字符"
-        	},
-        	databaseUsername: {
-        		required: icon + "请输入资源库数据库登录账号",
-        		maxlength: icon + "资源库数据库登录账号不能超过50个字符"
-        	},
-        	databasePassword: {
-        		required: icon + "请输入资源库数据库登录密码",
-        		maxlength: icon + "资源库数据库登录密码不能超过50个字符"
-        	}
-        },
-        submitHandler:function(form){
-        	
-        	//做判断
-        	if (testConnection()){
-        		$.post("repository/database/insert.shtml", decodeURIComponent($(form).serialize(),true), function(data){
-            		var result = JSON.parse(data);
-        			if(result.status == "success"){
-        				layer.msg('添加成功',{
-                			time: 2000,
-                			icon: 6
-                		});              		
-                		setTimeout(function(){
-                			location.href = "view/repostory/listUI.shtml";
-                		},2000);
-        			}else {
-        				layer.msg(result.message, {icon: 2}); 
-        			}
-        		});
-        	}
-        } 
-    });
+    validClass: "help-block m-b-none"
 });
 
-var cancel = function(){
-	location.href = "view/repostory/listUI.shtml";
+function cancel(){
+	location.href = "/web/repository/list.shtml";
 }

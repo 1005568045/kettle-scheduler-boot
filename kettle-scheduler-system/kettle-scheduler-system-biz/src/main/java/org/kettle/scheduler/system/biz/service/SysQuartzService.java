@@ -58,10 +58,15 @@ public class SysQuartzService {
         // 默认排序
         pageable.getSort().and(Sort.by(Sort.Direction.DESC, "addTime"));
         // 查询
-        Quartz quartz = BeanUtil.copyProperties(query, Quartz.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<Quartz> example = Example.of(quartz, matcher);
-        Page<Quartz> pageList = quartzRepository.findAll(example, pageable);
+		Page<Quartz> pageList;
+		if (query!=null) {
+			Quartz quartz = BeanUtil.copyProperties(query, Quartz.class);
+			ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
+			Example<Quartz> example = Example.of(quartz, matcher);
+			pageList = quartzRepository.findAll(example, pageable);
+		} else {
+			pageList = quartzRepository.findAll(pageable);
+		}
         // 封装数据
         List<QuartzRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, QuartzRes.class)).collect(Collectors.toList());
         return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());

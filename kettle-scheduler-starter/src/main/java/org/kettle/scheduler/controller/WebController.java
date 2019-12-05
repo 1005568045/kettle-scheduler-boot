@@ -1,6 +1,7 @@
 package org.kettle.scheduler.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -35,7 +36,7 @@ public class WebController {
 	/**
 	 * 首页统计页面
 	 *
-	 * @return /index
+	 * @return /main
 	 */
 	@RequestMapping("/main.shtml")
 	public String mainWeb() {
@@ -46,7 +47,7 @@ public class WebController {
 	/**
 	 * 资源库列表页面
 	 *
-	 * @return /index
+	 * @return /repository/list
 	 */
 	@RequestMapping("/repository/list.shtml")
 	public String repositoryListWeb() {
@@ -56,7 +57,7 @@ public class WebController {
 	/**
 	 * 资源库添加页面
 	 *
-	 * @return /index
+	 * @return /repository/add
 	 */
 	@RequestMapping("/repository/add.shtml")
 	public String repositoryAddWeb() {
@@ -66,10 +67,43 @@ public class WebController {
 	/**
 	 * 资源库编辑页面
 	 *
-	 * @return /index
+	 * @return /repository/edit
 	 */
 	@RequestMapping("/repository/edit.shtml")
-	public String repositoryEditWeb() {
+	public String repositoryEditWeb(Integer repositoryId, Model model) {
+		model.addAttribute("repositoryId", repositoryId);
 		return "repository/edit";
+	}
+
+	//=============================================定时策略=================================================//
+	/**
+	 * 定时策略列表页面
+	 *
+	 * @return /quartz/list
+	 */
+	@RequestMapping("/quartz/list.shtml")
+	public String quartzListWeb() {
+		return "quartz/list";
+	}
+
+	/**
+	 * 定时策略添加页面
+	 *
+	 * @return /quartz/add
+	 */
+	@RequestMapping("/quartz/add.shtml")
+	public String quartzAddWeb() {
+		return "quartz/add";
+	}
+
+	/**
+	 * 定时策略编辑页面
+	 *
+	 * @return /quartz/edit
+	 */
+	@RequestMapping("/quartz/edit.shtml")
+	public String quartzEditWeb(Integer quartzId, Model model) {
+		model.addAttribute("quartzId", quartzId);
+		return "quartz/edit";
 	}
 }

@@ -68,6 +68,6 @@ public class FileUtil extends FileUtils {
      * @return {@link String}
      */
     public static String replaceSeparator(String str) {
-        return str.replaceAll("\\\\", "/");
+        return StringUtil.isEmpty(str) ? "" : str.replaceAll("\\\\", "/");
     }
 }

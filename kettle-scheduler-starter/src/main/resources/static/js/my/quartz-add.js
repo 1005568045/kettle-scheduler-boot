@@ -2,7 +2,10 @@ $(document).ready(function () {
     $("#quartzCron").cronGen({
         direction : 'left'
     });
+
+    submitListener();
 });
+
 $.validator.setDefaults({
     highlight: function (element) {
         $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
@@ -14,7 +17,7 @@ $.validator.setDefaults({
     errorPlacement: function (error, element) {
         if (element.is(":radio") || element.is(":checkbox")) {
             error.appendTo(element.parent().parent().parent());
-        }else if(element.is("#cQuarz")){
+        }else if(element.is("#quartzCron")){
             error.appendTo(element.parent().parent());
         } else {
             error.appendTo(element.parent());
@@ -23,14 +26,15 @@ $.validator.setDefaults({
     errorClass: "help-block m-b-none",
     validClass: "help-block m-b-none"
 });
-$().ready(function () {
+
+function submitListener() {
     var icon = "<i class='fa fa-times-circle'></i> ";
     $("#QuartzForm").validate({
         rules: {
             quartzDescription: {
                 required: true
             },
-            cQuarz: {
+            quartzCron: {
                 required: true
             }
         },
@@ -38,29 +42,47 @@ $().ready(function () {
             quartzDescription: {
                 required: icon + "请输入执行策略名称"
             },
-            cQuarz: {
+            quartzCron: {
                 required: icon + "请选择cron编码"
             }
         },
-        submitHandler: function (form) {
-            $("#quartzCron").val($("#cQuarz").val());
-            $.post("quartz/insert.shtml", decodeURIComponent($(form).serialize(), true), function (data) {
-                var result = JSON.parse(data);
-                if (result.status == "success") {
-                    layer.msg('添加成功', {
-                        time: 2000,
-                        icon: 6
-                    });
-                    setTimeout(function () {
-                        location.href = "view/quartz/listUI.shtml";
-                    }, 2000);
-                } else {
-                    layer.msg(result.message, {icon: 2});
-                }
+        // 提交按钮监听 按钮必须type="submit"
+        submitHandler:function(form){
+            // 获取表单数据
+            var data = {};
+            $.each($("form").serializeArray(), function (i, field) {
+                data[field.name] = field.value;
+            });
+            //做判断
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '/sys/quartz/add',
+                data: JSON.stringify(data),
+                contentType: "application/json;charset=UTF-8",
+                success: function (res) {
+                    if (res.success){
+                        layer.msg('添加成功',{
+                            time: 1000,
+                            icon: 6
+                        });
+                        // 成功后跳转到列表页面
+                        setTimeout(function(){
+                            location.href = "/web/quartz/list.shtml";
+                        },1000);
+                    }else {
+                        layer.msg(res.message, {icon: 2});
+                    }
+                },
+                error: function () {
+                    layer.msg(res.message, {icon: 5});
+                },
+                dataType: 'json'
             });
         }
     });
-});
-var cancel = function(){
-	location.href = "view/quartz/listUI.shtml";
+}
+
+function cancel(){
+	location.href = "/web/quartz/list.shtml";
 }

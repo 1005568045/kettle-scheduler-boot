@@ -1,5 +1,7 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import org.kettle.scheduler.common.groups.Insert;
+import org.kettle.scheduler.common.groups.Update;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
@@ -7,6 +9,7 @@ import org.kettle.scheduler.system.api.api.SysQuartzApi;
 import org.kettle.scheduler.system.api.request.QuartzReq;
 import org.kettle.scheduler.system.api.response.QuartzRes;
 import org.kettle.scheduler.system.biz.service.SysQuartzService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,7 +35,7 @@ public class SysQuartzApiController implements SysQuartzApi {
      * @return {@link Result}
      */
     @Override
-    public Result add(QuartzReq req) {
+    public Result add(@Validated(Insert.class) QuartzReq req) {
         quartzService.add(req);
         return Result.ok();
     }
@@ -68,8 +71,8 @@ public class SysQuartzApiController implements SysQuartzApi {
      * @return {@link Result}
      */
     @Override
-    public Result update(QuartzReq req) {
-        quartzService.add(req);
+    public Result update(@Validated(Update.class) QuartzReq req) {
+        quartzService.update(req);
         return Result.ok();
     }
 

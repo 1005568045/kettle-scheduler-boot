@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 	<meta charset="utf-8">
 	<base href="<%=basePath %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>添加执行策略</title>
-    <link href="static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
-    <link href="static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
-    <link href="static/css/plugins/cron-generator/cronGen.css" rel="stylesheet">
-    <link href="static/css/animate.css" rel="stylesheet">
-    <link href="static/css/style.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.css}" href="../static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link th:href="@{/css/animate.css}" href="../static/css/animate.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" href="../static/css/style.css" rel="stylesheet">
+    <link th:href="@{/css/plugins/cron-generator/cronGen.css}" href="../static/css/plugins/cron-generator/cronGen.css" rel="stylesheet">
     <style>
         .help-block {
             display: block;
@@ -36,16 +36,15 @@
             <div class="ibox-content">
             	<form class="form-horizontal m-t" id="QuartzForm">
 	                <div class="form-group">
-	                    <label class="col-sm-3 control-label required">执行策略名称：</label>
+	                    <label class="col-sm-3 control-label required" for="quartzDescription">执行策略名称：</label>
 	                    <div class="col-sm-7">
 	                        <input id="quartzDescription" name="quartzDescription" type="text" placeholder="请输入执行策略名称" class="form-control" aria-required="true">
 	                    </div>
 	                </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label required">执行策略：</label>
+                        <label class="col-sm-3 control-label required" for="quartzCron">执行策略：</label>
                         <div class="col-sm-5">
-                            <input id="quartzCron" readonly  name="quartzCron" placeholder="请选择cron编码"
-                                   class="form-control" aria-required="true">
+                            <input id="quartzCron" readonly  name="quartzCron" placeholder="请选择cron编码" class="form-control" aria-required="true">
                         </div>
                     </div>
 	                <div class="form-group">
@@ -58,17 +57,17 @@
             </div>
         </div>
 	</div>
-	<!-- 全局js -->
-    <script src="static/js/jquery.min.js?v=2.1.4"></script>
-    <script src="static/js/plugins/cron-generator/cronGen.js"></script>
+    <!-- 全局js -->
+    <script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
+    <script th:src="@{/js/plugins/cron-generator/cronGen.js}" src="../static/js/plugins/cron-generator/cronGen.js"></script>
     <!-- jQuery Validation plugin javascript-->
-    <script src="static/js/plugins/validate/jquery.validate.min.js"></script>
-    <script src="static/js/plugins/validate/messages_zh.min.js"></script>
-    <script src="static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script th:src="@{/js/plugins/validate/jquery.validate.min.js}" src="../static/js/plugins/validate/jquery.validate.min.js"></script>
+    <script th:src="@{/js/plugins/validate/messages_zh.min.js}" src="../static/js/plugins/validate/messages_zh.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js?v=3.3.6"></script>
     <!-- layer javascript -->
-    <script src="static/js/plugins/layer/layer.min.js"></script>
+    <script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
     <!-- 自定义js -->
-    <script src="static/js/content.js?v=1.0.0"></script> 
-	<script src="static/js/my/quartz-add.js"></script>
+    <script th:src="@{/js/content.js}" src="../static/js/content.js?v=1.0.0"></script>
+    <script th:src="@{/js/my/quartz-add.js}" src="../static/js/my/quartz-add.js"></script>
 </body>
 </html>

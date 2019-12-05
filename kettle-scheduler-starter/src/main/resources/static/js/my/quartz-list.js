@@ -1,16 +1,16 @@
 $(document).ready(function () {
 	// 加载资源库列表
-    getRepositoryList();
+    getQuartzList();
 
-    $('#repositoryList').delegate('#edit','click',function(e) {
+    $('#quartzList').delegate('#edit','click',function(e) {
         var $target = $(e.target);
-        var repositoryId = $target.data('id');
-        location.href = "/web/repository/edit.shtml?repositoryId=" + repositoryId;
+        var quartzId = $target.data('id');
+        location.href = "/web/quartz/edit.shtml?quartzId=" + quartzId;
     });
 
-    $('#repositoryList').delegate('#delete', 'click', function(e) {
+    $('#quartzList').delegate('#delete', 'click', function(e) {
         var $target = $(e.target);
-        var repositoryId = $target.data('id');
+        var quartzId = $target.data('id');
         layer.confirm('确定删除该单位？', {
                 btn: ['确定', '取消']
             },
@@ -19,9 +19,9 @@ $(document).ready(function () {
                 $.ajax({
                     type: 'DELETE',
                     async: true,
-                    url: '/sys/repository/delete',
+                    url: '/sys/quartz/delete',
                     data: {
-                        "id": repositoryId
+                        "id": quartzId
                     },
                     success: function (data) {
                         if (data.success) {
@@ -43,9 +43,9 @@ $(document).ready(function () {
     });
 });
 
-function getRepositoryList() {
-    $('#repositoryList').bootstrapTable({
-        url: '/sys/repository/findRepListByPage',            //请求后台的URL（*）
+function getQuartzList() {
+    $('#quartzList').bootstrapTable({
+        url: '/sys/quartz/findQuartzListByPage',            //请求后台的URL（*）
         method: 'POST',            //请求方式（*）
         toolbar: '#toolbar',        //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色
@@ -72,29 +72,26 @@ function getRepositoryList() {
         detailView: false,                   //是否显示父子表
         responseHandler: function(res) {
             return {
-                "total": res.result.totalElements,//总页数
+                "total": res.result.totalElements,//总条数
                 "rows": res.result.content//数据列表
             };
         },
         columns: [
             {
                 field: 'id',
-                title: '资源库编号'
+                title: '编号'
             }, {
-                field: 'repName',
-                title: '资源库名称'
+                field: 'quartzDescription',
+                title: '执行策略名称'
             }, {
-                field: 'repType',
-                title: '资源库类型'
+                field: 'quartzCron',
+                title: 'cron表达式'
             }, {
-                field: 'repBasePath',
-                title: '文件资源库路径'
+                field: 'addTime',
+                title: '创建时间'
             }, {
-                field: 'dbHost',
-                title: '数据库主机名或者IP地址'
-            }, {
-                field: 'dbName',
-                title: '资源库数据库名称'
+                field: 'editTime',
+                title: '更新时间'
             },{
                 field: 'operate',
                 title: '操作',
@@ -107,6 +104,7 @@ function getRepositoryList() {
 }
 
 function queryParams(params) {
+    debugger;
     return  JSON.stringify({
         page: {
             size: params.limit,

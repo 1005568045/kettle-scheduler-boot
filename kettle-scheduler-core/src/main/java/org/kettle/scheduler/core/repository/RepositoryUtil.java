@@ -1,11 +1,13 @@
 package org.kettle.scheduler.core.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.TreeDTO;
 import org.kettle.scheduler.common.utils.CollectionUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
+import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -16,6 +18,7 @@ import org.pentaho.di.repository.filerep.KettleFileRepositoryMeta;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +41,10 @@ public class RepositoryUtil {
      *
      * @param dbRep 连接参数
      */
-    private static void databaseRepository(RepositoryDTO dbRep) {
+    private static AbstractRepository databaseRepository(RepositoryDTO dbRep) {
         // 检查资源库是否存在
-        if (DATABASE_REP.containsKey(dbRep.getId())) {
-            return;
+        if (dbRep.getId() !=null && DATABASE_REP.containsKey(dbRep.getId())) {
+			return DATABASE_REP.get(dbRep.getId());
         }
         // 获取数据连接元
         DatabaseMeta dataMeta = new DatabaseMeta(dbRep.getDbName(),dbRep.getDbType(),dbRep.getDbAccess(),dbRep.getDbHost(),dbRep.getDbName(),dbRep.getDbPort(),dbRep.getDbUsername(),dbRep.getDbPassword());
@@ -61,7 +64,10 @@ public class RepositoryUtil {
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
         // 缓存资源库信息
-        DATABASE_REP.put(dbRep.getId(), rep);
+		if (dbRep.getId() != null) {
+			DATABASE_REP.put(dbRep.getId(), rep);
+		}
+		return rep;
     }
 
     /**
@@ -69,14 +75,19 @@ public class RepositoryUtil {
      *
      * @param fileRep 连接参数
      */
-    private static void fileRepository(RepositoryDTO fileRep) {
+    private static AbstractRepository fileRepository(RepositoryDTO fileRep) {
         // 检查资源库是否存在
-        if (DATABASE_REP.containsKey(fileRep.getId())) {
-            return;
+        if (fileRep.getId() !=null && DATABASE_REP.containsKey(fileRep.getId())) {
+            return DATABASE_REP.get(fileRep.getId());
         }
-        // 文件资源库元数据
-        KettleFileRepositoryMeta frm = new KettleFileRepositoryMeta();
-        frm.setBaseDirectory(FileUtil.replaceSeparator(fileRep.getRepBasePath()));
+		// 判断文件是否存在
+		String baseDir = FileUtil.replaceSeparator(fileRep.getRepBasePath());
+		if (StringUtil.isEmpty(baseDir) || !new File(baseDir).exists()) {
+			throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, "文件资源库不存在");
+		}
+		// 文件资源库元数据
+		KettleFileRepositoryMeta frm = new KettleFileRepositoryMeta();
+		frm.setBaseDirectory(baseDir);
         frm.setName(fileRep.getRepName());
         // 初始化资源库
         KettleFileRepository rep = new KettleFileRepository();
@@ -90,31 +101,38 @@ public class RepositoryUtil {
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
         // 缓存资源库信息
-        DATABASE_REP.put(fileRep.getId(), rep);
+		if (fileRep.getId() != null) {
+			DATABASE_REP.put(fileRep.getId(), rep);
+		}
+		return rep;
     }
 
     /**
      * 连接资源库
      * @param rep 连接参数
      */
-    public static AbstractRepository connection(RepositoryDTO rep) {
+    public static AbstractRepository connection(@NotNull RepositoryDTO rep) {
         // 资源库存在直接返回
         if (isExist(rep.getId())) {
             return getRepository(rep.getId());
         }
         // 不存在就创建资源库
-        switch (RepTypeEnum.getEnum(rep.getRepType())) {
-            case FILE:
-                fileRepository(rep);
-                break;
-            case DB:
-                databaseRepository(rep);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + rep.getRepType());
-        }
+		AbstractRepository repository = null;
+		RepTypeEnum repTypeEnum = RepTypeEnum.getEnum(rep.getRepType());
+		if (repTypeEnum != null) {
+			switch (repTypeEnum) {
+				case FILE:
+					repository = fileRepository(rep);
+					break;
+				case DB:
+					repository = databaseRepository(rep);
+					break;
+				default:
+					throw new IllegalStateException("Unexpected value: " + rep.getRepType());
+			}
+		}
         // 返回资源库
-        return getRepository(rep.getId());
+        return repository;
     }
 
     /**
@@ -162,7 +180,7 @@ public class RepositoryUtil {
      * @return {@link Boolean}
      */
     public static boolean isExist(Integer repId) {
-        return DATABASE_REP.containsKey(repId);
+        return repId != null && DATABASE_REP.containsKey(repId);
     }
 
     /**

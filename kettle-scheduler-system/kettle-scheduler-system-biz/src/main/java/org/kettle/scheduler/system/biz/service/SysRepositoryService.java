@@ -1,5 +1,7 @@
 package org.kettle.scheduler.system.biz.service;
 
+import org.kettle.scheduler.common.enums.GlobalStatusEnum;
+import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.TreeDTO;
@@ -96,4 +98,13 @@ public class SysRepositoryService {
         }
     }
 
+	public void testConnection(RepositoryReq req) {
+		RepositoryDTO repDto = BeanUtil.copyProperties(req, RepositoryDTO.class);
+		// 连接资源库
+		AbstractRepository repository = RepositoryUtil.connection(repDto);
+		// 判断是否链接成功
+		if (repository == null || !repository.isConnected()) {
+			throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, "链接资源库失败");
+		}
+	}
 }

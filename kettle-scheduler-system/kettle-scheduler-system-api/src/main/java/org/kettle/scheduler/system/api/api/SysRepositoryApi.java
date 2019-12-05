@@ -110,4 +110,13 @@ public interface SysRepositoryApi {
     @GetMapping("/findTransRepTreeById")
     Result<List<TreeDTO<String>>> findTransRepTreeById(@RequestParam("id") Integer id);
 
+	/**
+	 * 测试资源库链接
+	 *
+	 * @param req {@link RepositoryReq}
+	 * @return {@link Result}
+	 */
+	@ApiOperation(value = "测试资源库链接")
+	@PostMapping("/testConnection")
+	Result testConnection(@RequestBody RepositoryReq req);
 }
