@@ -106,4 +106,68 @@ public class WebController {
 		model.addAttribute("quartzId", quartzId);
 		return "quartz/edit";
 	}
+
+	//=============================================用户管理=================================================//
+	/**
+	 * 用户管理列表页面
+	 *
+	 * @return /user/list
+	 */
+	@RequestMapping("/user/list.shtml")
+	public String userListWeb() {
+		return "user/list";
+	}
+
+	/**
+	 * 用户管理添加页面
+	 *
+	 * @return /user/add
+	 */
+	@RequestMapping("/user/add.shtml")
+	public String userAddWeb() {
+		return "user/add";
+	}
+
+	/**
+	 * 用户管理编辑页面
+	 *
+	 * @return /user/edit
+	 */
+	@RequestMapping("/user/edit.shtml")
+	public String userEditWeb(Integer userId, Model model) {
+		model.addAttribute("userId", userId);
+		return "user/edit";
+	}
+
+	//=============================================任务分类=================================================//
+	/**
+	 * 任务分类列表页面
+	 *
+	 * @return /category/list
+	 */
+	@RequestMapping("/category/list.shtml")
+	public String categoryListWeb() {
+		return "category/list";
+	}
+
+	/**
+	 * 任务分类添加页面
+	 *
+	 * @return /category/add
+	 */
+	@RequestMapping("/category/add.shtml")
+	public String categoryAddWeb() {
+		return "category/add";
+	}
+
+	/**
+	 * 任务分类编辑页面
+	 *
+	 * @return /category/edit
+	 */
+	@RequestMapping("/category/edit.shtml")
+	public String categoryEditWeb(Integer categoryId, Model model) {
+		model.addAttribute("categoryId", categoryId);
+		return "category/edit";
+	}
 }

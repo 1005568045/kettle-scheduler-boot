@@ -5,6 +5,7 @@ import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
+import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.system.api.request.UserReq;
 import org.kettle.scheduler.system.api.response.UserRes;
 import org.kettle.scheduler.system.biz.constant.Constant;
@@ -34,6 +35,7 @@ public class SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void add(UserReq req) {
         User user = BeanUtil.copyProperties(req, User.class);
+        // 密码加密
 		user.setPassword(new Sha256Hash(user.getPassword(),Constant.salt,Constant.hashIterations).toString());
         userRepository.save(user);
     }
@@ -62,10 +64,12 @@ public class SysUserService {
     public void update(UserReq req) {
         Optional<User> optional = userRepository.findById(req.getId());
         if (optional.isPresent()) {
-            User user = optional.get();
-            BeanUtil.copyProperties(req, user);
-            // 不能修改账户名称
-			user.setAccount(null);
+			// 密码加密
+			if (!StringUtil.isEmpty(req.getPassword())) {
+				req.setPassword(new Sha256Hash(req.getPassword(),Constant.salt,Constant.hashIterations).toString());
+			}
+			User user = optional.get();
+			BeanUtil.copyProperties(req, user);
             userRepository.save(user);
         }
     }
@@ -74,10 +78,15 @@ public class SysUserService {
         // 排序
         Sort sort = page.getSorts().isEmpty() ? Sort.by(Sort.Direction.DESC, "addTime") : page.getSorts();
         // 查询
-        User user = BeanUtil.copyProperties(query, User.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<User> example = Example.of(user, matcher);
-        Page<User> pageList = userRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		Page<User> pageList;
+		if (query != null) {
+			User user = BeanUtil.copyProperties(query, User.class);
+			ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
+			Example<User> example = Example.of(user, matcher);
+			pageList = userRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		} else {
+			pageList = userRepository.findAll(PageRequest.of(page.getNumber(), page.getSize(), sort));
+		}
         // 封装数据
         List<UserRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, UserRes.class)).collect(Collectors.toList());
         return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());

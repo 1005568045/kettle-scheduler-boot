@@ -27,7 +27,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加分类")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody CategoryReq req);
 
     /**
@@ -37,7 +37,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除分类")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -47,7 +47,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除分类")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -57,7 +57,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新分类")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody CategoryReq req);
 
     /**
@@ -67,7 +67,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询分类列表")
-    @PostMapping("/findCategoryListByPage")
+    @PostMapping("/findCategoryListByPage.do")
     Result<PageOut<CategoryRes>> findCategoryListByPage(@RequestBody QueryHelper<CategoryReq> req);
 
     /**
@@ -77,7 +77,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询分类明细")
-    @GetMapping("/getCategoryDetail")
+    @GetMapping("/getCategoryDetail.do")
     Result<CategoryRes> getCategoryDetail(@RequestParam("id") Integer id);
 
     /**
@@ -86,6 +86,17 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询分类列表")
-    @PostMapping("/findCategoryList")
+    @PostMapping("/findCategoryList.do")
     Result<List<CategoryRes>> findCategoryList();
+
+	/**
+	 * 验证分类名是否存在
+	 *
+	 * @param categoryId 分类ID
+	 * @param categoryName 分类名
+	 * @return 只能返回true或false
+	 */
+	@ApiOperation(value = "验证分类名是否存在")
+	@PostMapping("/categoryExist.do")
+	String categoryExist(Integer categoryId, String categoryName);
 }

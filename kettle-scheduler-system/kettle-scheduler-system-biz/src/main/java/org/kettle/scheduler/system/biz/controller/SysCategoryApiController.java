@@ -3,9 +3,11 @@ package org.kettle.scheduler.system.biz.controller;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
+import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.system.api.api.SysCategoryApi;
 import org.kettle.scheduler.system.api.request.CategoryReq;
 import org.kettle.scheduler.system.api.response.CategoryRes;
+import org.kettle.scheduler.system.biz.entity.Category;
 import org.kettle.scheduler.system.biz.service.SysCategoryService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -104,4 +106,25 @@ public class SysCategoryApiController implements SysCategoryApi {
     public Result<List<CategoryRes>> findCategoryList() {
         return Result.ok(categoryService.findCategoryList());
     }
+
+	/**
+	 * 验证分类名是否存在
+	 *
+	 * @param categoryId 分类ID
+	 * @param categoryName 分类名
+	 * @return 只能返回true或false
+	 */
+	@Override
+	public String categoryExist(Integer categoryId, String categoryName) {
+		if (StringUtil.isEmpty(categoryName)) {
+			return "true";
+		} else {
+			Category category = categoryService.getCategoryByName(categoryName);
+			if (category != null && !category.getId().equals(categoryId)) {
+				return "false";
+			} else {
+				return "true";
+			}
+		}
+	}
 }

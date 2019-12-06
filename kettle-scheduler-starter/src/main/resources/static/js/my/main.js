@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    // 根据用户名查询用户信息显示
-    getUserInfo();
     // 顶部监控任务数据
     getMonitorTask();
     // 7天数据统计图
@@ -10,27 +8,6 @@ $(document).ready(function () {
     // 作业统计列表
     monitorJob();
 });
-
-/*退出登录*/
-function logout() {
-    $.ajax({
-        type: 'GET',
-        async: false,
-        url: '/sys/login/out.do',
-        success: function (res) {
-            if (!res.success) {
-                alert(res.message);
-            } else {
-                window.localStorage.clear();
-                window.location.replace("/");
-            }
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });
-}
 
 function getMonitorTask() {
     /*获取全部在监控的任务*/
@@ -135,27 +112,6 @@ function get7DayStatus() {
     });
 }
 
-function getUserInfo() {
-    var username = window.localStorage.getItem("username");
-    $.ajax({
-        type: 'GET',
-        async: false,
-        url: '/sys/user/getUserByUsername.do?username=' + username,
-        success: function (res) {
-            if (!res.success) {
-                alert(res.message);
-            } else {
-                $(".navbar-user").text('你好, ' + res.result.nickname);
-                window.localStorage.setItem('userInfo', JSON.stringify(res.result));
-            }
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });
-}
-
 function monitorTrans() {
     $('#transMonitorList').bootstrapTable({
         url: '/sys/trans/monitor/findTransMonitorListByPage',            //请求后台的URL（*）
@@ -166,7 +122,7 @@ function monitorTrans() {
         pagination: false,                   //是否显示分页（*）
         sortable: false,                     //是否启用排序
         sortOrder: "asc",                   //排序方式
-        queryParams: JSON.stringify(queryParams()),//传递参数（*）
+        queryParams: queryParams,//传递参数（*）
         sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
         pageNumber: 1,                       //初始化加载第一页，默认第一页
         pageSize: 10,                       //每页的记录行数（*）
@@ -221,7 +177,7 @@ function monitorJob() {
         pagination: false,                   //是否显示分页（*）
         sortable: false,                     //是否启用排序
         sortOrder: "asc",                   //排序方式
-        queryParams: JSON.stringify(queryParams()),//传递参数（*）
+        queryParams: queryParams,//传递参数（*）
         sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
         pageNumber: 1,                       //初始化加载第一页，默认第一页
         pageSize: 10,                       //每页的记录行数（*）
@@ -266,13 +222,13 @@ function monitorJob() {
     });
 }
 
-function queryParams() {
-    return  {
+function queryParams(params) {
+    return  JSON.stringify({
         page: {
             size: 10,
             number: 1
         }
-    };
+    });
 }
 
 function searchTrans() {

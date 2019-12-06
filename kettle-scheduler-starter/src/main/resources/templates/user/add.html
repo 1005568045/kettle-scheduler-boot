@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="utf-8">
     <base href="<%=basePath %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>添加用户</title>
-    <link href="static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
-    <link href="static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
-    <link href="static/css/animate.css" rel="stylesheet">
-    <link href="static/css/style.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.css}" href="../static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link th:href="@{/css/animate.css}" href="../static/css/animate.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" href="../static/css/style.css" rel="stylesheet">
 </head>
 <body class="gray-bg">
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -27,39 +27,39 @@
         <div class="ibox-content">
             <form class="form-horizontal m-t" id="UserForm">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label required">昵称：</label>
+                    <label class="col-sm-3 control-label required" for="nickname">昵称：</label>
                     <div class="col-sm-7">
-                        <input id="uNickname" name="uNickname" type="text" placeholder="请输入昵称" class="form-control" aria-required="true">
+                        <input id="nickname" name="nickname" type="text" placeholder="请输入昵称" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">邮箱：</label>
+                    <label class="col-sm-3 control-label" for="email">邮箱：</label>
                     <div class="col-sm-7">
-                        <input id="uEmail" name="uEmail" type="text" placeholder="请输入邮箱" class="form-control">
+                        <input id="email" name="email" type="text" placeholder="请输入邮箱" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">电话：</label>
+                    <label class="col-sm-3 control-label" for="phone">电话：</label>
                     <div class="col-sm-7">
-                        <input id="uPhone" name="uPhone" type="text" placeholder="请输入电话" class="form-control">
+                        <input id="phone" name="phone" type="text" placeholder="请输入电话" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label required">账号：</label>
+                    <label class="col-sm-3 control-label required" for="account">账号：</label>
                     <div class="col-sm-7">
-                        <input id="uAccount" name="uAccount" type="text" placeholder="请输入账号" class="form-control" aria-required="true">
+                        <input id="account" name="account" type="text" placeholder="请输入账号" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label required">密码：</label>
+                    <label class="col-sm-3 control-label required" for="password">密码：</label>
                     <div class="col-sm-7">
-                        <input id="uPassword" name="uPassword" type="password" placeholder="请输入密码" class="form-control" aria-required="true">
+                        <input id="password" name="password" type="password" placeholder="请输入密码" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label required">确认密码：</label>
+                    <label class="col-sm-3 control-label required" for="checkPassword">确认密码：</label>
                     <div class="col-sm-7">
-                        <input id="uChkPassword" name="uChkPassword" type="password" placeholder="请再次输入密码" class="form-control" aria-required="true">
+                        <input id="checkPassword" name="checkPassword" type="password" placeholder="请再次输入密码" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-group">
@@ -73,15 +73,15 @@
     </div>
 </div>
 <!-- 全局js -->
-<script src="static/js/jquery.min.js?v=2.1.4"></script>
+<script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
 <!-- jQuery Validation plugin javascript-->
-<script src="static/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="static/js/plugins/validate/messages_zh.min.js"></script>
-<script src="static/js/bootstrap.min.js?v=3.3.6"></script>
+<script th:src="@{/js/plugins/validate/jquery.validate.min.js}" src="../static/js/plugins/validate/jquery.validate.min.js"></script>
+<script th:src="@{/js/plugins/validate/messages_zh.min.js}" src="../static/js/plugins/validate/messages_zh.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js?v=3.3.6"></script>
 <!-- layer javascript -->
-<script src="static/js/plugins/layer/layer.min.js"></script>
+<script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
 <!-- 自定义js -->
-<script src="static/js/content.js?v=1.0.0"></script>
-<script src="static/js/my/user-add.js"></script>
+<script th:src="@{/js/content.js}" src="../static/js/content.js?v=1.0.0"></script>
+<script th:src="@{/js/my/user-add.js}" src="../static/js/my/user-add.js"></script>
 </body>
 </html>

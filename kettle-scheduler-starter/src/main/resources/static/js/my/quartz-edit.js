@@ -98,10 +98,14 @@ function initData(){
         url: '/sys/quartz/getQuartzDetail?id=' + quartzId,
         data: {},
         success: function (data) {
-            var Quartz = data.result;
-            $("#quartzDescription").val(Quartz.quartzDescription);
-            $("#cQuarz").val(Quartz.quartzCron);
-            $("#quartzCron").val(Quartz.quartzCron);
+            if (data.success) {
+                var Quartz = data.result;
+                $("#quartzDescription").val(Quartz.quartzDescription);
+                $("#cQuarz").val(Quartz.quartzCron);
+                $("#quartzCron").val(Quartz.quartzCron);
+            } else {
+                layer.msg(data.message, {icon: 5});
+            }
         },
         error: function () {
             alert("请求失败！请刷新页面重试");

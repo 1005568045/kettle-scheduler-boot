@@ -9,4 +9,10 @@ import org.kettle.scheduler.system.biz.entity.Category;
  */
 public interface CategoryRepository extends JpaRepository<Category, Integer>, JpaSpecificationExecutor<Category> {
 
+	/**
+	 * 根据名称查询
+	 * @param categoryName 名称
+	 * @return {@link Category}
+	 */
+	Category getByCategoryName(String categoryName);
 }

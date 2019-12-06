@@ -110,20 +110,23 @@ function initData(){
         url: '/sys/repository/getRepositoryDetail?id=' + repositoryId,
         data: {},
         success: function (data) {
-        	var kRepository = data.result;
-        	$("#repName").val(kRepository.repName);
-            $("#repType").find("option[value=" + kRepository.repType + "]").prop("selected",true);
-            $("#repUsername").val(kRepository.repUsername);
-            $("#repPassword").val(kRepository.repPassword);
-            $("#repBasePath").val(kRepository.repBasePath);
-            $("#dbType").find("option[value=" + kRepository.dbType + "]").prop("selected",true);
-        	$("#dbAccess").find("option[value=" + kRepository.dbAccess + "]").prop("selected",true);
-        	$("#dbHost").val(kRepository.dbHost);
-        	$("#dbPort").val(kRepository.dbPort);
-        	$("#dbName").val(kRepository.dbName);
-        	$("#dbUsername").val(kRepository.dbUsername);
-        	$("#dbPassword").val(kRepository.dbPassword);
-        	
+            if (data.success) {
+                var kRepository = data.result;
+                $("#repName").val(kRepository.repName);
+                $("#repType").find("option[value=" + kRepository.repType + "]").prop("selected",true);
+                $("#repUsername").val(kRepository.repUsername);
+                $("#repPassword").val(kRepository.repPassword);
+                $("#repBasePath").val(kRepository.repBasePath);
+                $("#dbType").find("option[value=" + kRepository.dbType + "]").prop("selected",true);
+                $("#dbAccess").find("option[value=" + kRepository.dbAccess + "]").prop("selected",true);
+                $("#dbHost").val(kRepository.dbHost);
+                $("#dbPort").val(kRepository.dbPort);
+                $("#dbName").val(kRepository.dbName);
+                $("#dbUsername").val(kRepository.dbUsername);
+                $("#dbPassword").val(kRepository.dbPassword);
+            } else {
+                layer.msg(data.message, {icon: 5});
+            }
         },
         error: function () {
             alert("请求失败！请刷新页面重试");

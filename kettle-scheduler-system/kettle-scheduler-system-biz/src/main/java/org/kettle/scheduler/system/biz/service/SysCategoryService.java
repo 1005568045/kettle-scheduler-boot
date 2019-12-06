@@ -54,10 +54,15 @@ public class SysCategoryService {
         // 排序
         Sort sort = page.getSorts().isEmpty() ? Sort.by(Sort.Direction.DESC, "addTime") : page.getSorts();
         // 查询
-        Category category = BeanUtil.copyProperties(query, Category.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<Category> example = Example.of(category, matcher);
-        Page<Category> pageList = categoryRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		Page<Category> pageList;
+		if (query != null) {
+			Category category = BeanUtil.copyProperties(query, Category.class);
+			ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
+			Example<Category> example = Example.of(category, matcher);
+			pageList = categoryRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+		} else {
+			pageList = categoryRepository.findAll(PageRequest.of(page.getNumber(), page.getSize(), sort));
+		}
         // 封装数据
         List<CategoryRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, CategoryRes.class)).collect(Collectors.toList());
         return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
@@ -72,4 +77,8 @@ public class SysCategoryService {
         List<Category> list = categoryRepository.findAll();
         return list.stream().map(rep -> BeanUtil.copyProperties(rep, CategoryRes.class)).collect(Collectors.toList());
     }
+
+	public Category getCategoryByName(String categoryName) {
+		return categoryRepository.getByCategoryName(categoryName);
+	}
 }

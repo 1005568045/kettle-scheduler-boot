@@ -7,6 +7,7 @@ import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.common.utils.BeanUtil;
+import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.system.api.api.SysUserApi;
 import org.kettle.scheduler.system.api.request.UserReq;
 import org.kettle.scheduler.system.api.response.UserRes;
@@ -114,6 +115,26 @@ public class SysUserApiController implements SysUserApi {
 			return Result.ok(BeanUtil.copyProperties(user, UserRes.class));
 		} else {
 			throw new MyMessageException("用户信息不存在");
+		}
+	}
+
+	/**
+	 * 验证账户是否存在
+	 *
+	 * @param username 账户名
+	 * @return 只能返回true或false
+	 */
+	@Override
+	public String accountExist(String username) {
+		if (StringUtil.isEmpty(username)) {
+			return "true";
+		} else {
+			User user = userService.getUserByAccount(username);
+			if (user != null) {
+				return "false";
+			} else {
+				return "true";
+			}
 		}
 	}
 }

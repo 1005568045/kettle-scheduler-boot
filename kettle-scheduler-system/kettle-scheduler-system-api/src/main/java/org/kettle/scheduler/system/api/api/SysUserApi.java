@@ -27,7 +27,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加用户")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody UserReq req);
 
     /**
@@ -37,7 +37,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除用户")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -47,7 +47,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除用户")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -57,7 +57,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新用户")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody UserReq req);
 
     /**
@@ -67,7 +67,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询用户列表")
-    @PostMapping("/findUserListByPage")
+    @PostMapping("/findUserListByPage.do")
     Result<PageOut<UserRes>> findUserListByPage(@RequestBody QueryHelper<UserReq> req);
 
     /**
@@ -77,7 +77,7 @@ public interface SysUserApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询用户明细")
-    @GetMapping("/getUserDetail")
+    @GetMapping("/getUserDetail.do")
     Result<UserRes> getUserDetail(@RequestParam("id") Integer id);
 
 	/**
@@ -89,4 +89,14 @@ public interface SysUserApi {
 	@ApiOperation(value = "查询用户明细")
 	@GetMapping("/getUserByUsername.do")
 	Result<UserRes> getUserByUsername(@RequestParam("username") String username);
+
+	/**
+	 * 验证账户是否存在
+	 *
+	 * @param username 账户名
+	 * @return 只能返回true或false
+	 */
+	@ApiOperation(value = "验证账户是否存在")
+	@PostMapping("/accountExist.do")
+	String accountExist(String username);
 }

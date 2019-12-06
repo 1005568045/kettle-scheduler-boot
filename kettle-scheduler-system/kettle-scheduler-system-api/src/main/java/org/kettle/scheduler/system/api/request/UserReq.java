@@ -34,7 +34,7 @@ public class UserReq extends BasicVO implements Serializable {
     /**
      * 用于电话
      */
-    @ApiModelProperty(value = "用于电话")
+    @ApiModelProperty(value = "用户电话")
     private String phone;
 
     /**
