@@ -10,18 +10,22 @@ import org.kettle.scheduler.quartz.manage.QuartzManage;
 import org.kettle.scheduler.system.api.enums.RunStatusEnum;
 import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
+import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Quartz;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
+import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
+import org.kettle.scheduler.system.biz.entity.bo.TransBO;
 import org.kettle.scheduler.system.biz.quartz.TransQuartz;
 import org.kettle.scheduler.system.biz.repository.QuartzRepository;
 import org.kettle.scheduler.system.biz.repository.TransMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.TransRepository;
 import org.quartz.JobDataMap;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,12 +40,15 @@ public class SysTransService {
     private final TransRepository transRepository;
     private final QuartzRepository quartzRepository;
     private final TransMonitorRepository monitorRepository;
+    private final EntityManagerUtil entityManagerUtil;
 
-    public SysTransService(TransRepository transRepository, QuartzRepository quartzRepository, TransMonitorRepository monitorRepository) {
+    public SysTransService(TransRepository transRepository, QuartzRepository quartzRepository,
+			TransMonitorRepository monitorRepository, EntityManagerUtil entityManagerUtil) {
         this.transRepository = transRepository;
         this.quartzRepository = quartzRepository;
         this.monitorRepository = monitorRepository;
-    }
+		this.entityManagerUtil = entityManagerUtil;
+	}
 
     /**
      * 因程序中断后所有的定时会中断，因此在程序启动的时候需要初始化类调用该方法重新恢复定时任务
@@ -92,16 +99,35 @@ public class SysTransService {
     }
 
     public PageOut<TransRes> findTransListByPage(TransReq query, Pageable pageable) {
-        // 默认排序
-        pageable.getSort().and(Sort.by(Sort.Direction.DESC, "addTime"));
-        // 查询
-        Trans trans = BeanUtil.copyProperties(query, Trans.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<Trans> example = Example.of(trans, matcher);
-        Page<Trans> pageList = transRepository.findAll(example, pageable);
-        // 封装数据
-        List<TransRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, TransRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
+		// select 部分sql
+		String selectSql = "SELECT a.*, c.category_name, q.quartz_cron, q.quartz_description ";
+		// from部分sql
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("FROM `k_trans` a ");
+		fromSql.append("LEFT JOIN `k_category` c ON a.category_id = c.id ");
+		fromSql.append("LEFT JOIN `k_quartz` q ON a.trans_quartz=q.id ");
+		if (query != null) {
+			fromSql.append("WHERE 1=1 ");
+			if (query.getCategoryId() != null) {
+				fromSql.append("AND a.category_id = ").append(query.getCategoryId()).append(" ");
+			}
+			if (!StringUtil.isEmpty(query.getTransName())) {
+				fromSql.append("AND a.trans_name like '%").append(query.getTransName()).append("%'").append(" ");
+			}
+		}
+		// order by 部分sql
+		String orderSql = "order by a.add_time desc ";
+
+		// 执行sql
+		NativeQueryResultBO result = entityManagerUtil.executeNativeQuery(selectSql, fromSql.toString(), orderSql, pageable, TransBO.class);
+
+		List<TransRes> list = new ArrayList<>();
+		for (Object o : result.getResultList()) {
+			list.add(BeanUtil.copyProperties(o, TransRes.class));
+		}
+
+		// 封装数据
+		return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), result.getTotal());
     }
 
     public TransRes getTransDetail(Integer id) {

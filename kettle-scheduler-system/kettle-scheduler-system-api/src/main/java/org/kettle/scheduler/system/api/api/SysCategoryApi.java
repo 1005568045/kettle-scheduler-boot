@@ -86,7 +86,7 @@ public interface SysCategoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询分类列表")
-    @PostMapping("/findCategoryList.do")
+    @GetMapping("/findCategoryList.do")
     Result<List<CategoryRes>> findCategoryList();
 
 	/**

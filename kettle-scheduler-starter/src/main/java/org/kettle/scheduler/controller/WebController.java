@@ -170,4 +170,36 @@ public class WebController {
 		model.addAttribute("categoryId", categoryId);
 		return "category/edit";
 	}
+
+	//=============================================转换管理=================================================//
+	/**
+	 * 转换管理列表页面
+	 *
+	 * @return /trans/list
+	 */
+	@RequestMapping("/trans/list.shtml")
+	public String transListWeb() {
+		return "trans/list";
+	}
+
+	/**
+	 * 转换管理添加页面
+	 *
+	 * @return /trans/add
+	 */
+	@RequestMapping("/trans/add.shtml")
+	public String transAddWeb() {
+		return "trans/add";
+	}
+
+	/**
+	 * 转换管理编辑页面
+	 *
+	 * @return /trans/edit
+	 */
+	@RequestMapping("/trans/edit.shtml")
+	public String transEditWeb(Integer transId, Model model) {
+		model.addAttribute("transId", transId);
+		return "trans/edit";
+	}
 }

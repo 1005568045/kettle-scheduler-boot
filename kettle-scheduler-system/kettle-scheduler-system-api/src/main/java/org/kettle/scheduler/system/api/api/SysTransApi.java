@@ -27,7 +27,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加转换")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody TransReq req);
 
     /**
@@ -37,7 +37,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除转换")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -47,7 +47,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除转换")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -57,7 +57,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新转换")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody TransReq req);
 
     /**
@@ -67,7 +67,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询转换列表")
-    @PostMapping("/findTransListByPage")
+    @PostMapping("/findTransListByPage.do")
     Result<PageOut<TransRes>> findTransListByPage(@RequestBody QueryHelper<TransReq> req);
 
     /**
@@ -77,7 +77,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询转换明细")
-    @GetMapping("/getTransDetail")
+    @GetMapping("/getTransDetail.do")
     Result<TransRes> getTransDetail(@RequestParam("id") Integer id);
 
     /**
@@ -86,7 +86,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "全部启动")
-    @GetMapping("/startAllTrans")
+    @GetMapping("/startAllTrans.do")
     Result startAllTrans();
 
     /**
@@ -96,8 +96,8 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "单个启动")
-    @GetMapping("/startTrans")
-    Result startTrans(Integer id);
+    @GetMapping("/startTrans.do")
+    Result startTrans(@RequestParam("id") Integer id);
 
     /**
      * 全部停止
@@ -105,7 +105,7 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "全部停止")
-    @GetMapping("/stopAllTrans")
+    @GetMapping("/stopAllTrans.do")
     Result stopAllTrans();
 
     /**
@@ -115,6 +115,6 @@ public interface SysTransApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "单个停止")
-    @GetMapping("/stopTrans")
-    Result stopTrans(Integer id);
+    @GetMapping("/stopTrans.do")
+    Result stopTrans(@RequestParam("id") Integer id);
 }
