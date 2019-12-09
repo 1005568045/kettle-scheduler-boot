@@ -20,12 +20,12 @@ public class TreeDTO<T> {
     /**
      * 父级id
      */
-    private String pid;
+    private String parent;
 
     /**
      * 名称
      */
-    private String title;
+    private String text;
 
     /**
      * 是否叶子节点, 叶子节点是末尾节点, 没有子级

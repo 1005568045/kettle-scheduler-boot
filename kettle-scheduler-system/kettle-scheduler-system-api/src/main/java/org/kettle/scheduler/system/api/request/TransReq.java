@@ -59,7 +59,7 @@ public class TransReq extends BasicVO implements Serializable {
      * 定时策略（外键ID）
      */
     @ApiModelProperty(value = "定时策略")
-    private Integer transQuartz = 1;
+    private Integer transQuartz;
 
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）

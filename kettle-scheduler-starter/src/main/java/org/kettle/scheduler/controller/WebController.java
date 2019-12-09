@@ -189,7 +189,7 @@ public class WebController {
 	 */
 	@RequestMapping("/trans/add.shtml")
 	public String transAddWeb() {
-		return "trans/add";
+		return "trans/r-add";
 	}
 
 	/**
@@ -201,5 +201,37 @@ public class WebController {
 	public String transEditWeb(Integer transId, Model model) {
 		model.addAttribute("transId", transId);
 		return "trans/edit";
+	}
+
+	//=============================================作业管理=================================================//
+	/**
+	 * 作业管理列表页面
+	 *
+	 * @return /job/list
+	 */
+	@RequestMapping("/job/list.shtml")
+	public String jobListWeb() {
+		return "job/list";
+	}
+
+	/**
+	 * 作业管理添加页面
+	 *
+	 * @return /job/add
+	 */
+	@RequestMapping("/job/add.shtml")
+	public String jobAddWeb() {
+		return "job/r-add";
+	}
+
+	/**
+	 * 作业管理编辑页面
+	 *
+	 * @return /job/edit
+	 */
+	@RequestMapping("/job/edit.shtml")
+	public String jobEditWeb(Integer jobId, Model model) {
+		model.addAttribute("jobId", jobId);
+		return "job/edit";
 	}
 }

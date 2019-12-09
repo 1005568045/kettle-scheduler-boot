@@ -13,7 +13,7 @@ function getDatabaseType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/databaseType',
+        url: '/enum/databaseType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -32,7 +32,7 @@ function getRepType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/repositoryType',
+        url: '/enum/repositoryType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -51,7 +51,7 @@ function getDatabaseAccessType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/databaseAccessType',
+        url: '/enum/databaseAccessType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -77,7 +77,7 @@ function testConnection(){
 	$.ajax({
         type: 'POST',
         async: false,
-        url: '/sys/repository/testConnection',
+        url: '/sys/repository/testConnection.do',
         data: JSON.stringify(data),
         contentType: "application/json;charset=UTF-8",
         success: function (data) {
@@ -149,7 +149,7 @@ function submitListener() {
                 $.ajax({
                     type: 'POST',
                     async: false,
-                    url: '/sys/repository/add',
+                    url: '/sys/repository/add.do',
                     data: JSON.stringify(data),
                     contentType: "application/json;charset=UTF-8",
                     success: function (res) {

@@ -15,7 +15,7 @@ function getDatabaseType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/databaseType',
+        url: '/enum/databaseType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -34,7 +34,7 @@ function getRepType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/repositoryType',
+        url: '/enum/repositoryType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -53,7 +53,7 @@ function getDatabaseAccessType() {
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/enum/databaseAccessType',
+        url: '/enum/databaseAccessType.do',
         data: {},
         success: function (data) {
             var list = data.result;
@@ -79,7 +79,7 @@ function testConnection(){
     $.ajax({
         type: 'POST',
         async: false,
-        url: '/sys/repository/testConnection',
+        url: '/sys/repository/testConnection.do',
         data: JSON.stringify(data),
         contentType: "application/json;charset=UTF-8",
         success: function (data) {
@@ -107,7 +107,7 @@ function initData(){
 	$.ajax({
         type: 'GET',
         async: true,
-        url: '/sys/repository/getRepositoryDetail?id=' + repositoryId,
+        url: '/sys/repository/getRepositoryDetail.do?id=' + repositoryId,
         data: {},
         success: function (data) {
             if (data.success) {
@@ -184,7 +184,7 @@ function submitListener() {
                 $.ajax({
                     type: 'PUT',
                     async: false,
-                    url: '/sys/repository/update',
+                    url: '/sys/repository/update.do',
                     data: JSON.stringify(data),
                     contentType: "application/json;charset=UTF-8",
                     success: function (res) {

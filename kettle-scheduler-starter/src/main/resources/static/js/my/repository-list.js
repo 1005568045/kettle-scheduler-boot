@@ -19,7 +19,7 @@ $(document).ready(function () {
                 $.ajax({
                     type: 'DELETE',
                     async: true,
-                    url: '/sys/repository/delete',
+                    url: '/sys/repository/delete.do',
                     data: {
                         "id": repositoryId
                     },
@@ -45,7 +45,7 @@ $(document).ready(function () {
 
 function getRepositoryList() {
     $('#repositoryList').bootstrapTable({
-        url: '/sys/repository/findRepListByPage',            //请求后台的URL（*）
+        url: '/sys/repository/findRepListByPage.do',            //请求后台的URL（*）
         method: 'POST',            //请求方式（*）
         toolbar: '#toolbar',        //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色

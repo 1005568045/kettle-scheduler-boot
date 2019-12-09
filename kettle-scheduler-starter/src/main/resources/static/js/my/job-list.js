@@ -2,7 +2,7 @@ $(document).ready(function () {
     // 加载搜索选项
     getCategory();
 	// 加载列表
-    getTransList();
+    getJobList();
     // 按钮绑定
     bindButton();
 });
@@ -26,9 +26,9 @@ function getCategory() {
     });
 }
 
-function getTransList() {
-    $('#transList').bootstrapTable({
-        url: '/sys/trans/findTransListByPage.do',            //请求后台的URL（*）
+function getJobList() {
+    $('#jobList').bootstrapTable({
+        url: '/sys/job/findJobListByPage.do',            //请求后台的URL（*）
         method: 'POST',            //请求方式（*）
         toolbar: '#toolbar',        //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色
@@ -62,32 +62,32 @@ function getTransList() {
         columns: [
             {
                 field: 'id',
-                title: '转换编号',
+                title: '作业编号',
                 visible: false
             }, {
-                field: 'transName',
-                title: '转换名称'
+                field: 'jobName',
+                title: '作业名称'
             }, {
                 field: 'categoryName',
                 title: '任务分类'
             }, {
-                field: 'transDescription',
-                title: '转换描述'
+                field: 'jobDescription',
+                title: '作业描述'
             }, {
-                field: 'transTypeStr',
+                field: 'jobTypeStr',
                 title: '执行方式'
             }, {
-                field: 'transPath',
-                title: '转换路径'
+                field: 'jobPath',
+                title: '作业路径'
             }, {
                 field: 'quartzDescription',
                 title: '执行策略'
             }, {
-                field: 'transLogLevelStr',
+                field: 'jobLogLevelStr',
                 title: '日志级别'
             }, {
-                field: 'transStatusStr',
-                title: '转换状态'
+                field: 'jobStatusStr',
+                title: '作业状态'
             }, {
                 field: 'operate',
                 title: '操作',
@@ -107,18 +107,17 @@ function queryParams(params) {
         },
         query: {
             categoryId: $("#categoryId").val(),
-            transName: $("#transName").val()
+            jobName: $("#jobName").val()
         }
     });
 }
 
 function actionFormatter(value, row, index) {
-    debugger;
-    if (row.transStatus === 1) {
+    if (row.jobStatus === 1) {
         return [
             '<a class="btn btn-danger btn-xs" id="stop" type="button" data-id="'+ row.id +'"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;停止</a>'
         ].join('');
-    } else if (row.transStatus === 2) {
+    } else if (row.jobStatus === 2) {
         return [
             '<a class="btn btn-primary btn-xs" id="start" type="button" data-id="'+ row.id +'"><i class="fa fa-play" aria-hidden="true"></i>&nbsp;启动</a>',
             '&nbsp;&nbsp;',
@@ -136,10 +135,10 @@ function actionFormatter(value, row, index) {
 }
 
 function search() {
-    $('#transList').bootstrapTable('refresh');
+    $('#jobList').bootstrapTable('refresh');
 }
 
-function transNameFormatter(value, row, index) {
+function jobNameFormatter(value, row, index) {
     if (value.length > 15) {
         var newValue = value.substring(0, 14);
         return newValue + "……";
@@ -150,14 +149,14 @@ function transNameFormatter(value, row, index) {
 
 function bindButton() {
     // 编辑
-    $('#transList').delegate('#edit','click',function(e) {
+    $('#jobList').delegate('#edit','click',function(e) {
         var $target = $(e.target);
-        var transId = $target.data('id');
-        location.href = "/web/trans/edit.shtml?transId=" + transId;
+        var jobId = $target.data('id');
+        location.href = "/web/job/edit.shtml?jobId=" + jobId;
     });
 
     // 删除
-    $('#transList').delegate('#delete', 'click', function(e) {
+    $('#jobList').delegate('#delete', 'click', function(e) {
         var $target = $(e.target);
         var transId = $target.data('id');
         debugger;
@@ -169,7 +168,7 @@ function bindButton() {
                 $.ajax({
                     type: 'DELETE',
                     async: true,
-                    url: '/sys/trans/delete.do',
+                    url: '/sys/job/delete.do',
                     data: {
                         "id": transId
                     },
@@ -193,18 +192,18 @@ function bindButton() {
     });
 
     // 单个任务启动
-    $('#transList').delegate('#start','click',function(e) {
+    $('#jobList').delegate('#start','click',function(e) {
         var $target = $(e.target);
         var transId = $target.data('id');
         layer.confirm(
-            '确定启动该转换？',
+            '确定启动该作业？',
             {btn: ['确定', '取消']},
             function (index) {
                 layer.close(index);
                 $.ajax({
                     type: 'GET',
                     async: true,
-                    url: '/sys/trans/startTrans.do?id=' + transId,
+                    url: '/sys/job/startJob.do?id=' + transId,
                     data: {},
                     success: function (data) {
                         if (data.success) {
@@ -226,18 +225,18 @@ function bindButton() {
     });
 
     // 单个任务停止
-    $('#transList').delegate('#stop','click',function(e) {
+    $('#jobList').delegate('#stop','click',function(e) {
         var $target = $(e.target);
         var transId = $target.data('id');
         layer.confirm(
-            '确定停止该转换？',
+            '确定停止该作业？',
             {btn: ['确定', '取消']},
             function (index) {
                 layer.close(index);
                 $.ajax({
                     type: 'GET',
                     async: true,
-                    url: '/sys/trans/stopTrans.do?id=' + transId,
+                    url: '/sys/job/stopJob.do?id=' + transId,
                     data: {},
                     success: function (data) {
                         if (data.success) {
@@ -261,14 +260,14 @@ function bindButton() {
     // 启动全部停止的任务
     $('#startAll').on('click',function(e) {
         layer.confirm(
-            '确定启动全部已停止的转换？',
+            '确定启动全部已停止的作业？',
             {btn: ['确定', '取消']},
             function (index) {
                 layer.close(index);
                 $.ajax({
                     type: 'GET',
                     async: true,
-                    url: '/sys/trans/startAllTrans.do',
+                    url: '/sys/job/startAllJob.do',
                     data: {},
                     success: function (data) {
                         if (data.success) {
@@ -292,14 +291,14 @@ function bindButton() {
     // 启动全部停止的任务
     $('#stopAll').on('click',function(e) {
         layer.confirm(
-            '确定停止全部已启动的转换？',
+            '确定停止全部已启动的作业？',
             {btn: ['确定', '取消']},
             function (index) {
                 layer.close(index);
                 $.ajax({
                     type: 'GET',
                     async: true,
-                    url: '/sys/trans/stopAllTrans.do',
+                    url: '/sys/job/stopAllJob.do',
                     data: {},
                     success: function (data) {
                         if (data.success) {

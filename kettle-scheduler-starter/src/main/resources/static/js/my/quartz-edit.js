@@ -60,7 +60,7 @@ function submitListener() {
             $.ajax({
                 type: 'PUT',
                 async: false,
-                url: '/sys/quartz/update',
+                url: '/sys/quartz/update.do',
                 data: JSON.stringify(data),
                 contentType: "application/json;charset=UTF-8",
                 success: function (res) {
@@ -95,7 +95,7 @@ function initData(){
     $.ajax({
         type: 'GET',
         async: false,
-        url: '/sys/quartz/getQuartzDetail?id=' + quartzId,
+        url: '/sys/quartz/getQuartzDetail.do?id=' + quartzId,
         data: {},
         success: function (data) {
             if (data.success) {

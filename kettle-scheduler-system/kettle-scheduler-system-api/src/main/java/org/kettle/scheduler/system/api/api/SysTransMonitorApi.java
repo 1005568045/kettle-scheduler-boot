@@ -29,7 +29,7 @@ public interface SysTransMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询转换监控列表")
-    @PostMapping("/findTransMonitorListByPage")
+    @PostMapping("/findTransMonitorListByPage.do")
     Result<PageOut<TransMonitorRes>> findTransMonitorListByPage(@RequestBody QueryHelper<MonitorQueryReq> req);
 
     /**
@@ -39,7 +39,7 @@ public interface SysTransMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询转换监控明细")
-    @PostMapping("/findTransRecordList")
+    @PostMapping("/findTransRecordList.do")
     Result<PageOut<TransRecordRes>> findTransRecordList(@RequestBody QueryHelper<IdVO> req);
 
     /**
@@ -49,7 +49,7 @@ public interface SysTransMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查看转换执行记录明细")
-    @GetMapping("/viewTransRecordDetail")
+    @GetMapping("/viewTransRecordDetail.do")
     Result<String> viewTransRecordDetail(@RequestParam("transRecordId") Integer transRecordId);
 
     /**
@@ -59,6 +59,6 @@ public interface SysTransMonitorApi {
      * @param transRecordId 根据转换记录id查询
      */
     @ApiOperation(value = "下载转换执行记录明细")
-    @GetMapping("/downloadTransRecord")
+    @GetMapping("/downloadTransRecord.do")
     void downloadTransRecord(HttpServletResponse response, @RequestParam("transRecordId") Integer transRecordId);
 }

@@ -57,7 +57,7 @@ function submitListener() {
             $.ajax({
                 type: 'POST',
                 async: false,
-                url: '/sys/quartz/add',
+                url: '/sys/quartz/add.do',
                 data: JSON.stringify(data),
                 contentType: "application/json;charset=UTF-8",
                 success: function (res) {

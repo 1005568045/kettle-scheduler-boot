@@ -3,7 +3,6 @@ package org.kettle.scheduler.system.biz.service;
 import com.google.common.collect.ImmutableMap;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
-import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
@@ -12,18 +11,22 @@ import org.kettle.scheduler.quartz.manage.QuartzManage;
 import org.kettle.scheduler.system.api.enums.RunStatusEnum;
 import org.kettle.scheduler.system.api.request.JobReq;
 import org.kettle.scheduler.system.api.response.JobRes;
+import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.Quartz;
+import org.kettle.scheduler.system.biz.entity.bo.JobBO;
+import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
 import org.kettle.scheduler.system.biz.quartz.JobQuartz;
 import org.kettle.scheduler.system.biz.repository.JobMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.JobRepository;
 import org.kettle.scheduler.system.biz.repository.QuartzRepository;
 import org.quartz.JobDataMap;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,12 +41,15 @@ public class SysJobService {
     private final JobRepository jobRepository;
     private final QuartzRepository quartzRepository;
     private final JobMonitorRepository monitorRepository;
+	private final EntityManagerUtil entityManagerUtil;
 
-    public SysJobService(JobRepository jobRepository, QuartzRepository quartzRepository, JobMonitorRepository monitorRepository) {
+    public SysJobService(JobRepository jobRepository, QuartzRepository quartzRepository,
+			JobMonitorRepository monitorRepository, EntityManagerUtil entityManagerUtil) {
         this.jobRepository = jobRepository;
         this.quartzRepository = quartzRepository;
         this.monitorRepository = monitorRepository;
-    }
+		this.entityManagerUtil = entityManagerUtil;
+	}
 
     /**
      * 因程序中断后所有的定时会中断，因此在程序启动的时候需要初始化类调用该方法重新恢复定时任务
@@ -83,17 +89,36 @@ public class SysJobService {
         }
     }
 
-    public PageOut<JobRes> findJobListByPage(JobReq query, PageHelper page) {
-        // 排序
-        Sort sort = page.getSorts().isEmpty() ? Sort.by(Sort.Direction.DESC, "addTime") : page.getSorts();
-        // 查询
-        Job job = BeanUtil.copyProperties(query, Job.class);
-        ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
-        Example<Job> example = Example.of(job, matcher);
-        Page<Job> pageList = jobRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
-        // 封装数据
-        List<JobRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, JobRes.class)).collect(Collectors.toList());
-        return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
+    public PageOut<JobRes> findJobListByPage(JobReq query, Pageable pageable) {
+		// select 部分sql
+		String selectSql = "SELECT a.*, c.category_name, q.quartz_cron, q.quartz_description ";
+		// from部分sql
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("FROM `k_job` a ");
+		fromSql.append("LEFT JOIN `k_category` c ON a.category_id = c.id ");
+		fromSql.append("LEFT JOIN `k_quartz` q ON a.job_quartz=q.id ");
+		if (query != null) {
+			fromSql.append("WHERE 1=1 ");
+			if (query.getCategoryId() != null) {
+				fromSql.append("AND a.category_id = ").append(query.getCategoryId()).append(" ");
+			}
+			if (!StringUtil.isEmpty(query.getJobName())) {
+				fromSql.append("AND a.job_name like '%").append(query.getJobName()).append("%'").append(" ");
+			}
+		}
+		// order by 部分sql
+		String orderSql = "order by a.add_time desc ";
+
+		// 执行sql
+		NativeQueryResultBO result = entityManagerUtil.executeNativeQuery(selectSql, fromSql.toString(), orderSql, pageable, JobBO.class);
+
+		List<JobRes> list = new ArrayList<>();
+		for (Object o : result.getResultList()) {
+			list.add(BeanUtil.copyProperties(o, JobRes.class));
+		}
+
+		// 封装数据
+		return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), result.getTotal());
     }
 
     public JobRes getJobDetail(Integer id) {
@@ -109,7 +134,7 @@ public class SysJobService {
     @Transactional(rollbackFor = Exception.class)
     public void startAllJob() {
         List<Job> jobsList = jobRepository.findByJobStatus(RunStatusEnum.STOP.getCode());
-        jobsList.forEach(job -> stopJob(job.getId()));
+        jobsList.forEach(job -> startJob(job.getId()));
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -81,7 +81,7 @@ public class SysJobApiController implements SysJobApi {
      */
     @Override
     public Result<PageOut<JobRes>> findJobListByPage(QueryHelper<JobReq> req) {
-        return Result.ok(jobService.findJobListByPage(req.getQuery(), req.getPage()));
+        return Result.ok(jobService.findJobListByPage(req.getQuery(), req.getPage().getPageable()));
     }
 
     /**

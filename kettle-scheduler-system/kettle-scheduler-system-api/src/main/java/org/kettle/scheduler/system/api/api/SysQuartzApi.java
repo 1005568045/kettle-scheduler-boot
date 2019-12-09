@@ -27,7 +27,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加定时任务")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody QuartzReq req);
 
     /**
@@ -37,7 +37,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除定时任务")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -47,7 +47,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除定时任务")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -57,7 +57,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新定时任务")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody QuartzReq req);
 
     /**
@@ -67,7 +67,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询定时任务列表")
-    @PostMapping("/findQuartzListByPage")
+    @PostMapping("/findQuartzListByPage.do")
     Result<PageOut<QuartzRes>> findQuartzListByPage(@RequestBody QueryHelper<QuartzReq> req);
 
     /**
@@ -77,7 +77,7 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询定时任务明细")
-    @GetMapping("/getQuartzDetail")
+    @GetMapping("/getQuartzDetail.do")
     Result<QuartzRes> getQuartzDetail(@RequestParam("id") Integer id);
 
     /**
@@ -86,6 +86,6 @@ public interface SysQuartzApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询定时任务列表")
-    @GetMapping("/findQuartzList")
+    @GetMapping("/findQuartzList.do")
     Result<List<QuartzRes>> findQuartzList();
 }

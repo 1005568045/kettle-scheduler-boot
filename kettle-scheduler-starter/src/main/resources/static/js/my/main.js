@@ -114,7 +114,7 @@ function get7DayStatus() {
 
 function monitorTrans() {
     $('#transMonitorList').bootstrapTable({
-        url: '/sys/trans/monitor/findTransMonitorListByPage',            //请求后台的URL（*）
+        url: '/sys/trans/monitor/findTransMonitorListByPage.do',            //请求后台的URL（*）
         method: 'POST',            //请求方式（*）
         toolbar: '#toolbar',        //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色
@@ -169,7 +169,7 @@ function monitorTrans() {
 
 function monitorJob() {
     $('#jobMonitorList').bootstrapTable({
-        url: '/sys/job/monitor/findJobMonitorListByPage',            //请求后台的URL（*）
+        url: '/sys/job/monitor/findJobMonitorListByPage.do',            //请求后台的URL（*）
         method: 'POST',            //请求方式（*）
         toolbar: '#toolbar',        //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色

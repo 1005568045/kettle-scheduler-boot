@@ -27,7 +27,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加作业")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody JobReq req);
 
     /**
@@ -37,7 +37,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除作业")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -47,7 +47,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除作业")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -57,7 +57,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新作业")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody JobReq req);
 
     /**
@@ -67,7 +67,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询作业列表")
-    @PostMapping("/findJobListByPage")
+    @PostMapping("/findJobListByPage.do")
     Result<PageOut<JobRes>> findJobListByPage(@RequestBody QueryHelper<JobReq> req);
 
     /**
@@ -77,7 +77,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询作业明细")
-    @GetMapping("/getJobDetail")
+    @GetMapping("/getJobDetail.do")
     Result<JobRes> getJobDetail(@RequestParam("id") Integer id);
 
     /**
@@ -86,7 +86,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "全部启动")
-    @GetMapping("/startAllJob")
+    @GetMapping("/startAllJob.do")
     Result startAllJob();
 
     /**
@@ -96,7 +96,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "单个启动")
-    @GetMapping("/startJob")
+    @GetMapping("/startJob.do")
     Result startJob(Integer id);
 
     /**
@@ -105,7 +105,7 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "全部停止")
-    @GetMapping("/stopAllJob")
+    @GetMapping("/stopAllJob.do")
     Result stopAllJob();
 
     /**
@@ -115,6 +115,6 @@ public interface SysJobApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "单个停止")
-    @GetMapping("/stopJob")
+    @GetMapping("/stopJob.do")
     Result stopJob(Integer id);
 }

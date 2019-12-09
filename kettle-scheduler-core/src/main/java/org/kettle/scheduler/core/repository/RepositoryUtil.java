@@ -254,6 +254,11 @@ public class RepositoryUtil {
             log.error(msg, e);
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
+		treeList.forEach(dto -> {
+			if ("0".equals(dto.getParent())) {
+				dto.setParent("#");
+			}
+		});
         return treeList;
     }
 
@@ -271,8 +276,8 @@ public class RepositoryUtil {
                 RepositoryDirectory subDir = rdi.getSubdirectory(i);
                 TreeDTO<String> tree = new TreeDTO<>();
                 tree.setId(subDir.getObjectId().getId());
-                tree.setPid(rdi.getObjectId().getId());
-                tree.setTitle(subDir.getName());
+                tree.setParent(rdi.getObjectId().getId());
+                tree.setText(subDir.getName());
                 tree.setLeaf(false);
                 tree.setExpand(true);
                 tree.setExtra(subDir.getPath());
@@ -298,8 +303,8 @@ public class RepositoryUtil {
                 if (objectType == null || objectType.equals(element.getObjectType())) {
                     TreeDTO<String> tree = new TreeDTO<>();
                     tree.setId(element.getObjectType().getTypeDescription() + "@" + rdi.getObjectId().getId() + "@" + element.getObjectId().getId());
-                    tree.setPid(rdi.getObjectId().getId());
-                    tree.setTitle(element.getName());
+                    tree.setParent(rdi.getObjectId().getId());
+                    tree.setText(element.getName());
                     tree.setLeaf(true);
                     tree.setExpand(false);
                     treeList.add(tree);

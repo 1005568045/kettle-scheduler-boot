@@ -29,7 +29,7 @@ public interface SysJobMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询作业监控列表")
-    @PostMapping("/findJobMonitorListByPage")
+    @PostMapping("/findJobMonitorListByPage.do")
     Result<PageOut<JobMonitorRes>> findJobMonitorListByPage(@RequestBody QueryHelper<MonitorQueryReq> req);
 
     /**
@@ -39,7 +39,7 @@ public interface SysJobMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询作业监控明细")
-    @GetMapping("/findJobRecordList")
+    @GetMapping("/findJobRecordList.do")
     Result<PageOut<JobRecordRes>> findJobRecordList(@RequestBody QueryHelper<IdVO> req);
 
     /**
@@ -49,7 +49,7 @@ public interface SysJobMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查看作业执行记录明细")
-    @GetMapping("/viewJobRecordDetail")
+    @GetMapping("/viewJobRecordDetail.do")
     Result<String> viewJobRecordDetail(@RequestParam("jobRecordId") Integer jobRecordId);
 
     /**
@@ -59,6 +59,6 @@ public interface SysJobMonitorApi {
      * @param jobRecordId 根据作业记录id查询
      */
     @ApiOperation(value = "下载作业执行记录明细")
-    @GetMapping("/downloadJobRecord")
+    @GetMapping("/downloadJobRecord.do")
     void downloadJobRecord(HttpServletResponse response, @RequestParam("jobRecordId") Integer jobRecordId);
 }

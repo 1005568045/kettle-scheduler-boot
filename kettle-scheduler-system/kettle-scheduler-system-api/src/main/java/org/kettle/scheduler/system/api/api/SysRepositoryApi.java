@@ -28,7 +28,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "添加资源库")
-    @PostMapping("/add")
+    @PostMapping("/add.do")
     Result add(@RequestBody RepositoryReq req);
 
     /**
@@ -38,7 +38,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "通过id删除资源库")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete.do")
     Result delete(@RequestParam("id") Integer id);
 
     /**
@@ -48,7 +48,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "批量删除资源库")
-    @DeleteMapping("/deleteBatch")
+    @DeleteMapping("/deleteBatch.do")
     Result deleteBatch(@RequestBody List<Integer> ids);
 
     /**
@@ -58,7 +58,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "更新资源库")
-    @PutMapping("/update")
+    @PutMapping("/update.do")
     Result update(@RequestBody RepositoryReq req);
 
     /**
@@ -68,7 +68,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据条件查询资源库列表")
-    @PostMapping("/findRepListByPage")
+    @PostMapping("/findRepListByPage.do")
     Result<PageOut<RepositoryRes>> findRepListByPage(@RequestBody QueryHelper<RepositoryReq> req);
 
     /**
@@ -78,7 +78,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询资源库明细")
-    @GetMapping("/getRepositoryDetail")
+    @GetMapping("/getRepositoryDetail.do")
     Result<RepositoryRes> getRepositoryDetail(@RequestParam("id") Integer id);
 
     /**
@@ -87,7 +87,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "资源库列表")
-    @GetMapping("/findRepList")
+    @GetMapping("/findRepList.do")
     Result<List<RepositoryRes>> findRepList();
 
     /**
@@ -97,7 +97,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据资源库id查询资源库中job作业内容树")
-    @GetMapping("/findJobRepTreeById")
+    @GetMapping("/findJobRepTreeById.do")
     Result<List<TreeDTO<String>>> findJobRepTreeById(@RequestParam("id") Integer id);
 
     /**
@@ -107,7 +107,7 @@ public interface SysRepositoryApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "根据资源库id查询资源库中trans转换内容树")
-    @GetMapping("/findTransRepTreeById")
+    @GetMapping("/findTransRepTreeById.do")
     Result<List<TreeDTO<String>>> findTransRepTreeById(@RequestParam("id") Integer id);
 
 	/**
@@ -117,6 +117,6 @@ public interface SysRepositoryApi {
 	 * @return {@link Result}
 	 */
 	@ApiOperation(value = "测试资源库链接")
-	@PostMapping("/testConnection")
+	@PostMapping("/testConnection.do")
 	Result testConnection(@RequestBody RepositoryReq req);
 }

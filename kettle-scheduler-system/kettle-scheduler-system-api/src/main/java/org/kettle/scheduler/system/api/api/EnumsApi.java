@@ -24,7 +24,7 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "运行状态枚举类")
-    @GetMapping("/runStatus")
+    @GetMapping("/runStatus.do")
     Result<List<EnumInfoDTO>> runStatus();
 
     /**
@@ -33,7 +33,7 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "脚本运行类型枚举类")
-    @GetMapping("/runType")
+    @GetMapping("/runType.do")
     Result<List<EnumInfoDTO>> runType();
 
     /**
@@ -42,7 +42,7 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "数据库访问类型枚举")
-    @GetMapping("/databaseAccessType")
+    @GetMapping("/databaseAccessType.do")
     Result<List<EnumInfoDTO>> databaseAccessType();
 
     /**
@@ -51,7 +51,7 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "日志级别枚举")
-    @GetMapping("/logLevel")
+    @GetMapping("/logLevel.do")
     Result<List<EnumInfoDTO>> logLevel();
 
     /**
@@ -60,7 +60,7 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "资源库类型枚举")
-    @GetMapping("/repositoryType")
+    @GetMapping("/repositoryType.do")
     Result<List<EnumInfoDTO>> repositoryType();
 
     /**
@@ -69,6 +69,6 @@ public interface EnumsApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "数据库类型列表")
-    @GetMapping("/databaseType")
+    @GetMapping("/databaseType.do")
     Result<List<EnumInfoDTO>> databaseType();
 }
