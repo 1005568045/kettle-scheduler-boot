@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.kettle.scheduler.system.api.basic.BasicVO;
+import org.kettle.scheduler.system.api.enums.RunStatusEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -56,7 +57,12 @@ public class TransMonitorRes extends BasicVO implements Serializable {
     @ApiModelProperty(value = "监控状态（是否启动，1:启动；2:停止）")
     private Integer monitorStatus;
 
-    /**
+	@ApiModelProperty(value = "监控状态显示值")
+	public String getMonitorStatusStr() {
+		return RunStatusEnum.getEnumDesc(monitorStatus);
+	}
+
+	/**
      * 运行状态（起始时间-结束时间,起始时间-结束时间……）
      */
     @ApiModelProperty(value = "运行状态")

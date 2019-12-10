@@ -11,6 +11,7 @@ import org.kettle.scheduler.system.api.basic.IdVO;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
 import org.kettle.scheduler.system.biz.service.SysJobMonitorService;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,4 +83,14 @@ public class SysJobMonitorApiController implements SysJobMonitorApi {
         JobRecord record = jobMonitorService.getJobRecord(jobRecordId);
         FileUtil.downloadFile(response, record.getLogFilePath());
     }
+
+	/**
+	 * 对作业任务执行结果统计
+	 *
+	 * @return {@link Result}
+	 */
+	@Override
+	public Result<TaskCountRes> countJob() {
+		return Result.ok(jobMonitorService.countJob());
+	}
 }

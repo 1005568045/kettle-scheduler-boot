@@ -9,6 +9,7 @@ import org.kettle.scheduler.system.api.basic.IdVO;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,7 @@ public interface SysJobMonitorApi {
      * @return {@link Result}
      */
     @ApiOperation(value = "查询作业监控明细")
-    @GetMapping("/findJobRecordList.do")
+    @PostMapping("/findJobRecordList.do")
     Result<PageOut<JobRecordRes>> findJobRecordList(@RequestBody QueryHelper<IdVO> req);
 
     /**
@@ -61,4 +62,13 @@ public interface SysJobMonitorApi {
     @ApiOperation(value = "下载作业执行记录明细")
     @GetMapping("/downloadJobRecord.do")
     void downloadJobRecord(HttpServletResponse response, @RequestParam("jobRecordId") Integer jobRecordId);
+
+	/**
+	 * 对作业任务执行结果统计
+	 *
+	 * @return {@link Result}
+	 */
+	@ApiOperation(value = "对作业任务执行结果统计")
+	@GetMapping("/countJob.do")
+	Result<TaskCountRes> countJob();
 }

@@ -119,7 +119,7 @@ public class SysTransService {
 		String orderSql = "order by a.add_time desc ";
 
 		// 执行sql
-		NativeQueryResultBO result = entityManagerUtil.executeNativeQuery(selectSql, fromSql.toString(), orderSql, pageable, TransBO.class);
+		NativeQueryResultBO result = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransBO.class);
 
 		List<TransRes> list = new ArrayList<>();
 		for (Object o : result.getResultList()) {

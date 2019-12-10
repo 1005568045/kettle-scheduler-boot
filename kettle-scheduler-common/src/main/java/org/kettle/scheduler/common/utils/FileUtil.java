@@ -27,7 +27,7 @@ public class FileUtil extends FileUtils {
      * @param filePath 文档路径
      */
     public static void downloadFile(HttpServletResponse response, String filePath) {
-        fileOperation(response, filePath, "inline");
+        fileOperation(response, filePath, "attachment");
     }
 
     /**
@@ -36,7 +36,7 @@ public class FileUtil extends FileUtils {
      * @param filePath 文档路径
      */
     public static void viewFile(HttpServletResponse response, String filePath) {
-        fileOperation(response, filePath, "attachment");
+        fileOperation(response, filePath, "inline");
     }
 
     /**

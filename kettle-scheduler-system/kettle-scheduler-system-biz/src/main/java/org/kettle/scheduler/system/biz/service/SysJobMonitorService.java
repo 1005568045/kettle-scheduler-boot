@@ -7,10 +7,14 @@ import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
+import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
 import org.kettle.scheduler.system.biz.entity.bo.JobMonitorBO;
+import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
+import org.kettle.scheduler.system.biz.entity.bo.TaskCountBO;
 import org.kettle.scheduler.system.biz.repository.JobMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.JobRecordRepository;
 import org.kettle.scheduler.system.biz.repository.JobRepository;
@@ -19,9 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,49 +38,44 @@ public class SysJobMonitorService {
     private final JobRepository jobRepository;
     private final JobMonitorRepository monitorRepository;
     private final JobRecordRepository recordRepository;
+	private final EntityManagerUtil entityManagerUtil;
 
-	@PersistenceContext
-	private EntityManager entityManager;
-
-    public SysJobMonitorService(JobRepository jobRepository, JobMonitorRepository monitorRepository, JobRecordRepository recordRepository) {
+    public SysJobMonitorService(JobRepository jobRepository, JobMonitorRepository monitorRepository,
+			JobRecordRepository recordRepository, EntityManagerUtil entityManagerUtil) {
         this.jobRepository = jobRepository;
         this.monitorRepository = monitorRepository;
         this.recordRepository = recordRepository;
-    }
+		this.entityManagerUtil = entityManagerUtil;
+	}
 
     public PageOut<JobMonitorRes> findJobMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
+    	String selectSql = "SELECT a.*,b.job_name,c.category_name ";
 		// 动态拼接sql
-		StringBuilder sql = new StringBuilder(" FROM `k_job_monitor` a ");
-		sql.append("INNER JOIN k_job b ON a.monitor_job_id=b.id ");
-		sql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
+		StringBuilder fromSql = new StringBuilder(" FROM `k_job_monitor` a ");
+		fromSql.append("INNER JOIN k_job b ON a.monitor_job_id=b.id ");
+		fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
 		if (query!=null) {
-			sql.append("WHERE 1=1 ");
+			fromSql.append("WHERE 1=1 ");
 			if (!StringUtil.isEmpty(query.getScriptName())) {
-				sql.append("AND b.job_name like '%").append(query.getScriptName()).append("%'");
+				fromSql.append("AND b.job_name like '%").append(query.getScriptName()).append("%'").append(" ");
 			}
 			if (query.getMonitorStatus() != null) {
-				sql.append("AND a.monitor_status = ").append(query.getMonitorStatus());
+				fromSql.append("AND a.monitor_status = ").append(query.getMonitorStatus()).append(" ");
 			}
 			if (query.getCategoryId() != null) {
-				sql.append("AND b.category_id = ").append(query.getCategoryId());
+				fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
 			}
 		}
-		sql.append(" ").append("order by a.add_time desc ");
-		// 初始化sql语句
-		Query nativeQuery = entityManager.createNativeQuery("SELECT a.*,b.job_name,c.category_name  " + sql.toString(), JobMonitorBO.class);
-		Query countQuery = entityManager.createNativeQuery("SELECT count(1) " + sql.toString());
-		// 添加分页参数
-		nativeQuery.setFirstResult(pageable.getPageNumber());
-		nativeQuery.setMaxResults(pageable.getPageSize());
+		// 排序sql
+		String orderSql = "order by a.add_time desc ";
 		// 执行sql
-		long total = Long.parseLong(countQuery.getSingleResult().toString());
-		List resultList = nativeQuery.getResultList();
+		NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, JobMonitorBO.class);
 		List<JobMonitorRes> list = new ArrayList<>();
-		for (Object o : resultList) {
+		for (Object o : resultBo.getResultList()) {
 			list.add(BeanUtil.copyProperties(o, JobMonitorRes.class));
 		}
 		// 封装数据
-		return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), total);
+		return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal());
     }
 
     public PageOut<JobRecordRes> findJobRecordList(Integer jobId, Pageable pageable) {
@@ -127,4 +123,10 @@ public class SysJobMonitorService {
     public void addJobRecord(JobRecord jobRecord) {
         recordRepository.save(jobRecord);
     }
+
+	public TaskCountRes countJob() {
+		String sql = "SELECT count(1) total, sum(monitor_success) success, sum(monitor_fail) fail FROM `k_job_monitor`";
+		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
+		return BeanUtil.copyProperties(result, TaskCountRes.class);
+	}
 }

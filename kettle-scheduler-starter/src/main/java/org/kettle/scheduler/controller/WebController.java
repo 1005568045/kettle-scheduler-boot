@@ -234,4 +234,48 @@ public class WebController {
 		model.addAttribute("jobId", jobId);
 		return "job/edit";
 	}
+
+	//=============================================监控管理=================================================//
+	/**
+	 * 作业监控管理列表页面
+	 *
+	 * @return /monitor/j-list
+	 */
+	@RequestMapping("/job/monitor/list.shtml")
+	public String jobMonitorListWeb() {
+		return "monitor/j-list";
+	}
+
+	/**
+	 * 转换监控管理列表页面
+	 *
+	 * @return /monitor/t-list
+	 */
+	@RequestMapping("/trans/monitor/list.shtml")
+	public String transMonitorListWeb() {
+		return "monitor/t-list";
+	}
+
+	//=============================================记录管理=================================================//
+	/**
+	 * 作业记录管理列表页面
+	 *
+	 * @return /record/j-list
+	 */
+	@RequestMapping("/job/record/list.shtml")
+	public String jobMonitorRecordListWeb(Integer jobId, Model model) {
+		model.addAttribute("jobId", jobId);
+		return "record/j-list";
+	}
+
+	/**
+	 * 转换记录管理列表页面
+	 *
+	 * @return /record/t-list
+	 */
+	@RequestMapping("/trans/record/list.shtml")
+	public String transMonitorRecordListWeb(Integer transId, Model model) {
+		model.addAttribute("transId", transId);
+		return "record/t-list";
+	}
 }

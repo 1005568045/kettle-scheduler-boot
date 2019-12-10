@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.component;
 
+import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class EntityManagerUtil {
 	 * @param resultClass 需要绑定的结果类
 	 * @return {@link List}
 	 */
-	public NativeQueryResultBO executeNativeQuery(String selectSql, String fromSql, String orderSql, Pageable pageable, Class resultClass) {
+	public NativeQueryResultBO executeNativeQueryForList(String selectSql, String fromSql, String orderSql, Pageable pageable, Class resultClass) {
 		String sql = selectSql.concat(" ").concat(fromSql).concat(" ").concat(orderSql);
 		// 初始化sql语句
 		Query nativeQuery = entityManager.createNativeQuery(sql, resultClass);
@@ -41,5 +42,20 @@ public class EntityManagerUtil {
 
 		// 封装数据
 		return new NativeQueryResultBO().setTotal(total).setResultList(resultList);
+	}
+
+	/**
+	 * 执行原生sql并绑定结果类
+	 * @param sql 原生sql
+	 * @param resultClass 需要绑定的结果类
+	 * @param <T> 泛型
+	 * @return 泛型结果
+	 */
+	public <T> T executeNativeQueryForOne(String sql, Class<T> resultClass) {
+		// 初始化sql语句
+		Query nativeQuery = entityManager.createNativeQuery(sql, resultClass);
+		Object result = nativeQuery.getSingleResult();
+		// 封装数据
+		return BeanUtil.copyProperties(result, resultClass);
 	}
 }

@@ -7,6 +7,7 @@ import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.basic.IdVO;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.api.response.TransMonitorRes;
 import org.kettle.scheduler.system.api.response.TransRecordRes;
 import org.springframework.web.bind.annotation.*;
@@ -61,4 +62,13 @@ public interface SysTransMonitorApi {
     @ApiOperation(value = "下载转换执行记录明细")
     @GetMapping("/downloadTransRecord.do")
     void downloadTransRecord(HttpServletResponse response, @RequestParam("transRecordId") Integer transRecordId);
+
+	/**
+	 * 对转换任务执行结果统计
+	 *
+	 * @return {@link Result}
+	 */
+	@ApiOperation(value = "对转换任务执行结果统计")
+	@GetMapping("/countTrans.do")
+	Result<TaskCountRes> countTrans();
 }

@@ -8,6 +8,7 @@ import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.system.api.api.SysTransMonitorApi;
 import org.kettle.scheduler.system.api.basic.IdVO;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.api.response.TransMonitorRes;
 import org.kettle.scheduler.system.api.response.TransRecordRes;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
@@ -81,4 +82,14 @@ public class SysTransMonitorApiController implements SysTransMonitorApi {
         TransRecord record = transMonitorService.getTransRecord(transRecordId);
         FileUtil.downloadFile(response, record.getLogFilePath());
     }
+
+	/**
+	 * 对转换任务执行结果统计
+	 *
+	 * @return {@link Result}
+	 */
+	@Override
+	public Result<TaskCountRes> countTrans() {
+		return Result.ok(transMonitorService.countTrans());
+	}
 }

@@ -110,7 +110,7 @@ public class SysJobService {
 		String orderSql = "order by a.add_time desc ";
 
 		// 执行sql
-		NativeQueryResultBO result = entityManagerUtil.executeNativeQuery(selectSql, fromSql.toString(), orderSql, pageable, JobBO.class);
+		NativeQueryResultBO result = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, JobBO.class);
 
 		List<JobRes> list = new ArrayList<>();
 		for (Object o : result.getResultList()) {
