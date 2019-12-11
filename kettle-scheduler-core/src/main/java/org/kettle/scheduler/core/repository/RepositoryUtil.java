@@ -254,11 +254,6 @@ public class RepositoryUtil {
             log.error(msg, e);
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
-		treeList.forEach(dto -> {
-			if ("0".equals(dto.getParent())) {
-				dto.setParent("#");
-			}
-		});
         return treeList;
     }
 
@@ -276,7 +271,6 @@ public class RepositoryUtil {
                 RepositoryDirectory subDir = rdi.getSubdirectory(i);
                 TreeDTO<String> tree = new TreeDTO<>();
                 tree.setId(subDir.getObjectId().getId());
-                tree.setParent(rdi.getObjectId().getId());
                 tree.setText(subDir.getName());
                 tree.setLeaf(false);
                 tree.setExpand(true);
@@ -299,14 +293,21 @@ public class RepositoryUtil {
         List<TreeDTO<String>> treeList = new ArrayList<>();
         List<RepositoryElementMetaInterface> list = repository.getJobAndTransformationObjects(rdi.getObjectId(), false);
         if (null != list) {
-            list.forEach(element -> {
+			String rdiPath = rdi.getPath();
+			list.forEach(element -> {
                 if (objectType == null || objectType.equals(element.getObjectType())) {
                     TreeDTO<String> tree = new TreeDTO<>();
                     tree.setId(element.getObjectType().getTypeDescription() + "@" + rdi.getObjectId().getId() + "@" + element.getObjectId().getId());
-                    tree.setParent(rdi.getObjectId().getId());
                     tree.setText(element.getName());
+					tree.setIcon("jstree-file");
                     tree.setLeaf(true);
                     tree.setExpand(false);
+
+                    if (rdiPath.endsWith("/")) {
+						tree.setExtra(rdiPath.concat(element.getName()));
+					} else {
+						tree.setExtra(rdiPath.concat("/").concat(element.getName()));
+					}
                     treeList.add(tree);
                 }
             });

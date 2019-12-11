@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    hideForm();
     // 资源库下拉列表
     getRepType();
     // 数据库类型下拉列表
@@ -9,6 +10,39 @@ $(document).ready(function () {
     submitListener();
 });
 
+function hideForm() {
+    // 初始化隐藏动态表单
+    var $sync = $('.sync-field');
+    $sync.hide();
+    $sync.find(":input").attr("disabled", true);
+    $sync.find(":selected").attr("disabled", true);
+}
+
+// 监听文件下拉
+$('#repType').on('change', function (e) {
+    var type = e.currentTarget.value;
+    // 隐藏动态表单
+    hideForm();
+
+    // 如果选择了具体的值
+    if (type) {
+        if (type === 'fileRep') {
+            var $fileData = $('[data-field="file"]');
+            $fileData.show();
+            $fileData.find(":input").attr("disabled", false);
+            $fileData.find(":selected").attr("disabled", false);
+        }
+        if (type === 'dbRep') {
+            var $dbData = $('[data-field="database"]');
+            $dbData.show();
+            $dbData.find(":input").attr("disabled", false);
+            $dbData.find(":selected").attr("disabled", false);
+        }
+    }
+
+});
+
+// 数据库类型下拉列表
 function getDatabaseType() {
     $.ajax({
         type: 'GET',
@@ -17,7 +51,7 @@ function getDatabaseType() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#dbType").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
             }
         },
@@ -28,6 +62,7 @@ function getDatabaseType() {
     });
 }
 
+// 资源库下拉列表
 function getRepType() {
     $.ajax({
         type: 'GET',
@@ -36,7 +71,7 @@ function getRepType() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#repType").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
             }
         },
@@ -47,6 +82,7 @@ function getRepType() {
     });
 }
 
+// 数据库访问类型
 function getDatabaseAccessType() {
     $.ajax({
         type: 'GET',
@@ -55,7 +91,7 @@ function getDatabaseAccessType() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#dbAccess").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
             }
         },
@@ -66,38 +102,35 @@ function getDatabaseAccessType() {
     });
 }
 
-function testConnection(){
+// 测试链接
+function testConnection() {
     // 获取表单数据
     var data = {};
     $.each($("form").serializeArray(), function (i, field) {
         data[field.name] = field.value;
     });
 
-	var returnType = false;
-	$.ajax({
+    var returnType = false;
+    $.ajax({
         type: 'POST',
         async: false,
         url: '/sys/repository/testConnection.do',
         data: JSON.stringify(data),
         contentType: "application/json;charset=UTF-8",
         success: function (data) {
-        	if (data.success){
-        		returnType = true;
-        		layer.msg("连接成功", {icon: 6});
-        	}else {
-        	    if (data.code === '0002') {
-                    layer.msg(data.message, {icon: 5});
-                } else {
-                    layer.msg("连接失败，请检查参数重试", {icon: 5});
-                }
-        	}
+            if (data.success) {
+                returnType = true;
+                layer.msg("连接成功", {icon: 6});
+            } else {
+                layer.msg(data.message, {icon: 5});
+            }
         },
         error: function () {
-        	layer.msg("连接失败，请检查参数重试", {icon: 5});
+            layer.msg("连接失败，请检查参数重试", {icon: 5});
         },
         dataType: 'json'
-    });	
-	return returnType;
+    });
+    return returnType;
 }
 
 function submitListener() {
@@ -118,6 +151,35 @@ function submitListener() {
             repPassword: {
                 required: true,
                 maxlength: 50
+            },
+            repBasePath: {
+                required: true
+            },
+            dbType: {
+                required: true
+            },
+            dbAccess: {
+                required: true
+            },
+            dbHost: {
+                required: true,
+                maxlength: 50
+            },
+            dbPort: {
+                required: true,
+                maxlength: 10
+            },
+            dbName: {
+                required: true,
+                maxlength: 20
+            },
+            dbUsername: {
+                required: true,
+                maxlength: 50
+            },
+            dbPassword: {
+                required: true,
+                maxlength: 50
             }
         },
         messages: {
@@ -135,17 +197,46 @@ function submitListener() {
             repPassword: {
                 required: icon + "请输入登录资源库密码",
                 maxlength: icon + "登录资源库密码不能超过50个字符"
+            },
+            repBasePath: {
+                required: icon + "请输入文件资源库路径"
+            },
+            dbType: {
+                required: icon + "请选择数据库类型"
+            },
+            dbAccess: {
+                required: icon + "请选择数据库访问模式"
+            },
+            dbHost: {
+                required: icon + "请输入数据库主机名或者IP地址",
+                maxlength: icon + "作业描述不能超过50个字符"
+            },
+            dbPort: {
+                required: icon + "请输入数据库端口号",
+                maxlength: icon + "数据库端口号不能超过10个字符"
+            },
+            dbName: {
+                required: icon + "请输入数据库名称",
+                maxlength: icon + "数据库名称不能超过20个字符"
+            },
+            dbUsername: {
+                required: icon + "请输入数据库登录账号",
+                maxlength: icon + "数据库登录账号不能超过50个字符"
+            },
+            dbPassword: {
+                required: icon + "请输入数据库登录密码",
+                maxlength: icon + "数据库登录密码不能超过50个字符"
             }
         },
         // 提交按钮监听 按钮必须type="submit"
-        submitHandler:function(form){
+        submitHandler: function (form) {
             // 获取表单数据
             var data = {};
             $.each($("form").serializeArray(), function (i, field) {
                 data[field.name] = field.value;
             });
-            //做判断
-            if (testConnection()){
+            // 做判断
+            if (testConnection()) {
                 $.ajax({
                     type: 'POST',
                     async: false,
@@ -153,16 +244,16 @@ function submitListener() {
                     data: JSON.stringify(data),
                     contentType: "application/json;charset=UTF-8",
                     success: function (res) {
-                        if (res.success){
-                            layer.msg('添加成功',{
+                        if (res.success) {
+                            layer.msg('添加成功', {
                                 time: 1000,
                                 icon: 6
                             });
                             // 成功后跳转到列表页面
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 location.href = "/web/repository/list.shtml";
-                            },1000);
-                        }else {
+                            }, 1000);
+                        } else {
                             layer.msg(res.message, {icon: 2});
                         }
                     },
@@ -195,6 +286,6 @@ $.validator.setDefaults({
     validClass: "help-block m-b-none"
 });
 
-function cancel(){
-	location.href = "/web/repository/list.shtml";
+function cancel() {
+    location.href = "/web/repository/list.shtml";
 }

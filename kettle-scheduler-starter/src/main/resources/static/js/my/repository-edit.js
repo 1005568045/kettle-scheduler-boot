@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    hideForm();
     // 资源库下拉列表
     getRepType();
     // 数据库类型下拉列表
@@ -10,6 +11,39 @@ $(document).ready(function () {
     // 查询信息并显示
 	initData();
 });
+
+function hideForm() {
+    // 初始化隐藏动态表单
+    var $sync = $('.sync-field');
+    $sync.hide();
+    $sync.find(":input").attr("disabled", true);
+    $sync.find(":selected").attr("disabled", true);
+}
+
+// 监听文件下拉
+$('#repType').on('change', repTypeChange);
+
+function repTypeChange() {
+    var type = $('#repType').val();
+    // 隐藏动态表单
+    hideForm();
+
+    // 如果选择了具体的值
+    if (type) {
+        if (type === 'fileRep') {
+            var $fileData = $('[data-field="file"]');
+            $fileData.show();
+            $fileData.find(":input").attr("disabled", false);
+            $fileData.find(":selected").attr("disabled", false);
+        }
+        if (type === 'dbRep') {
+            var $dbData = $('[data-field="database"]');
+            $dbData.show();
+            $dbData.find(":input").attr("disabled", false);
+            $dbData.find(":selected").attr("disabled", false);
+        }
+    }
+}
 
 function getDatabaseType() {
     $.ajax({
@@ -87,11 +121,7 @@ function testConnection(){
                 returnType = true;
                 layer.msg("连接成功", {icon: 6});
             }else {
-                if (data.code === '0002') {
-                    layer.msg(data.message, {icon: 5});
-                } else {
-                    layer.msg("连接失败，请检查参数重试", {icon: 5});
-                }
+                layer.msg(data.message, {icon: 5});
             }
         },
         error: function () {
@@ -124,6 +154,7 @@ function initData(){
                 $("#dbName").val(kRepository.dbName);
                 $("#dbUsername").val(kRepository.dbUsername);
                 $("#dbPassword").val(kRepository.dbPassword);
+                repTypeChange();
             } else {
                 layer.msg(data.message, {icon: 5});
             }
@@ -153,6 +184,35 @@ function submitListener() {
             repPassword: {
                 required: true,
                 maxlength: 50
+            },
+            repBasePath: {
+                required: true
+            },
+            dbType: {
+                required: true
+            },
+            dbAccess: {
+                required: true
+            },
+            dbHost: {
+                required: true,
+                maxlength: 50
+            },
+            dbPort: {
+                required: true,
+                maxlength: 10
+            },
+            dbName: {
+                required: true,
+                maxlength: 20
+            },
+            dbUsername: {
+                required: true,
+                maxlength: 50
+            },
+            dbPassword: {
+                required: true,
+                maxlength: 50
             }
         },
         messages: {
@@ -170,6 +230,35 @@ function submitListener() {
             repPassword: {
                 required: icon + "请输入登录资源库密码",
                 maxlength: icon + "登录资源库密码不能超过50个字符"
+            },
+            repBasePath: {
+                required: icon + "请输入文件资源库路径"
+            },
+            dbType: {
+                required: icon + "请选择数据库类型"
+            },
+            dbAccess: {
+                required: icon + "请选择数据库访问模式"
+            },
+            dbHost: {
+                required: icon + "请输入数据库主机名或者IP地址",
+                maxlength: icon + "作业描述不能超过50个字符"
+            },
+            dbPort: {
+                required: icon + "请输入数据库端口号",
+                maxlength: icon + "数据库端口号不能超过10个字符"
+            },
+            dbName: {
+                required: icon + "请输入数据库名称",
+                maxlength: icon + "数据库名称不能超过20个字符"
+            },
+            dbUsername: {
+                required: icon + "请输入数据库登录账号",
+                maxlength: icon + "数据库登录账号不能超过50个字符"
+            },
+            dbPassword: {
+                required: icon + "请输入数据库登录密码",
+                maxlength: icon + "数据库登录密码不能超过50个字符"
             }
         },
         // 提交按钮监听 按钮必须type="submit"

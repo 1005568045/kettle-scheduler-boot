@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $("#quartzCron").cronGen({
-        direction : 'left'
+        direction : 'right'
     });
 
     submitListener();
@@ -17,7 +17,7 @@ $.validator.setDefaults({
     errorPlacement: function (error, element) {
         if (element.is(":radio") || element.is(":checkbox")) {
             error.appendTo(element.parent().parent().parent());
-        }else if(element.is("#quartzCron")){
+        }else if(element.is("#cQuarz")){
             error.appendTo(element.parent().parent());
         } else {
             error.appendTo(element.parent());
@@ -36,6 +36,9 @@ function submitListener() {
             },
             quartzCron: {
                 required: true
+            },
+            cQuarz: {
+                required: true
             }
         },
         messages: {
@@ -43,6 +46,9 @@ function submitListener() {
                 required: icon + "请输入执行策略名称"
             },
             quartzCron: {
+                required: icon + "请选择cron编码"
+            },
+            cQuarz: {
                 required: icon + "请选择cron编码"
             }
         },

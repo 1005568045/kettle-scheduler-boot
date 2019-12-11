@@ -1,5 +1,3 @@
-var treeData;
-	
 $(document).ready(function () {
     // 执行方式下拉列表
     getRunType();
@@ -110,67 +108,62 @@ function getQuartz() {
     });
 }
 
-$("#transRepositoryId").change(function(){
-	var repositoryId = $(this).val(); 
-	if (repositoryId > 0){
-		$.ajax({
-			type: 'GET',
-		 	async: false,
-		 	url: '/sys/repository/findTransRepTreeById.do?id=' + repositoryId,
-		 	data: {},
-		    success: function (data) {
-		  		treeData = data.result;
-	 		},
-		 	error: function () {
-		  		alert("请求失败！重新操作");
-		 	},
-		 	dataType: 'json'
-		});
-	}else{
-		treeData = null;	
-	}  
-});
+function findTransRepTreeById(id) {
+    var treeData;
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: '/sys/repository/findTransRepTreeById.do?id=' + id,
+        data: {},
+        success: function (data) {
+            if (data.success) {
+                treeData = data.result;
+            }
+        },
+        error: function () {
+            alert("请求失败！重新操作");
+        },
+        dataType: 'json'
+    });
+    return treeData;
+}
 
 $("#transPath").click(function(){	
 	var $transRepositoryId = $("#transRepositoryId").val();
-	if (treeData != null){
-		var index = layer.open({
-			type: 1,
-			title: '请选择转换',
-			area: ["300px", '100%'],
-			skin: 'layui-layer-rim',
-			content: '<div id="repositoryTree"></div>'
-		});
-		debugger;
-		$('#repositoryTree').jstree({
-            'core': {
-                'data': treeData
-            },
-            'plugins' : ["search"]
-        }).bind('select_node.jstree', function (event, data) {  //绑定的点击事件
-        	var transNode = data.node;
-        	if (transNode.icon === "none"){
-        		var transPath = "";
-        		//证明是最子节点
-        		for (var i = 0; i < treeData.length; i++){
-        			if (treeData[i].id === transNode.parent){
-        				transPath = treeData[i].path;
-        			}
-        		}
-        		for (var i = 0; i < treeData.length; i++){
-        			if (treeData[i].id === transNode.id){
-        				transPath += "/" + treeData[i].text;
-        			}	
-        		}
-        		layer.close(index);
-        		$("#transPath").val(transPath);
-        	}
-        });	
-	}else if($transRepositoryId !== "" && treeData == null){
-		layer.msg("请等待资源库加载");
-	}else if($transRepositoryId === ""){
-		layer.msg("请先选择资源库");
-	}	
+	if ($transRepositoryId && $transRepositoryId !== "") {
+	    var treeData = findTransRepTreeById($transRepositoryId);
+        if (treeData && treeData !== ""){
+            var index = layer.open({
+                type: 1,
+                title: '请选择转换',
+                area: ["400px", '60%'],
+                skin: 'layui-layer-rim',
+                content: '<div id="repositoryTree"></div>'
+            });
+            $('#repositoryTree').jstree({
+                'core': {
+                    'data': treeData
+                },
+                'plugins' : ["search"]
+            }).bind('select_node.jstree', function (event, data) {  //绑定的点击事件
+                // jsTree实例对象
+                var ins = data.instance;
+                // 当前节点
+                var transNode = data.node;
+                // 是叶子节点才进入
+                if (ins.is_leaf(transNode)){
+                    // 关闭弹窗
+                    layer.close(index);
+                    // 设置路径
+                    $("#transPath").val(transNode.original.extra);
+                }
+            });
+        }else {
+            layer.msg("请等待资源库加载");
+        }
+    } else {
+        layer.msg("请先选择资源库");
+    }
 });
 
 $.validator.setDefaults({

@@ -18,9 +18,9 @@ public class TreeDTO<T> {
     private String id;
 
     /**
-     * 父级id
+     * 图标
      */
-    private String parent;
+    private String icon;
 
     /**
      * 名称
