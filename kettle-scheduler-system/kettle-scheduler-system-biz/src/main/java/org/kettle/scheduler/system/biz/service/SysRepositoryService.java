@@ -7,6 +7,7 @@ import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.TreeDTO;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
+import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.request.RepositoryReq;
 import org.kettle.scheduler.system.api.response.RepositoryRes;
@@ -70,7 +71,11 @@ public class SysRepositoryService {
 			pageList = repRepository.findAll(PageRequest.of(page.getNumber(), page.getSize(), sort));
 		}
         // 封装数据
-        List<RepositoryRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, RepositoryRes.class)).collect(Collectors.toList());
+        List<RepositoryRes> collect = pageList.get().map(t -> {
+			RepositoryRes res = BeanUtil.copyProperties(t, RepositoryRes.class);
+			res.setRepTypeStr(RepTypeEnum.getEnumDesc(res.getRepType()));
+			return res;
+		}).collect(Collectors.toList());
         return new PageOut<>(collect, pageList.getNumber(), pageList.getSize(), pageList.getTotalElements());
     }
 

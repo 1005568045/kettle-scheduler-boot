@@ -3,13 +3,13 @@ $(document).ready(function () {
     getUserList();
 
     $('#userList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var userId = $target.data('id');
         location.href = "/web/user/edit.shtml?userId=" + userId;
     });
 
     $('#userList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var userId = $target.data('id');
         layer.confirm('确定删除该单位？', {
                 btn: ['确定', '取消']

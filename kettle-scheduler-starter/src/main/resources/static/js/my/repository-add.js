@@ -8,6 +8,8 @@ $(document).ready(function () {
     getDatabaseAccessType();
     // 提交按钮监听
     submitListener();
+    // 监听文件下拉
+    $('#repType').on('change', repTypeChange);
 });
 
 function hideForm() {
@@ -18,12 +20,10 @@ function hideForm() {
     $sync.find(":selected").attr("disabled", true);
 }
 
-// 监听文件下拉
-$('#repType').on('change', function (e) {
-    var type = e.currentTarget.value;
+function repTypeChange() {
+    var type = $('#repType').val();
     // 隐藏动态表单
     hideForm();
-
     // 如果选择了具体的值
     if (type) {
         if (type === 'fileRep') {
@@ -39,8 +39,7 @@ $('#repType').on('change', function (e) {
             $dbData.find(":selected").attr("disabled", false);
         }
     }
-
-});
+}
 
 // 数据库类型下拉列表
 function getDatabaseType() {

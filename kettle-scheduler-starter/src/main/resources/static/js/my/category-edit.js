@@ -7,24 +7,26 @@ $(document).ready(function () {
 
 function initData(){
     var categoryId = $("#id").val();
-    $.ajax({
-        type: 'GET',
-        async: false,
-        url: '/sys/category/getCategoryDetail.do?id=' + categoryId,
-        data: {},
-        success: function (data) {
-            if (data.success) {
-                var category = data.result;
-                $("#categoryName").val(category.categoryName);
-            } else {
-                layer.msg(data.message, {icon: 5});
-            }
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });
+    if (categoryId && categoryId !== "") {
+        $.ajax({
+            type: 'GET',
+            async: false,
+            url: '/sys/category/getCategoryDetail.do?id=' + categoryId,
+            data: {},
+            success: function (data) {
+                if (data.success) {
+                    var category = data.result;
+                    $("#categoryName").val(category.categoryName);
+                } else {
+                    layer.msg(data.message, {icon: 5});
+                }
+            },
+            error: function () {
+                alert("请求失败！请刷新页面重试");
+            },
+            dataType: 'json'
+        });
+    }
 }
 
 function submitListener() {
@@ -49,7 +51,7 @@ function submitListener() {
             categoryName: {
                 required: icon + "请输入分类",
                 maxlength: icon + "分类名称长度不能超过50",
-                remote: icon + ("分类名称已存在，请重新输入！")
+                remote: icon + "分类名称已存在，请重新输入！"
             }
         },
         // 提交按钮监听 按钮必须type="submit"

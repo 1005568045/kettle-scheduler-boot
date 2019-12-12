@@ -174,7 +174,7 @@ function transNameFormatter(value, row, index) {
 function bindButton() {
     // 查看详细
     $('#jobMonitorList').delegate('#viewDetail','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var jobId = $target.data('id');
         location.href = "/web/job/record/list.shtml?jobId=" + jobId;
     });

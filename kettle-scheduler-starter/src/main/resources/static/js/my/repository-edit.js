@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    // 初始化隐藏动态表单
     hideForm();
     // 资源库下拉列表
     getRepType();
@@ -10,6 +11,8 @@ $(document).ready(function () {
     submitListener();
     // 查询信息并显示
 	initData();
+    // 监听文件下拉
+    $('#repType').on('change', repTypeChange);
 });
 
 function hideForm() {
@@ -20,14 +23,10 @@ function hideForm() {
     $sync.find(":selected").attr("disabled", true);
 }
 
-// 监听文件下拉
-$('#repType').on('change', repTypeChange);
-
 function repTypeChange() {
     var type = $('#repType').val();
     // 隐藏动态表单
     hideForm();
-
     // 如果选择了具体的值
     if (type) {
         if (type === 'fileRep') {
@@ -134,36 +133,39 @@ function testConnection(){
 
 function initData(){
 	var repositoryId = $("#id").val();
-	$.ajax({
-        type: 'GET',
-        async: true,
-        url: '/sys/repository/getRepositoryDetail.do?id=' + repositoryId,
-        data: {},
-        success: function (data) {
-            if (data.success) {
-                var kRepository = data.result;
-                $("#repName").val(kRepository.repName);
-                $("#repType").find("option[value=" + kRepository.repType + "]").prop("selected",true);
-                $("#repUsername").val(kRepository.repUsername);
-                $("#repPassword").val(kRepository.repPassword);
-                $("#repBasePath").val(kRepository.repBasePath);
-                $("#dbType").find("option[value=" + kRepository.dbType + "]").prop("selected",true);
-                $("#dbAccess").find("option[value=" + kRepository.dbAccess + "]").prop("selected",true);
-                $("#dbHost").val(kRepository.dbHost);
-                $("#dbPort").val(kRepository.dbPort);
-                $("#dbName").val(kRepository.dbName);
-                $("#dbUsername").val(kRepository.dbUsername);
-                $("#dbPassword").val(kRepository.dbPassword);
-                repTypeChange();
-            } else {
-                layer.msg(data.message, {icon: 5});
-            }
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
-    });
+	if (repositoryId && repositoryId !== "") {
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: '/sys/repository/getRepositoryDetail.do?id=' + repositoryId,
+            data: {},
+            success: function (data) {
+                if (data.success) {
+                    var kRepository = data.result;
+                    $("#repName").val(kRepository.repName);
+                    $("#repType").find("option[value=" + kRepository.repType + "]").prop("selected",true);
+                    $("#repUsername").val(kRepository.repUsername);
+                    $("#repPassword").val(kRepository.repPassword);
+                    $("#repBasePath").val(kRepository.repBasePath);
+                    $("#dbType").find("option[value=" + kRepository.dbType + "]").prop("selected",true);
+                    $("#dbAccess").find("option[value=" + kRepository.dbAccess + "]").prop("selected",true);
+                    $("#dbHost").val(kRepository.dbHost);
+                    $("#dbPort").val(kRepository.dbPort);
+                    $("#dbName").val(kRepository.dbName);
+                    $("#dbUsername").val(kRepository.dbUsername);
+                    $("#dbPassword").val(kRepository.dbPassword);
+                    // 根据设置repType显示不同的组件
+                    repTypeChange();
+                } else {
+                    layer.msg(data.message, {icon: 5});
+                }
+            },
+            error: function () {
+                alert("请求失败！请刷新页面重试");
+            },
+            dataType: 'json'
+        });
+    }
 }
 
 function submitListener() {

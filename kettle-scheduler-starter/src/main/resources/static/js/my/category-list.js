@@ -2,45 +2,7 @@ $(document).ready(function () {
 	// 加载列表
     getCategoryList();
 
-    $('#categoryList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
-        var categoryId = $target.data('id');
-        location.href = "/web/category/edit.shtml?categoryId=" + categoryId;
-    });
-
-    $('#categoryList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
-        var categoryId = $target.data('id');
-        layer.confirm('确定删除该单位？', {
-                btn: ['确定', '取消']
-            },
-            function(index){
-                layer.close(index);
-                $.ajax({
-                    type: 'DELETE',
-                    async: true,
-                    url: '/sys/category/delete.do',
-                    data: {
-                        "id": categoryId
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            location.replace(location.href);
-                        } else {
-                            layer.alert(data.message, {icon: 5});
-                        }
-                    },
-                    error: function () {
-                        layer.alert("系统出现问题，请联系管理员");
-                    },
-                    dataType: 'json'
-                });
-            },
-            function(){
-                layer.msg('取消操作');
-            }
-        );
-    });
+    bindButton();
 });
 
 function getCategoryList() {
@@ -79,7 +41,8 @@ function getCategoryList() {
         columns: [
             {
                 field: 'id',
-                title: '编号'
+                title: '编号',
+                visible: false
             }, {
                 field: 'categoryName',
                 title: '分类名称'
@@ -111,9 +74,50 @@ function queryParams(params) {
 
 function actionFormatter(value, row, index) {
     return [
-        '<a class="btn btn-primary btn-xs" id="edit" type="button" data-id='+ row.id +'><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑</a>',
+        '<a class="btn btn-primary btn-xs" id="edit" type="button" data-id="'+ row.id +'"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑</a>',
         '&nbsp;&nbsp;',
-        '<a class="btn btn-primary btn-xs" id="delete" type="button" data-id='+ row.id +'><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>'
+        '<a class="btn btn-primary btn-xs" id="delete" type="button" data-id="'+ row.id +'"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</a>'
     ].join('');
 }
 
+function bindButton() {
+    $('#categoryList').delegate('#edit','click',function(e) {
+        var $target = $(e.currentTarget);
+        var categoryId = $target.data('id');
+        location.href = "/web/category/edit.shtml?categoryId=" + categoryId;
+    });
+
+    $('#categoryList').delegate('#delete', 'click', function(e) {
+        var $target = $(e.currentTarget);
+        var categoryId = $target.data('id');
+        layer.confirm('确定删除该单位？', {
+                btn: ['确定', '取消']
+            },
+            function(index){
+                layer.close(index);
+                $.ajax({
+                    type: 'DELETE',
+                    async: true,
+                    url: '/sys/category/delete.do',
+                    data: {
+                        "id": categoryId
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            location.replace(location.href);
+                        } else {
+                            layer.alert(data.message, {icon: 5});
+                        }
+                    },
+                    error: function () {
+                        layer.alert("系统出现问题，请联系管理员");
+                    },
+                    dataType: 'json'
+                });
+            },
+            function(){
+                layer.msg('取消操作');
+            }
+        );
+    });
+}

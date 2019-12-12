@@ -31,7 +31,13 @@ public class RepositoryRes extends BasicVO implements Serializable {
     @ApiModelProperty(value = "资源库类型: fileRep-文件, dbRep-数据库")
     private String repType;
 
-    /**
+	/**
+	 * 资源库类型: fileRep-文件, dbRep-数据库
+	 */
+	@ApiModelProperty(value = "资源库类型显示值")
+	private String repTypeStr;
+
+	/**
      * 登录用户名
      */
     @ApiModelProperty(value = "登录用户名")

@@ -33,8 +33,12 @@ spring:
       repositories:
         enabled: false #关闭redis持久化,只做缓存使用
   thymeleaf:
-    cache: false
+    cache: false #开发过程关闭页面缓存
+  servlet:
+    multipart: # 上传文件大小配置
+      max-file-size: 2MB
+      max-request-size: 10MB
 constant:
   salt: kettle-scw
-  kettle-session: KETTLE-SESSION
+  my-session: KETTLE-SESSION
   hash-iterations: 10

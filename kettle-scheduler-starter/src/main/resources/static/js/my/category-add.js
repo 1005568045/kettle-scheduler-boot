@@ -22,7 +22,7 @@ function submitListener() {
             categoryName: {
                 required: icon + "请输入分类",
                 maxlength: icon + "分类名称长度不能超过50",
-                remote: icon + ("分类名称已存在，请重新输入！")
+                remote: icon + "分类名称已存在，请重新输入！"
             }
         },
         // 提交按钮监听 按钮必须type="submit"

@@ -26,6 +26,11 @@ public class KettleConfig {
      */
     public static Charset encoding;
 
+	/**
+	 * ktr或kjb文件保存路径
+	 */
+	public static String uploadPath;
+
     public void setLogFilePath(String logFilePath) {
         KettleConfig.logFilePath = FileUtil.replaceSeparator(logFilePath);;
     }
@@ -33,4 +38,8 @@ public class KettleConfig {
     public void setEncoding(Charset encoding) {
         KettleConfig.encoding = encoding;
     }
+
+	public void setUploadPath(String uploadPath) {
+		KettleConfig.uploadPath = uploadPath;
+	}
 }

@@ -102,7 +102,7 @@ function transNameFormatter(value, row, index) {
 function bindButton() {
     // 查看日志
     $('#transRecordList').delegate('#view','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transRecordId = $target.data('id');
         $.ajax({
             type: 'GET',
@@ -130,7 +130,7 @@ function bindButton() {
 
     // 日志下载
     $('#transRecordList').delegate('#download','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transRecordId = $target.data('id');
         layer.confirm('确定下载该日志记录？', {
                 btn: ['确定', '取消']

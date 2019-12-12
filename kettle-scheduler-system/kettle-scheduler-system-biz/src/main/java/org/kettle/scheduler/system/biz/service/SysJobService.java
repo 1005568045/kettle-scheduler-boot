@@ -65,6 +65,7 @@ public class SysJobService {
     @Transactional(rollbackFor = Exception.class)
     public void add(JobReq req) {
         Job job = BeanUtil.copyProperties(req, Job.class);
+		job.setJobStatus(RunStatusEnum.STOP.getCode());
         jobRepository.save(job);
     }
 

@@ -151,14 +151,14 @@ function transNameFormatter(value, row, index) {
 function bindButton() {
     // 编辑
     $('#transList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         location.href = "/web/trans/edit.shtml?transId=" + transId;
     });
 
     // 删除
     $('#transList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         debugger;
         layer.confirm('确定删除该单位？', {
@@ -194,7 +194,7 @@ function bindButton() {
 
     // 单个任务启动
     $('#transList').delegate('#start','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         layer.confirm(
             '确定启动该转换？',
@@ -227,7 +227,7 @@ function bindButton() {
 
     // 单个任务停止
     $('#transList').delegate('#stop','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         layer.confirm(
             '确定停止该转换？',

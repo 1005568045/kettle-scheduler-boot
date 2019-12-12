@@ -303,10 +303,10 @@ public class RepositoryUtil {
                     tree.setLeaf(true);
                     tree.setExpand(false);
 
-                    if (rdiPath.endsWith("/")) {
+                    if (rdiPath.endsWith(FileUtil.separator)) {
 						tree.setExtra(rdiPath.concat(element.getName()));
 					} else {
-						tree.setExtra(rdiPath.concat("/").concat(element.getName()));
+						tree.setExtra(rdiPath.concat(FileUtil.separator).concat(element.getName()));
 					}
                     treeList.add(tree);
                 }

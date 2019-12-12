@@ -2,45 +2,7 @@ $(document).ready(function () {
 	// 加载资源库列表
     getQuartzList();
 
-    $('#quartzList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
-        var quartzId = $target.data('id');
-        location.href = "/web/quartz/edit.shtml?quartzId=" + quartzId;
-    });
-
-    $('#quartzList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
-        var quartzId = $target.data('id');
-        layer.confirm('确定删除该单位？', {
-                btn: ['确定', '取消']
-            },
-            function(index){
-                layer.close(index);
-                $.ajax({
-                    type: 'DELETE',
-                    async: true,
-                    url: '/sys/quartz/delete.do',
-                    data: {
-                        "id": quartzId
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            location.replace(location.href);
-                        } else {
-                            layer.alert(data.message, {icon: 5});
-                        }
-                    },
-                    error: function () {
-                        layer.alert("系统出现问题，请联系管理员");
-                    },
-                    dataType: 'json'
-                });
-            },
-            function(){
-                layer.msg('取消操作');
-            }
-        );
-    });
+    bindButton();
 });
 
 function getQuartzList() {
@@ -79,7 +41,8 @@ function getQuartzList() {
         columns: [
             {
                 field: 'id',
-                title: '编号'
+                title: '编号',
+                visible: false
             }, {
                 field: 'quartzDescription',
                 title: '执行策略名称'
@@ -104,7 +67,6 @@ function getQuartzList() {
 }
 
 function queryParams(params) {
-    debugger;
     return  JSON.stringify({
         page: {
             size: params.limit,
@@ -121,3 +83,44 @@ function actionFormatter(value, row, index) {
     ].join('');
 }
 
+function bindButton() {
+    $('#quartzList').delegate('#edit','click',function(e) {
+        var $target = $(e.currentTarget);
+        var quartzId = $target.data('id');
+        location.href = "/web/quartz/edit.shtml?quartzId=" + quartzId;
+    });
+
+    $('#quartzList').delegate('#delete', 'click', function(e) {
+        var $target = $(e.currentTarget);
+        var quartzId = $target.data('id');
+        layer.confirm('确定删除该单位？', {
+                btn: ['确定', '取消']
+            },
+            function(index){
+                layer.close(index);
+                $.ajax({
+                    type: 'DELETE',
+                    async: true,
+                    url: '/sys/quartz/delete.do',
+                    data: {
+                        "id": quartzId
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            location.replace(location.href);
+                        } else {
+                            layer.alert(data.message, {icon: 5});
+                        }
+                    },
+                    error: function () {
+                        layer.alert("系统出现问题，请联系管理员");
+                    },
+                    dataType: 'json'
+                });
+            },
+            function(){
+                layer.msg('取消操作');
+            }
+        );
+    });
+}

@@ -1,46 +1,8 @@
 $(document).ready(function () {
 	// 加载资源库列表
     getRepositoryList();
-
-    $('#repositoryList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
-        var repositoryId = $target.data('id');
-        location.href = "/web/repository/edit.shtml?repositoryId=" + repositoryId;
-    });
-
-    $('#repositoryList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
-        var repositoryId = $target.data('id');
-        layer.confirm('确定删除该单位？', {
-                btn: ['确定', '取消']
-            },
-            function(index){
-                layer.close(index);
-                $.ajax({
-                    type: 'DELETE',
-                    async: true,
-                    url: '/sys/repository/delete.do',
-                    data: {
-                        "id": repositoryId
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            location.replace(location.href);
-                        } else {
-                            layer.alert(data.message, {icon: 5});
-                        }
-                    },
-                    error: function () {
-                        layer.alert("系统出现问题，请联系管理员");
-                    },
-                    dataType: 'json'
-                });
-            },
-            function(){
-                layer.msg('取消操作');
-            }
-        );
-    });
+    // 绑定按钮
+    bindButton();
 });
 
 function getRepositoryList() {
@@ -79,12 +41,13 @@ function getRepositoryList() {
         columns: [
             {
                 field: 'id',
-                title: '资源库编号'
+                title: '资源库编号',
+                visible: false
             }, {
                 field: 'repName',
                 title: '资源库名称'
             }, {
-                field: 'repType',
+                field: 'repTypeStr',
                 title: '资源库类型'
             }, {
                 field: 'repBasePath',
@@ -123,3 +86,44 @@ function actionFormatter(value, row, index) {
     ].join('');
 }
 
+function bindButton() {
+    $('#repositoryList').delegate('#edit','click',function(e) {
+        var $target = $(e.currentTarget);
+        var repositoryId = $target.data('id');
+        location.href = "/web/repository/edit.shtml?repositoryId=" + repositoryId;
+    });
+
+    $('#repositoryList').delegate('#delete', 'click', function(e) {
+        var $target = $(e.currentTarget);
+        var repositoryId = $target.data('id');
+        layer.confirm('确定删除该单位？', {
+                btn: ['确定', '取消']
+            },
+            function(index){
+                layer.close(index);
+                $.ajax({
+                    type: 'DELETE',
+                    async: true,
+                    url: '/sys/repository/delete.do',
+                    data: {
+                        "id": repositoryId
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            location.replace(location.href);
+                        } else {
+                            layer.alert(data.message, {icon: 5});
+                        }
+                    },
+                    error: function () {
+                        layer.alert("系统出现问题，请联系管理员");
+                    },
+                    dataType: 'json'
+                });
+            },
+            function(){
+                layer.msg('取消操作');
+            }
+        );
+    });
+}

@@ -109,7 +109,7 @@ function getQuartz() {
 }
 
 function findTransRepTreeById(id) {
-    var treeData;
+    var treeData = "";
     $.ajax({
         type: 'GET',
         async: false,
@@ -151,7 +151,7 @@ $("#transPath").click(function(){
                 // 当前节点
                 var transNode = data.node;
                 // 是叶子节点才进入
-                if (ins.is_leaf(transNode)){
+                if (transNode.original.leaf){
                     // 关闭弹窗
                     layer.close(index);
                     // 设置路径

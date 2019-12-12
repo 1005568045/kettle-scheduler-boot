@@ -174,7 +174,7 @@ function transNameFormatter(value, row, index) {
 function bindButton() {
     // 查看详细
     $('#transMonitorList').delegate('#viewDetail','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         location.href = "/web/trans/record/list.shtml?transId=" + transId;
     });

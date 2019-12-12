@@ -16,7 +16,7 @@ public class Constant {
     /**
      * 设置sessionId
      */
-    public static String kettleSession;
+    public static String mySession;
 
     /**
      * 加密盐
@@ -28,8 +28,8 @@ public class Constant {
 	 */
 	public static Integer hashIterations;
 
-	public void setKettleSession(String kettleSession) {
-		Constant.kettleSession = kettleSession;
+	public void setMySession(String mySession) {
+		Constant.mySession = mySession;
 	}
 
 	public void setSalt(String salt) {

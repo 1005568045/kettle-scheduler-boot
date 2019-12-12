@@ -1,8 +1,7 @@
 $(document).ready(function () {
-    $("#quartzCron").cronGen({
-        direction : 'right'
-    });
-
+    // 加载cron组件
+    loadCron();
+    // 提交事件监听
     submitListener();
 });
 
@@ -91,4 +90,13 @@ function submitListener() {
 
 function cancel(){
 	location.href = "/web/quartz/list.shtml";
+}
+
+function loadCron() {
+    // 加载cron组件
+    $("#quartzCron").cronGen({
+        direction : 'right'
+    });
+    // 设置只读
+    $('#cQuarz').attr("readonly","readonly");
 }

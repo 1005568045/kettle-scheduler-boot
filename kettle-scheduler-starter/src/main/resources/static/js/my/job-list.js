@@ -150,16 +150,15 @@ function jobNameFormatter(value, row, index) {
 function bindButton() {
     // 编辑
     $('#jobList').delegate('#edit','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var jobId = $target.data('id');
         location.href = "/web/job/edit.shtml?jobId=" + jobId;
     });
 
     // 删除
     $('#jobList').delegate('#delete', 'click', function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
-        debugger;
         layer.confirm('确定删除该单位？', {
                 btn: ['确定', '取消']
             },
@@ -193,7 +192,7 @@ function bindButton() {
 
     // 单个任务启动
     $('#jobList').delegate('#start','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         layer.confirm(
             '确定启动该作业？',
@@ -226,7 +225,7 @@ function bindButton() {
 
     // 单个任务停止
     $('#jobList').delegate('#stop','click',function(e) {
-        var $target = $(e.target);
+        var $target = $(e.currentTarget);
         var transId = $target.data('id');
         layer.confirm(
             '确定停止该作业？',

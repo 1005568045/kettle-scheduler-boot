@@ -1,7 +1,6 @@
 $(document).ready(function () {
-    $("#quartzCron").cronGen({
-        direction : 'left'
-    });
+    // 加载cron组件
+    loadCron();
 
     submitListener();
 
@@ -19,7 +18,7 @@ $.validator.setDefaults({
     errorPlacement: function (error, element) {
         if (element.is(":radio") || element.is(":checkbox")) {
             error.appendTo(element.parent().parent().parent());
-        }else if(element.is("#quartzCron")){
+        }else if(element.is("#cQuarz")){
             error.appendTo(element.parent().parent());
         } else {
             error.appendTo(element.parent());
@@ -38,6 +37,9 @@ function submitListener() {
             },
             quartzCron: {
                 required: true
+            },
+            cQuarz: {
+                required: true
             }
         },
         messages: {
@@ -45,6 +47,9 @@ function submitListener() {
                 required: icon + "请输入执行策略名称"
             },
             quartzCron: {
+                required: icon + "请选择cron编码"
+            },
+            cQuarz: {
                 required: icon + "请选择cron编码"
             }
         },
@@ -55,8 +60,7 @@ function submitListener() {
             $.each($("form").serializeArray(), function (i, field) {
                 data[field.name] = field.value;
             });
-            debugger;
-            //做判断
+            // 执行保存
             $.ajax({
                 type: 'PUT',
                 async: false,
@@ -92,24 +96,35 @@ function cancel(){
 
 function initData(){
     var quartzId = $("#id").val();
-    $.ajax({
-        type: 'GET',
-        async: false,
-        url: '/sys/quartz/getQuartzDetail.do?id=' + quartzId,
-        data: {},
-        success: function (data) {
-            if (data.success) {
-                var Quartz = data.result;
-                $("#quartzDescription").val(Quartz.quartzDescription);
-                $("#cQuarz").val(Quartz.quartzCron);
-                $("#quartzCron").val(Quartz.quartzCron);
-            } else {
-                layer.msg(data.message, {icon: 5});
-            }
-        },
-        error: function () {
-            alert("请求失败！请刷新页面重试");
-        },
-        dataType: 'json'
+    if (quartzId && quartzId !== "") {
+        $.ajax({
+            type: 'GET',
+            async: false,
+            url: '/sys/quartz/getQuartzDetail.do?id=' + quartzId,
+            data: {},
+            success: function (data) {
+                if (data.success) {
+                    var Quartz = data.result;
+                    $("#quartzDescription").val(Quartz.quartzDescription);
+                    $("#cQuarz").val(Quartz.quartzCron);
+                    $("#quartzCron").val(Quartz.quartzCron);
+                } else {
+                    layer.msg(data.message, {icon: 5});
+                }
+            },
+            error: function () {
+                alert("请求失败！请刷新页面重试");
+            },
+            dataType: 'json'
+        });
+    }
+}
+
+function loadCron() {
+    // 加载cron组件
+    $("#quartzCron").cronGen({
+        direction : 'right'
     });
+    // 设置只读
+    $('#cQuarz').attr("readonly","readonly");
 }

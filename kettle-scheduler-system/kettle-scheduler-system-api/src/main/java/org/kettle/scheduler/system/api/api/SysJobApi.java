@@ -8,6 +8,7 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.request.JobReq;
 import org.kettle.scheduler.system.api.response.JobRes;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,11 +25,12 @@ public interface SysJobApi {
      * 添加作业
      *
      * @param req {@link JobReq}
+	 * @param jobFile {@link MultipartFile}
      * @return {@link Result}
      */
     @ApiOperation(value = "添加作业")
     @PostMapping("/add.do")
-    Result add(@RequestBody JobReq req);
+    Result add(JobReq req, MultipartFile jobFile);
 
     /**
      * 通过id删除作业
@@ -54,11 +56,12 @@ public interface SysJobApi {
      * 更新作业
      *
      * @param req {@link JobReq}
+	 * @param jobFile {@link MultipartFile}
      * @return {@link Result}
      */
     @ApiOperation(value = "更新作业")
     @PutMapping("/update.do")
-    Result update(@RequestBody JobReq req);
+    Result update(JobReq req, MultipartFile jobFile);
 
     /**
      * 根据条件查询作业列表
