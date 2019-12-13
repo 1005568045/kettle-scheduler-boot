@@ -137,6 +137,13 @@ public class SysTransService {
         if (RunStatusEnum.RUN.getCode().equals(trans.getTransStatus())) {
             stopTrans(id);
         }
+
+		// 删除监控数据
+		TransMonitor monitorTrans = monitorRepository.findByMonitorTransId(trans.getId());
+		if (monitorTrans != null) {
+			monitorRepository.delete(monitorTrans);
+		}
+
 		if (RunTypeEnum.FILE.getCode().equals(trans.getTransType())) {
 			FileUtil.deleteFile(trans.getTransPath());
 		}
@@ -274,5 +281,9 @@ public class SysTransService {
 
 	public Trans getByTransName(String transName) {
 		return transRepository.getByTransName(transName);
+	}
+
+	public Integer countRunTrans() {
+		return transRepository.countByTransStatus(RunStatusEnum.RUN.getCode());
 	}
 }

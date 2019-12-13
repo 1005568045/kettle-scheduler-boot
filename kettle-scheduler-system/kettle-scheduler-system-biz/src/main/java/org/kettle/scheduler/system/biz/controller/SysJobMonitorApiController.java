@@ -51,7 +51,7 @@ public class SysJobMonitorApiController implements SysJobMonitorApi {
      */
     @Override
     public Result<PageOut<JobRecordRes>> findJobRecordList(QueryHelper<IdVO> req) {
-        return Result.ok(jobMonitorService.findJobRecordList(req.getQuery().getId(), req.getPage().getPageable()));
+        return Result.ok(jobMonitorService.findJobRecordList(req.getQuery().getId(), req.getPage()));
     }
 
     /**

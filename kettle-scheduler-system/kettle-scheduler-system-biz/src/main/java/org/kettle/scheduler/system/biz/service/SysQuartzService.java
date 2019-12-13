@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.service;
 
+import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.system.api.request.QuartzReq;
@@ -54,9 +55,9 @@ public class SysQuartzService {
         }
     }
 
-    public PageOut<QuartzRes> findQuartzListByPage(QuartzReq query, Pageable pageable) {
+    public PageOut<QuartzRes> findQuartzListByPage(QuartzReq query, PageHelper pageHelper) {
         // 默认排序
-        pageable.getSort().and(Sort.by(Sort.Direction.DESC, "addTime"));
+		Pageable pageable = pageHelper.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
         // 查询
 		Page<Quartz> pageList;
 		if (query!=null) {

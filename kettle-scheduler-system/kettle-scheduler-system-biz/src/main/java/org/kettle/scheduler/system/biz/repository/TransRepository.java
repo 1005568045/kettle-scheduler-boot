@@ -24,4 +24,11 @@ public interface TransRepository extends JpaRepository<Trans, Integer>, JpaSpeci
 	 * @return {@link Trans}
 	 */
 	Trans getByTransName(String transName);
+
+	/**
+	 * 根据状态统计转换数量
+	 * @param transStatus 运行状态
+	 * @return {@link Integer}
+	 */
+	Integer countByTransStatus(Integer transStatus);
 }

@@ -137,6 +137,12 @@ public class SysJobService {
 				stopJob(id);
 			}
 
+			// 删除监控数据
+			JobMonitor monitorJob = monitorRepository.findByMonitorJobId(job.getId());
+			if (monitorJob != null) {
+				monitorRepository.delete(monitorJob);
+			}
+
 			if (RunTypeEnum.FILE.getCode().equals(job.getJobType())) {
 				FileUtil.deleteFile(job.getJobPath());
 			}
@@ -277,5 +283,9 @@ public class SysJobService {
 
 	public Job getByJobName(String jobName) {
 		return jobRepository.getByJobName(jobName);
+	}
+
+	public Integer countRunJob() {
+		return jobRepository.countByJobStatus(RunStatusEnum.RUN.getCode());
 	}
 }

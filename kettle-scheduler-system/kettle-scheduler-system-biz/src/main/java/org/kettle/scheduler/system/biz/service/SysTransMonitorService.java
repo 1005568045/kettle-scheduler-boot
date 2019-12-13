@@ -1,6 +1,7 @@
 package org.kettle.scheduler.system.biz.service;
 
 import org.kettle.scheduler.common.exceptions.MyMessageException;
+import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
@@ -78,9 +79,9 @@ public class SysTransMonitorService {
         return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal());
     }
 
-    public PageOut<TransRecordRes> findTransRecordList(Integer transId, Pageable pageable) {
+    public PageOut<TransRecordRes> findTransRecordList(Integer transId, PageHelper pageHelper) {
         // 默认排序
-        pageable.getSort().and(Sort.by(Sort.Direction.DESC, "addTime"));
+		Pageable pageable = pageHelper.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
         // 查询trans信息
         Optional<Trans> transOptional = transRepository.findById(transId);
         String transName = "";

@@ -84,7 +84,7 @@ public class SysQuartzApiController implements SysQuartzApi {
      */
     @Override
     public Result<PageOut<QuartzRes>> findQuartzListByPage(QueryHelper<QuartzReq> req) {
-        return Result.ok(quartzService.findQuartzListByPage(req.getQuery(), req.getPage().getPageable()));
+        return Result.ok(quartzService.findQuartzListByPage(req.getQuery(), req.getPage()));
     }
 
     /**

@@ -4,6 +4,8 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.HomeApi;
 import org.kettle.scheduler.system.api.response.HomeMonitorTaskCountRes;
 import org.kettle.scheduler.system.api.response.HomeMonitorTaskRunRes;
+import org.kettle.scheduler.system.biz.service.SysJobService;
+import org.kettle.scheduler.system.biz.service.SysTransService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -16,17 +18,30 @@ import java.util.List;
  */
 @RestController
 public class HomeApiController implements HomeApi {
-    /**
+	private final SysJobService jobService;
+	private final SysTransService transService;
+
+	public HomeApiController(SysJobService jobService, SysTransService transService) {
+		this.jobService = jobService;
+		this.transService = transService;
+	}
+
+	/**
      * 首页监控任务统计
      *
      * @return {@link Result}
      */
     @Override
     public Result<HomeMonitorTaskCountRes> taskCount() {
+    	// 统计运行的转换数量
+		Integer transTaskNum = transService.countRunTrans();
+		// 统计运行的作业数量
+		Integer jobTaskNum = jobService.countRunJob();
+
 		HomeMonitorTaskCountRes res = new HomeMonitorTaskCountRes();
-		res.setTotalTaskNum(10);
-		res.setJobTaskNum(2);
-		res.setTransTaskNum(8);
+		res.setTotalTaskNum(transTaskNum + jobTaskNum);
+		res.setJobTaskNum(jobTaskNum);
+		res.setTransTaskNum(transTaskNum);
         return Result.ok(res);
     }
 

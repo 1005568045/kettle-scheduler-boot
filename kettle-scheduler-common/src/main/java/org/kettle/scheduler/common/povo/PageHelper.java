@@ -48,10 +48,18 @@ public class PageHelper {
     }
 
     /**
-     * 返回分页参数, 设置一个默认排序，如果没有
+     * 返回分页参数, 设置一个默认排序
      */
     @JsonIgnore
     public Pageable getPageable() {
         return PageRequest.of(number, size, getSorts());
     }
+
+	/**
+	 * 返回分页参数, 设置一个默认排序，如果没有使用传入的参数
+	 */
+	@JsonIgnore
+	public Pageable getPageable(Sort sort) {
+		return PageRequest.of(number, size, getSorts().and(sort));
+	}
 }

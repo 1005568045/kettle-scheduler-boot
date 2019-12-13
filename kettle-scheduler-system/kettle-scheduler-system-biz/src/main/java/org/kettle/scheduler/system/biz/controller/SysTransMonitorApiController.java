@@ -50,7 +50,7 @@ public class SysTransMonitorApiController implements SysTransMonitorApi {
      */
     @Override
     public Result<PageOut<TransRecordRes>> findTransRecordList(QueryHelper<IdVO> req) {
-        return Result.ok(transMonitorService.findTransRecordList(req.getQuery().getId(), req.getPage().getPageable()));
+        return Result.ok(transMonitorService.findTransRecordList(req.getQuery().getId(), req.getPage()));
     }
 
     /**

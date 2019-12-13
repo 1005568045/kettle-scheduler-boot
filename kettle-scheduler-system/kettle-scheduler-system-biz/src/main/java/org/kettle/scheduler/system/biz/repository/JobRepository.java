@@ -24,4 +24,11 @@ public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecifica
 	 * @return {@link Job}
 	 */
 	Job getByJobName(String jobName);
+
+	/**
+	 * 根据状态统计作业数量
+	 * @param jobStatus 运行状态
+	 * @return {@link Integer}
+	 */
+	Integer countByJobStatus(Integer jobStatus);
 }

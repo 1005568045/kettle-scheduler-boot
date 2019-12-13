@@ -8,16 +8,6 @@ spring:
     show-sql: true # sql打印
     database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
     open-in-view: false # false关闭懒加载
-  redis: # redis缓存配置
-    host: 192.168.200.247
-    port: 6379
-    password: qazwsx
-    jedis:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-        min-idle: 0
 logging: # 日志记录
   level:
     root: info
