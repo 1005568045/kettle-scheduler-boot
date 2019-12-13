@@ -21,6 +21,5 @@ spring:
 logging: # 日志记录
   level:
     root: info
-    org.kettle.scheduler: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.kettle.scheduler: info
   file: /logs/${spring.application.name}.log

@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 /**
  * 启动类
  *
+ * {@code @EnableJpaAuditing} 该注解可以使得jpa自动生成创建时间和修改时间
+ * {@code @EnableEtlKettle} 该注解初始化kettle
  * @author lyf
  */
 @EnableSwagger2Doc

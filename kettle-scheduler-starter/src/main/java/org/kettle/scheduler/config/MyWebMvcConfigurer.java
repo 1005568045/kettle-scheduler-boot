@@ -38,31 +38,4 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
-
-	// /**
-    //  * 已经在application.yml中统一配置：spring.jackson.default-property-inclusion: non_empty
-    //  * 扩展消息转换器
-    //  * 通过index来控制优先级，0优先级最高
-    //  * @param converters 消息转换器集
-    //  */
-    // @Override
-    // public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-    //     MappingJackson2HttpMessageConverter om = new MappingJackson2HttpMessageConverter();
-    //     om.setObjectMapper(this.nullValueSerializer());
-    //     converters.add(0,om);
-    // }
-    //
-    // /**
-    //  * 序列化的时候把NULL变成空字符串
-    //  */
-    // private ObjectMapper nullValueSerializer(){
-    //     ObjectMapper MAPPER = new ObjectMapper();
-    //     MAPPER.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
-    //         @Override
-    //         public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-    //             jsonGenerator.writeString("");
-    //         }
-    //     });
-    //     return MAPPER;
-    // }
 }

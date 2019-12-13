@@ -40,5 +40,4 @@ spring:
       max-request-size: 10MB
 constant:
   salt: kettle-scw
-  my-session: KETTLE-SESSION
   hash-iterations: 10
