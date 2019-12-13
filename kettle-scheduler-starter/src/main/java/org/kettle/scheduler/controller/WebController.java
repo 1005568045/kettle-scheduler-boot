@@ -189,7 +189,7 @@ public class WebController {
 	 */
 	@RequestMapping("/trans/add.shtml")
 	public String transAddWeb() {
-		return "trans/r-add";
+		return "trans/add";
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class WebController {
 	 */
 	@RequestMapping("/job/add.shtml")
 	public String jobAddWeb() {
-		return "job/r-add";
+		return "job/add";
 	}
 
 	/**

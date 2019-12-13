@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    // 隐藏动态表单
+    hideForm();
     // 执行方式下拉列表
     getRunType();
     // 日志级别
@@ -9,9 +11,66 @@ $(document).ready(function () {
     getCategory();
     // 定时策略
     getQuartz();
-
+    // 提交事件监听
     submitListener();
+    // 监听文件下拉
+    $('#transType').on('change', transTypeChange);
 });
+
+// 选择文件后把地址显示到输入框
+$('#transFile').change(function() {
+    var filePath = $(this).val();
+    $('#location').val(filePath).blur();
+    $('#transName').val(getFileName(filePath)).blur();
+});
+
+$("#transPath").click(function(){
+    var $transRepositoryId = $("#transRepositoryId").val();
+    if ($transRepositoryId && $transRepositoryId !== "") {
+        var treeData = findTransRepTreeById($transRepositoryId);
+        if (treeData && treeData !== ""){
+            var index = layer.open({
+                type: 1,
+                title: '请选择转换',
+                area: ["400px", '60%'],
+                skin: 'layui-layer-rim',
+                content: '<div id="repositoryTree"></div>'
+            });
+            $('#repositoryTree').jstree({
+                'core': {
+                    'data': treeData
+                },
+                'plugins' : ["search"]
+            }).bind('select_node.jstree', function (event, data) {  //绑定的点击事件
+                // jsTree实例对象
+                var ins = data.instance;
+                // 当前节点
+                var transNode = data.node;
+                // 是叶子节点才进入
+                if (transNode.original.leaf){
+                    // 关闭弹窗
+                    layer.close(index);
+                    // 设置路径
+                    $("#transPath").val(transNode.original.extra);
+                    $('#transName').val(transNode.original.text).blur();
+                }
+            });
+        }else {
+            layer.msg("请等待资源库加载");
+        }
+    } else {
+        layer.msg("请先选择资源库");
+    }
+});
+
+// 隐藏动态表单
+function hideForm() {
+    // 初始化隐藏动态表单
+    var $sync = $('.sync-field');
+    $sync.hide();
+    $sync.find(":input").attr("disabled", true);
+    $sync.find(":selected").attr("disabled", true);
+}
 
 function getRunType() {
     $.ajax({
@@ -128,46 +187,8 @@ function findTransRepTreeById(id) {
     return treeData;
 }
 
-$("#transPath").click(function(){	
-	var $transRepositoryId = $("#transRepositoryId").val();
-	if ($transRepositoryId && $transRepositoryId !== "") {
-	    var treeData = findTransRepTreeById($transRepositoryId);
-        if (treeData && treeData !== ""){
-            var index = layer.open({
-                type: 1,
-                title: '请选择转换',
-                area: ["400px", '60%'],
-                skin: 'layui-layer-rim',
-                content: '<div id="repositoryTree"></div>'
-            });
-            $('#repositoryTree').jstree({
-                'core': {
-                    'data': treeData
-                },
-                'plugins' : ["search"]
-            }).bind('select_node.jstree', function (event, data) {  //绑定的点击事件
-                // jsTree实例对象
-                var ins = data.instance;
-                // 当前节点
-                var transNode = data.node;
-                // 是叶子节点才进入
-                if (transNode.original.leaf){
-                    // 关闭弹窗
-                    layer.close(index);
-                    // 设置路径
-                    $("#transPath").val(transNode.original.extra);
-                }
-            });
-        }else {
-            layer.msg("请等待资源库加载");
-        }
-    } else {
-        layer.msg("请先选择资源库");
-    }
-});
-
 $.validator.setDefaults({
-	highlight: function (element) {
+    highlight: function (element) {
         $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
     },
     success: function (element) {
@@ -175,32 +196,42 @@ $.validator.setDefaults({
     },
     errorElement: "span",
     errorPlacement: function (error, element) {
-        if (element.is(":radio") || element.is(":checkbox")) {
-            error.appendTo(element.parent().parent().parent());
+        if (element.is(":radio") || element.is(":checkbox") || element.is(":file") || element[0].id === "location") {
+            error.appendTo(element.parent().parent());
         } else {
             error.appendTo(element.parent());
         }
     },
     errorClass: "help-block m-b-none",
-    validClass: "help-block m-b-none"	
+    validClass: "help-block m-b-none"
 });
 
 function submitListener() {
     var icon = "<i class='fa fa-times-circle'></i> ";
     $("#RepositoryTransForm").validate({
         rules: {
+            transType:{
+                required: true
+            },
+            location: {
+                required: true,
+                checkFileType: "ktr"
+            },
             transRepositoryId:{
                 required: true
             },
             transPath: {
                 required: true
             },
-            categoryId: {
-                required: true,
-            },
             transName: {
                 required: true,
-                maxlength: 50
+                maxlength: 100,
+                remote:{
+                    type: 'POST',
+                    cache: false,
+                    url: '/sys/trans/transNameExist.do',
+                    data: {transName: function () { return $("#transName").val(); }}
+                }
             },
             transQuartz:{
                 required: true
@@ -213,18 +244,23 @@ function submitListener() {
             }
         },
         messages: {
+            transType:{
+                required: icon + "请选择执行方式"
+            },
+            location: {
+                required: icon + "请上传转换",
+                checkFileType: icon + "只能上传ktr文件"
+            },
             transRepositoryId:{
                 required: icon + "请选择资源库"
             },
             transPath: {
                 required: icon + "请选择转换"
             },
-            categoryId:{
-                required: icon + "请选择作业分类"
-            },
             transName: {
                 required: icon + "请输入转换名称",
-                maxlength: icon + "转换名称不能超过50个字符"
+                maxlength: icon + "转换名称不能超过100个字符",
+                remote: icon + "名称已存在"
             },
             transQuartz:{
                 required: icon + "请选择转换执行策略"
@@ -239,17 +275,15 @@ function submitListener() {
         // 提交按钮监听 按钮必须type="submit"
         submitHandler:function(form){
             // 获取表单数据
-            var data = {};
-            $.each($("form").serializeArray(), function (i, field) {
-                data[field.name] = field.value;
-            });
+            var data= new FormData($("#RepositoryTransForm")[0]);
             // 保存数据
             $.ajax({
                 type: 'POST',
                 async: false,
                 url: '/sys/trans/add.do',
-                data: JSON.stringify(data),
-                contentType: "application/json;charset=UTF-8",
+                data: data,
+                processData: false,
+                contentType: false,
                 success: function (res) {
                     if (res.success){
                         layer.msg('添加成功',{
@@ -276,3 +310,45 @@ function submitListener() {
 function cancel(){
     location.href = "/web/trans/list.shtml";
 }
+
+function transTypeChange() {
+    var type = $('#transType').val();
+    // 隐藏动态表单
+    hideForm();
+    // 如果选择了具体的值
+    if (type) {
+        if (type === 'file') {
+            var $fileData = $('[data-field="file"]');
+            $fileData.show();
+            $fileData.find(":input").attr("disabled", false);
+            $fileData.find(":selected").attr("disabled", false);
+        }
+        if (type === 'rep') {
+            var $repData = $('[data-field="rep"]');
+            $repData.show();
+            $repData.find(":input").attr("disabled", false);
+            $repData.find(":selected").attr("disabled", false);
+        }
+    }
+}
+
+function getFileName(filePath) {
+    var reg = new RegExp("\\\\","g");
+    var f = filePath.replace(reg, "/");
+    var fileArr = f.split("/");
+    var fileName = fileArr[fileArr.length-1].toLowerCase();
+    return fileName.substring(0, fileName.lastIndexOf("."));
+}
+
+function getFileType(filePath) {
+    var reg = new RegExp("\\\\","g");
+    var f = filePath.replace(reg, "/");
+    var fileArr = f.split("/");
+    var fileNameArr=fileArr[fileArr.length-1].toLowerCase().split(".");
+    return  fileNameArr[fileNameArr.length-1];
+}
+
+// 自定义校验
+$.validator.addMethod("checkFileType", function (file, element, param) {
+    return getFileType(file) === param
+}, "只能上传ktr文件");

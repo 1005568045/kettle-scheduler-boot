@@ -8,6 +8,7 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,11 +25,12 @@ public interface SysTransApi {
      * 添加转换
      *
      * @param req {@link TransReq}
+	 * @param transFile {@link MultipartFile}
      * @return {@link Result}
      */
     @ApiOperation(value = "添加转换")
     @PostMapping("/add.do")
-    Result add(@RequestBody TransReq req);
+    Result add(TransReq req, MultipartFile transFile);
 
     /**
      * 通过id删除转换
@@ -117,4 +119,14 @@ public interface SysTransApi {
     @ApiOperation(value = "单个停止")
     @GetMapping("/stopTrans.do")
     Result stopTrans(@RequestParam("id") Integer id);
+
+	/**
+	 * 验证名称是否存在
+	 *
+	 * @param transName 转换名
+	 * @return 只能返回true或false
+	 */
+	@ApiOperation(value = "验证名称是否存在")
+	@PostMapping("/transNameExist.do")
+	String transNameExist(String transName);
 }

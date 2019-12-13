@@ -155,7 +155,7 @@ function queryParams(params) {
 }
 
 function actionFormatter(value, row, index) {
-    return ['<a class="btn btn-primary btn-xs" id="viewDetail" type="button" data-id="'+ row.id +'"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看详细</a>'].join('');
+    return ['<a class="btn btn-primary btn-xs" id="viewDetail" type="button" data-id="'+ row.monitorJobId +'"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看详细</a>'].join('');
 }
 
 function search() {

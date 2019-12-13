@@ -53,6 +53,61 @@ public class SysJobService {
 		this.entityManagerUtil = entityManagerUtil;
 	}
 
+	/**
+	 * 根据定时策略和作业组装执行参数
+	 * @param job 作业信息
+	 * @param cron 定时策略
+	 * @return {@link QuartzDTO}
+	 */
+	private QuartzDTO getQuartzDTO(Job job, String cron) {
+		String categoryId = job.getCategoryId()==null ? "null" : String.valueOf(job.getCategoryId());
+
+		QuartzDTO dto = new QuartzDTO();
+		dto.setJobName("JOB@" + job.getId());
+		dto.setJobGroupName("JOB_GROUP@" + categoryId + "@" + job.getId());
+		dto.setTriggerName("JOB_TRIGGER@" + job.getId());
+		dto.setTriggerGroupName("JOB_TRIGGER_GROUP@" + categoryId + "@" + job.getId());
+		if (StringUtil.hasText(cron)) {
+			dto.setCron(cron);
+		}
+		dto.setJobClass(JobQuartz.class);
+		dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", job.getId())));
+		return dto;
+	}
+
+	/**
+	 * 修改监控信息状态
+	 * @param jobId 作业ID
+	 * @param statusEnum 状态枚举
+	 */
+	private void updateJobsMonitorStatus(Integer jobId, RunStatusEnum statusEnum) {
+		JobMonitor jobMonitor = monitorRepository.findByMonitorJobId(jobId);
+		if (jobMonitor == null) {
+			jobMonitor = new JobMonitor();
+			jobMonitor.setMonitorFail(0);
+			jobMonitor.setMonitorSuccess(0);
+			jobMonitor.setMonitorJobId(jobId);
+			jobMonitor.setRunStatus(System.currentTimeMillis() + "-");
+		} else {
+			switch (statusEnum) {
+				case RUN:
+					String runStatus = jobMonitor.getRunStatus();
+					if (runStatus.endsWith("-")) {
+						runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
+					}
+					jobMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
+					break;
+				case STOP:
+					jobMonitor.setRunStatus(jobMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
+					break;
+				default:
+					throw new IllegalStateException("Unexpected value: " + statusEnum);
+			}
+		}
+		jobMonitor.setMonitorStatus(statusEnum.getCode());
+		monitorRepository.save(jobMonitor);
+	}
+
     /**
      * 因程序中断后所有的定时会中断，因此在程序启动的时候需要初始化类调用该方法重新恢复定时任务
      */
@@ -76,24 +131,25 @@ public class SysJobService {
 		Optional<Job> optional = jobRepository.findById(id);
 		if (optional.isPresent()) {
 			Job job = optional.get();
+
+			// 删除前停止定时任务
+			if (RunStatusEnum.RUN.getCode().equals(job.getJobStatus())) {
+				stopJob(id);
+			}
+
 			if (RunTypeEnum.FILE.getCode().equals(job.getJobType())) {
 				FileUtil.deleteFile(job.getJobPath());
 			}
+
 			jobRepository.delete(job);
 		} else {
 			throw new MyMessageException("删除资源不存在");
 		}
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Integer> ids) {
         List<Job> jobs = jobRepository.findAllById(ids);
-		jobs.forEach(job -> {
-			if (RunTypeEnum.FILE.getCode().equals(job.getJobType())) {
-				FileUtil.deleteFile(job.getJobPath());
-			}
-		});
-		jobRepository.deleteInBatch(jobs);
+		jobs.forEach(job -> delete(job.getId()));
 	}
 
     @Transactional(rollbackFor = Exception.class)
@@ -219,58 +275,7 @@ public class SysJobService {
         QuartzManage.removeJob(getQuartzDTO(job, null));
     }
 
-    /**
-     * 根据定时策略和作业组装执行参数
-     * @param job 作业信息
-     * @param cron 定时策略
-     * @return {@link QuartzDTO}
-     */
-    private QuartzDTO getQuartzDTO(Job job, String cron) {
-        String categoryId = job.getCategoryId()==null ? "null" : String.valueOf(job.getCategoryId());
-
-        QuartzDTO dto = new QuartzDTO();
-        dto.setJobName("JOB@" + job.getId());
-        dto.setJobGroupName("JOB_GROUP@" + categoryId + "@" + job.getId());
-        dto.setTriggerName("TRIGGER@" + job.getId());
-        dto.setTriggerGroupName("TRIGGER_GROUP@" + categoryId + "@" + job.getId());
-        if (StringUtil.hasText(cron)) {
-            dto.setCron(cron);
-        }
-        dto.setJobClass(JobQuartz.class);
-        dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", job.getId())));
-        return dto;
-    }
-
-    /**
-     * 修改监控信息状态
-     * @param jobId 作业ID
-     * @param statusEnum 状态枚举
-     */
-    private void updateJobsMonitorStatus(Integer jobId, RunStatusEnum statusEnum) {
-        JobMonitor jobMonitor = monitorRepository.findByMonitorJobId(jobId);
-        if (jobMonitor == null) {
-            jobMonitor = new JobMonitor();
-            jobMonitor.setMonitorFail(0);
-            jobMonitor.setMonitorSuccess(0);
-            jobMonitor.setMonitorJobId(jobId);
-            jobMonitor.setRunStatus(System.currentTimeMillis() + "-");
-        } else {
-            switch (statusEnum) {
-                case RUN:
-                    String runStatus = jobMonitor.getRunStatus();
-                    if (runStatus.endsWith("-")) {
-                        runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
-                    }
-                    jobMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
-                    break;
-                case STOP:
-                    jobMonitor.setRunStatus(jobMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + statusEnum);
-            }
-        }
-        jobMonitor.setMonitorStatus(statusEnum.getCode());
-        monitorRepository.save(jobMonitor);
-    }
+	public Job getByJobName(String jobName) {
+		return jobRepository.getByJobName(jobName);
+	}
 }

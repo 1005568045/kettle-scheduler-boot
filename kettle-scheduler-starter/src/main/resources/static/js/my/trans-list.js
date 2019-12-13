@@ -113,7 +113,6 @@ function queryParams(params) {
 }
 
 function actionFormatter(value, row, index) {
-    debugger;
     if (row.transStatus === 1) {
         return [
             '<a class="btn btn-danger btn-xs" id="stop" type="button" data-id="'+ row.id +'"><i class="fa fa-stop" aria-hidden="true"></i>&nbsp;停止</a>'
@@ -160,7 +159,6 @@ function bindButton() {
     $('#transList').delegate('#delete', 'click', function(e) {
         var $target = $(e.currentTarget);
         var transId = $target.data('id');
-        debugger;
         layer.confirm('确定删除该单位？', {
                 btn: ['确定', '取消']
             },

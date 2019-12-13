@@ -2,6 +2,7 @@ package org.kettle.scheduler.common.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,7 +47,9 @@ public class GlobalExceptionHandler {
             return Result.error(GlobalStatusEnum.TIMEOUT.getCode(), GlobalStatusEnum.TIMEOUT.getDesc());
         } else if (ex instanceof IllegalStateException) {
             return Result.error(GlobalStatusEnum.ILLEGAL_STATE.getCode(), ex.getMessage());
-        } else {
+        } else if (ex instanceof DataIntegrityViolationException) {
+			return Result.error(GlobalStatusEnum.DATA_INTEGRITY_ERROR.getCode(), GlobalStatusEnum.DATA_INTEGRITY_ERROR.getDesc());
+		} else {
             log.error("系统内部异常: ", ex);
             return Result.error(GlobalStatusEnum.SYS_ERROR.getCode(), GlobalStatusEnum.SYS_ERROR.getDesc());
         }

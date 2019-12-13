@@ -119,4 +119,14 @@ public interface SysJobApi {
     @ApiOperation(value = "单个停止")
     @GetMapping("/stopJob.do")
     Result stopJob(Integer id);
+
+	/**
+	 * 验证名称是否存在
+	 *
+	 * @param jobName 作业名
+	 * @return 只能返回true或false
+	 */
+	@ApiOperation(value = "验证名称是否存在")
+	@PostMapping("/jobNameExist.do")
+	String jobNameExist(String jobName);
 }

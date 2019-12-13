@@ -22,7 +22,7 @@ public enum RunResultEnum implements BaseEnum<Integer> {
     /**
      * 文件方式运行
      */
-    FAIL(2, "运行失败");
+    FAIL(0, "运行失败");
 
     private Integer code;
     private String desc;

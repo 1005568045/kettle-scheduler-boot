@@ -36,7 +36,6 @@ $("#jobPath").click(function(){
                 skin: 'layui-layer-rim',
                 content: '<div id="repositoryTree"></div>'
             });
-            debugger;
             $('#repositoryTree').jstree({
                 'core': {
                     'data': treeData
@@ -94,7 +93,8 @@ function submitListener() {
         rules: {
             jobType:{
                 required: true
-            },jobRepositoryId:{
+            },
+            jobRepositoryId:{
                 required: true
             },
             location: {
@@ -106,7 +106,13 @@ function submitListener() {
             },
             jobName: {
                 required: true,
-                maxlength: 100
+                maxlength: 100,
+                remote:{
+                    type: 'POST',
+                    cache: false,
+                    url: '/sys/job/jobNameExist.do',
+                    data: {jobName: function () { return $("#jobName").val(); }}
+                }
             },
             jobQuartz:{
                 required: true
@@ -121,7 +127,8 @@ function submitListener() {
         messages: {
             jobType:{
                 required: icon + "请选择执行方式"
-            },jobRepositoryId:{
+            },
+            jobRepositoryId:{
                 required: icon + "请选择资源库"
             },
             location: {
@@ -133,7 +140,8 @@ function submitListener() {
             },
             jobName: {
                 required: icon + "请输入作业名称",
-                maxlength: icon + "作业名称不能超过100个字符"
+                maxlength: icon + "作业名称不能超过100个字符",
+                remote: icon + "名称已存在"
             },
             jobQuartz:{
                 required: icon + "请选择作业执行策略"

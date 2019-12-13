@@ -4,10 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
+import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.quartz.dto.QuartzDTO;
 import org.kettle.scheduler.quartz.manage.QuartzManage;
 import org.kettle.scheduler.system.api.enums.RunStatusEnum;
+import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
 import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
@@ -50,6 +52,61 @@ public class SysTransService {
 		this.entityManagerUtil = entityManagerUtil;
 	}
 
+	/**
+	 * 根据定时策略和转换组装执行参数
+	 * @param trans 转换信息
+	 * @param cron 定时策略
+	 * @return {@link QuartzDTO}
+	 */
+	private QuartzDTO getQuartzDTO(Trans trans, String cron) {
+		String categoryId = trans.getCategoryId()==null ? "-" : String.valueOf(trans.getCategoryId());
+
+		QuartzDTO dto = new QuartzDTO();
+		dto.setJobName("TRANS@" + trans.getId());
+		dto.setJobGroupName("TRANS_GROUP@" + categoryId + "@" + trans.getId());
+		dto.setTriggerName("TRANS_TRIGGER@" + trans.getId());
+		dto.setTriggerGroupName("TRANS_TRIGGER_GROUP@" + categoryId + "@" + trans.getId());
+		if (StringUtil.hasText(cron)) {
+			dto.setCron(cron);
+		}
+		dto.setJobClass(TransQuartz.class);
+		dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", trans.getId())));
+		return dto;
+	}
+
+	/**
+	 * 修改监控信息状态
+	 * @param transId 转换ID
+	 * @param statusEnum 状态枚举
+	 */
+	private void updateTransMonitorStatus(Integer transId, RunStatusEnum statusEnum) {
+		TransMonitor transMonitor = monitorRepository.findByMonitorTransId(transId);
+		if (transMonitor == null) {
+			transMonitor = new TransMonitor();
+			transMonitor.setMonitorFail(0);
+			transMonitor.setMonitorSuccess(0);
+			transMonitor.setMonitorTransId(transId);
+			transMonitor.setRunStatus(System.currentTimeMillis() + "-");
+		} else {
+			switch (statusEnum) {
+				case RUN:
+					String runStatus = transMonitor.getRunStatus();
+					if (runStatus.endsWith("-")) {
+						runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
+					}
+					transMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
+					break;
+				case STOP:
+					transMonitor.setRunStatus(transMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
+					break;
+				default:
+					throw new IllegalStateException("Unexpected value: " + statusEnum);
+			}
+		}
+		transMonitor.setMonitorStatus(statusEnum.getCode());
+		monitorRepository.save(transMonitor);
+	}
+
     /**
      * 因程序中断后所有的定时会中断，因此在程序启动的时候需要初始化类调用该方法重新恢复定时任务
      */
@@ -64,6 +121,7 @@ public class SysTransService {
     @Transactional(rollbackFor = Exception.class)
     public void add(TransReq req) {
         Trans trans = BeanUtil.copyProperties(req, Trans.class);
+		trans.setTransStatus(RunStatusEnum.STOP.getCode());
         transRepository.save(trans);
     }
 
@@ -79,10 +137,12 @@ public class SysTransService {
         if (RunStatusEnum.RUN.getCode().equals(trans.getTransStatus())) {
             stopTrans(id);
         }
+		if (RunTypeEnum.FILE.getCode().equals(trans.getTransType())) {
+			FileUtil.deleteFile(trans.getTransPath());
+		}
         transRepository.delete(trans);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Integer> ids) {
         List<Trans> transList = transRepository.findAllById(ids);
         transList.forEach(trans -> delete(trans.getId()));
@@ -212,58 +272,7 @@ public class SysTransService {
         QuartzManage.removeJob(getQuartzDTO(trans, null));
     }
 
-    /**
-     * 根据定时策略和转换组装执行参数
-     * @param trans 转换信息
-     * @param cron 定时策略
-     * @return {@link QuartzDTO}
-     */
-    private QuartzDTO getQuartzDTO(Trans trans, String cron) {
-        String categoryId = trans.getCategoryId()==null ? "null" : String.valueOf(trans.getCategoryId());
-
-        QuartzDTO dto = new QuartzDTO();
-        dto.setJobName("JOB@" + trans.getId());
-        dto.setJobGroupName("JOB_GROUP@" + categoryId + "@" + trans.getId());
-        dto.setTriggerName("TRIGGER@" + trans.getId());
-        dto.setTriggerGroupName("TRIGGER_GROUP@" + categoryId + "@" + trans.getId());
-        if (StringUtil.hasText(cron)) {
-            dto.setCron(cron);
-        }
-        dto.setJobClass(TransQuartz.class);
-        dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", trans.getId())));
-        return dto;
-    }
-
-    /**
-     * 修改监控信息状态
-     * @param transId 转换ID
-     * @param statusEnum 状态枚举
-     */
-    private void updateTransMonitorStatus(Integer transId, RunStatusEnum statusEnum) {
-        TransMonitor transMonitor = monitorRepository.findByMonitorTransId(transId);
-        if (transMonitor == null) {
-            transMonitor = new TransMonitor();
-            transMonitor.setMonitorFail(0);
-            transMonitor.setMonitorSuccess(0);
-            transMonitor.setMonitorTransId(transId);
-            transMonitor.setRunStatus(System.currentTimeMillis() + "-");
-        } else {
-            switch (statusEnum) {
-                case RUN:
-                    String runStatus = transMonitor.getRunStatus();
-                    if (runStatus.endsWith("-")) {
-                        runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
-                    }
-                    transMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
-                    break;
-                case STOP:
-                    transMonitor.setRunStatus(transMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + statusEnum);
-            }
-        }
-        transMonitor.setMonitorStatus(statusEnum.getCode());
-        monitorRepository.save(transMonitor);
-    }
+	public Trans getByTransName(String transName) {
+		return transRepository.getByTransName(transName);
+	}
 }

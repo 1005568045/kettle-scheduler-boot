@@ -1,7 +1,6 @@
 package org.kettle.scheduler.system.biz.quartz;
 
 import lombok.extern.slf4j.Slf4j;
-import org.kettle.scheduler.common.enums.BooleanEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
@@ -9,6 +8,7 @@ import org.kettle.scheduler.common.utils.SpringContextUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.execute.JobExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
+import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.biz.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Job;
@@ -92,7 +92,7 @@ public class JobQuartz implements InterruptableJob {
         // 添加作业执行记录
         JobRecord jobRecord = new JobRecord();
         jobRecord.setLogFilePath(logPath);
-        jobRecord.setRecordStatus(runStatus ? BooleanEnum.TRUE.getCode() : BooleanEnum.FALSE.getCode());
+        jobRecord.setRecordStatus(runStatus ? RunResultEnum.SUCCESS.getCode() : RunResultEnum.FAIL.getCode());
         jobRecord.setRecordJobId(jobId);
         jobRecord.setStartTime(lastExecuteTime);
         jobRecord.setStopTime(stopDate);

@@ -16,6 +16,7 @@ import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.JobReq;
 import org.kettle.scheduler.system.api.response.JobRes;
 import org.kettle.scheduler.system.biz.constant.KettleConfig;
+import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.service.SysJobService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,29 @@ public class SysJobApiController implements SysJobApi {
         this.jobService = jobService;
     }
 
+	/**
+	 * 动态进行参数验证
+	 * @param req 请求参数
+	 */
+	private void validatedParam(JobReq req) {
+		switch (RunTypeEnum.getEnum(req.getJobType())) {
+			case FILE:
+				String result1 = ValidatorUtil.validateWithString(req, JobReq.File.class);
+				if (!StringUtil.isEmpty(result1)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
+				}
+				break;
+			case REP:
+				String result2 = ValidatorUtil.validateWithString(req, JobReq.Rep.class);
+				if (!StringUtil.isEmpty(result2)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getJobType()));
+		}
+	}
+
     /**
      * 添加作业
      *
@@ -49,10 +73,12 @@ public class SysJobApiController implements SysJobApi {
     	// 参数验证
 		validatedParam(req);
 		// 保存上传文件
-		if (jobFile == null || jobFile.isEmpty()) {
-			throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
+		if (RunTypeEnum.FILE.getCode().equals(req.getJobType())) {
+			if (jobFile == null || jobFile.isEmpty()) {
+				throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
+			}
+			req.setJobPath(FileUtil.uploadFile(jobFile, KettleConfig.uploadPath));
 		}
-		req.setJobPath(FileUtil.uploadFile(jobFile, KettleConfig.uploadPath));
 		// 保存结果
         jobService.add(req);
         return Result.ok();
@@ -162,22 +188,23 @@ public class SysJobApiController implements SysJobApi {
         return Result.ok();
     }
 
-	private void validatedParam(JobReq req) {
-		switch (RunTypeEnum.getEnum(req.getJobType())) {
-			case FILE:
-				String result1 = ValidatorUtil.validateWithString(req, JobReq.File.class);
-				if (!StringUtil.isEmpty(result1)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
-				}
-				break;
-			case REP:
-				String result2 = ValidatorUtil.validateWithString(req, JobReq.Rep.class);
-				if (!StringUtil.isEmpty(result2)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
-				}
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getJobType()));
+	/**
+	 * 验证名称是否存在
+	 *
+	 * @param jobName 作业名
+	 * @return 只能返回true或false
+	 */
+	@Override
+	public String jobNameExist(String jobName) {
+		if (StringUtil.isEmpty(jobName)) {
+			return "true";
+		} else {
+			Job job = jobService.getByJobName(jobName);
+			if (job != null) {
+				return "false";
+			} else {
+				return "true";
+			}
 		}
 	}
 }

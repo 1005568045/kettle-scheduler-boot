@@ -39,9 +39,9 @@ public class JobRecordReq extends BasicVO implements Serializable {
     private Date stopTime;
 
     /**
-     * 任务执行结果（1：成功；2：失败）
+     * 任务执行结果（1：成功；0：失败）
      */
-    @ApiModelProperty(value = "任务执行结果（1：成功；2：失败）")
+    @ApiModelProperty(value = "任务执行结果（1：成功；0：失败）")
     private Integer recordStatus;
 
     /**

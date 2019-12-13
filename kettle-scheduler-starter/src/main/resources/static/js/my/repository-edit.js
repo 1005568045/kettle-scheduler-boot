@@ -174,7 +174,16 @@ function submitListener() {
         rules: {
             repName: {
                 required: true,
-                maxlength: 50
+                maxlength: 50,
+                remote:{
+                    type: 'POST',
+                    cache: false,
+                    url: '/sys/repository/repNameExist.do',
+                    data: {
+                        repName: function () { return $("#repName").val(); },
+                        repId: function () { return $("#id").val(); }
+                    }
+                }
             },
             repType: {
                 required: true
@@ -220,7 +229,8 @@ function submitListener() {
         messages: {
             repName: {
                 required: icon + "请输入资源库名称",
-                maxlength: icon + "资源库名称不能超过50个字符"
+                maxlength: icon + "资源库名称不能超过50个字符",
+                remote: icon + "资源库名称已存在"
             },
             repType: {
                 required: icon + "请选择资源库类型"

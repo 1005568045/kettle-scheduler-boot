@@ -41,7 +41,7 @@ public class JobRecord extends BasicEntity implements Serializable {
     private Date stopTime;
 
     /**
-     * 任务执行结果（1：成功；2：失败）
+     * 任务执行结果（1：成功；0：失败）
      */
     @Column(name = "record_status")
     private Integer recordStatus;

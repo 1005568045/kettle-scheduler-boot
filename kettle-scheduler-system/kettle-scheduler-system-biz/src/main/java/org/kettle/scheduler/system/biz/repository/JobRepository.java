@@ -12,17 +12,16 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecificationExecutor<Job> {
 
     /**
-     * 根据分类ID和作业名称模糊查询
-     * @param categoryId 分类ID
-     * @param jobName 作业名称
-     * @return {@link List}
-     */
-    List<Job> findByCategoryIdAndJobNameLike(Integer categoryId, String jobName);
-
-    /**
      * 根据运行状态查询作业信息
      * @param jobStatus 运行状态{@link org.kettle.scheduler.system.api.enums.RunStatusEnum}
      * @return {@link List}
      */
     List<Job> findByJobStatus(Integer jobStatus);
+
+	/**
+	 * 根据作业名称查询
+	 * @param jobName 作业名称
+	 * @return {@link Job}
+	 */
+	Job getByJobName(String jobName);
 }

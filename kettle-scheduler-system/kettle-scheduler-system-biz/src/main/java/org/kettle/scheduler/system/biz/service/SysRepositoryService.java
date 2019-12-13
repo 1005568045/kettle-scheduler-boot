@@ -112,4 +112,8 @@ public class SysRepositoryService {
 			throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, "链接资源库失败");
 		}
 	}
+
+	public Repository getByRepName(String repName) {
+		return repRepository.getByRepName(repName);
+	}
 }

@@ -15,6 +15,7 @@ import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.kettle.scheduler.system.api.api.SysRepositoryApi;
 import org.kettle.scheduler.system.api.request.RepositoryReq;
 import org.kettle.scheduler.system.api.response.RepositoryRes;
+import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.service.SysRepositoryService;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,29 @@ public class SysRepositoryApiController implements SysRepositoryApi {
     public SysRepositoryApiController(SysRepositoryService repositoryService) {
         this.repositoryService = repositoryService;
     }
+
+	/**
+	 * 动态验证参数
+	 * @param req 请求参数
+	 */
+	private void validatedRep(RepositoryReq req) {
+		switch (RepTypeEnum.getEnum(req.getRepType())) {
+			case FILE:
+				String result1 = ValidatorUtil.validateWithString(req, RepositoryReq.FileRep.class);
+				if (!StringUtil.isEmpty(result1)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
+				}
+				break;
+			case DB:
+				String result2 = ValidatorUtil.validateWithString(req, RepositoryReq.DatabaseRep.class);
+				if (!StringUtil.isEmpty(result2)) {
+					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getRepType()));
+		}
+	}
 
     /**
      * 添加资源库
@@ -160,22 +184,24 @@ public class SysRepositoryApiController implements SysRepositoryApi {
 		return Result.ok();
 	}
 
-	private void validatedRep(RepositoryReq req) {
-		switch (RepTypeEnum.getEnum(req.getRepType())) {
-			case FILE:
-				String result1 = ValidatorUtil.validateWithString(req, RepositoryReq.FileRep.class);
-				if (!StringUtil.isEmpty(result1)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
-				}
-				break;
-			case DB:
-				String result2 = ValidatorUtil.validateWithString(req, RepositoryReq.DatabaseRep.class);
-				if (!StringUtil.isEmpty(result2)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
-				}
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getRepType()));
+	/**
+	 * 验证资源库名是否存在
+	 *
+	 * @param repId 资源库ID
+	 * @param repName 资源库名
+	 * @return 只能返回true或false
+	 */
+	@Override
+	public String repNameExist(Integer repId, String repName) {
+		if (StringUtil.isEmpty(repName)) {
+			return "true";
+		} else {
+			Repository rep = repositoryService.getByRepName(repName);
+			if (rep != null && !rep.getId().equals(repId)) {
+				return "false";
+			} else {
+				return "true";
+			}
 		}
 	}
 }

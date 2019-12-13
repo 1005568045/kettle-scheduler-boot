@@ -1,7 +1,6 @@
 package org.kettle.scheduler.system.biz.quartz;
 
 import lombok.extern.slf4j.Slf4j;
-import org.kettle.scheduler.common.enums.BooleanEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
@@ -9,6 +8,7 @@ import org.kettle.scheduler.common.utils.SpringContextUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.execute.TransExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
+import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.biz.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Repository;
@@ -96,7 +96,7 @@ public class TransQuartz implements Job {
         // 添加转换执行记录
         TransRecord transRecord = new TransRecord();
         transRecord.setLogFilePath(logPath);
-        transRecord.setRecordStatus(runStatus ? BooleanEnum.TRUE.getCode() : BooleanEnum.FALSE.getCode());
+        transRecord.setRecordStatus(runStatus ? RunResultEnum.SUCCESS.getCode() : RunResultEnum.FAIL.getCode());
         transRecord.setRecordTransId(transId);
         transRecord.setStartTime(lastExecuteTime);
         transRecord.setStopTime(stopDate);

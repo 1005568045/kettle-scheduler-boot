@@ -119,4 +119,15 @@ public interface SysRepositoryApi {
 	@ApiOperation(value = "测试资源库链接")
 	@PostMapping("/testConnection.do")
 	Result testConnection(@RequestBody RepositoryReq req);
+
+	/**
+	 * 验证资源库名是否存在
+	 *
+	 * @param repId 资源库ID
+	 * @param repName 资源库名
+	 * @return 只能返回true或false
+	 */
+	@ApiOperation(value = "验证资源库名是否存在")
+	@PostMapping("/repNameExist.do")
+	String repNameExist(Integer repId, String repName);
 }

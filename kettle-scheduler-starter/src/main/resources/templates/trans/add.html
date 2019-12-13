@@ -35,7 +35,19 @@
                             </select>
                         </div>
                     </div>
-            		<div class="form-group">
+                    <div class="form-group sync-field" data-field="file">
+                        <label class="col-sm-3 control-label required" for="location">转换上传：</label>
+                        <div class="col-sm-7">
+                            <div class="input-group">
+                                <input id='location' type="text" name="location" readonly class="form-control" placeholder="请上传转换" aria-required="true">
+                                <label class="input-group-btn">
+                                    <input type="button" value="上传转换" class="btn btn-primary" onclick="$('#transFile').click();">
+                                </label>
+                            </div>
+                            <input id="transFile" name="transFile" type="file" class="form-control" style="display: none" aria-required="true">
+                        </div>
+                    </div>
+            		<div class="form-group sync-field" data-field="rep">
             			<label class="col-sm-3 control-label required" for="transRepositoryId">资源库：</label>
                     	<div class="col-sm-7">
                     		<select id="transRepositoryId" name="transRepositoryId" class="form-control" aria-required="true">
@@ -43,26 +55,26 @@
 	                        </select>
 	                    </div>
             		</div>
-	                <div class="form-group">
+	                <div class="form-group sync-field" data-field="rep">
 	                    <label class="col-sm-3 control-label required" for="transPath">转换路径：</label>
 	                    <div class="col-sm-7">
 	                        <input id="transPath" readonly name="transPath" type="text" placeholder="请选择转换" class="form-control" aria-required="true">
 	                    </div>
 	                </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label required" for="transName">转换名称：</label>
+                        <div class="col-sm-7">
+                            <input id="transName" name="transName" type="text" placeholder="请输入转换名称" class="form-control" aria-required="true" >
+                        </div>
+                    </div>
 					<div class="form-group">
-						<label class="col-sm-3 control-label required" for="categoryId">任务分类：</label>
+						<label class="col-sm-3 control-label" for="categoryId">任务分类：</label>
 						<div class="col-sm-7">
 							<select id="categoryId" name="categoryId" class="form-control" aria-required="true">
 								<option value="" selected>请选择任务分类</option>
 							</select>
 						</div>
 					</div>
-	                <div class="form-group">
-	                    <label class="col-sm-3 control-label required" for="transName">转换名称：</label>
-	                    <div class="col-sm-7">
-	                        <input id="transName" name="transName" type="text" placeholder="请输入转换名称" class="form-control" aria-required="true" >
-	                    </div>
-	                </div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label required" for="transQuartz">转换定时策略：</label>
 						<div class="col-sm-7">
@@ -106,6 +118,6 @@
     <!-- 自定义js -->
     <script th:src="@{/js/content.js}" src="../static/js/content.js?v=1.0.0"></script>
     <script th:src="@{/js/plugins/jsTree/jstree.min.js}" src="../static/js/plugins/jsTree/jstree.min.js"></script>
-    <script th:src="@{/js/my/r-trans-add.js}" src="../static/js/my/r-trans-add.js"></script>
+    <script th:src="@{/js/my/trans-add.js}" src="../static/js/my/trans-add.js"></script>
 </body>
 </html>

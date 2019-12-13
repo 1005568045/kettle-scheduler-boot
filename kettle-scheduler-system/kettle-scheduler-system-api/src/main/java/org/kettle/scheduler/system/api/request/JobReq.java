@@ -52,14 +52,14 @@ public class JobReq extends BasicVO implements Serializable {
      * 作业保存路径（可以是资源库中的路径也可以是服务器中保存作业文件的路径）
      */
     @ApiModelProperty(value = "作业保存路径")
-	@NotBlank(message = "作业保存路径不能为空", groups = {Rep.class, Insert.class})
+	@NotBlank(message = "作业保存路径不能为空", groups = {Rep.class})
     private String jobPath;
 
     /**
      * 作业的资源库ID
      */
     @ApiModelProperty(value = "作业的资源库ID")
-	@NotNull(message = "作业的资源库ID不能为空", groups = {Rep.class, Insert.class})
+	@NotNull(message = "作业的资源库ID不能为空", groups = {Rep.class})
     private Integer jobRepositoryId;
 
     /**
@@ -73,7 +73,7 @@ public class JobReq extends BasicVO implements Serializable {
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）
      */
     @ApiModelProperty(value = "日志级别")
-	@NotNull(message = "日志级别不能为空")
+	@NotBlank(message = "日志级别不能为空")
     private String jobLogLevel;
 
     /**

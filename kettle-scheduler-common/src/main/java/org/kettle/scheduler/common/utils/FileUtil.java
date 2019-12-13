@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.text.MessageFormat;
 
 /**
  * 文件操作工具, 同时继承common-io包的FileUtils
@@ -25,6 +24,29 @@ import java.text.MessageFormat;
 public class FileUtil extends FileUtils {
 
 	public static String separator = "/";
+
+	/**
+	 * 根据不同的encoding写入文件到本地
+	 * @param inputByte 输入的字节
+	 * @param outputFile 输出的文件
+	 * @param overwrite 是否覆写文件
+	 */
+	public static void writeFile(byte[] inputByte, File outputFile, boolean overwrite) {
+		// 不覆写就判断文件是否存在
+		if (!overwrite && outputFile.exists()) {
+			throw new MyMessageException("文件已存在");
+		}
+		try {
+			// 输出文件不存在就创建
+			touch(outputFile);
+			// 开始写入文件
+			writeByteArrayToFile(outputFile, inputByte);
+		} catch (IOException e) {
+			String msg = "写入本地文件失败";
+			log.error(msg, e);
+			throw new MyMessageException(msg);
+		}
+	}
 
 	/**
 	 * 上传文件（重命名原文件）
@@ -38,30 +60,22 @@ public class FileUtil extends FileUtils {
 		if (StringUtils.isBlank(originalFilename)) {
 			throw new MyMessageException("获取源文件名失败");
 		}
+
 		// 新文件名
 		String newFilename = getFileName(originalFilename)
 				.concat("-")
 				.concat(String.valueOf(System.currentTimeMillis()))
 				.concat(getFileSuffix(originalFilename));
 
-		// 在字符串末尾添加分隔符
-		String uploadPath = addSeparator(savePath);
+		File destFile = new File(new File(addSeparator(savePath)).getAbsolutePath() + separator + newFilename);
 
-		// 判断目录是否存在
-		File dirFile = new File(uploadPath);
-		if(dirFile.exists() || dirFile.mkdirs()){
-			// 输出到文件
-			File destFile = new File(dirFile.getAbsolutePath() + separator + newFilename);
-			try {
-				file.transferTo(destFile);
-			} catch (IOException e) {
-				String exMsg = MessageFormat.format("文件上传失败: msg = {0}", e.getMessage());
-				throw new MyMessageException(exMsg);
-			}
-			return replaceSeparator(destFile.getAbsolutePath());
-		}else {
-			throw new MyMessageException("保存路径不存在");
+		try {
+			writeFile(file.getBytes(), destFile, true);
+		} catch (IOException e) {
+			throw new MyMessageException("读取上传文件流失败");
 		}
+
+		return replaceSeparator(destFile.getAbsolutePath());
 	}
 
 	/**
@@ -77,28 +91,15 @@ public class FileUtil extends FileUtils {
 			throw new MyMessageException("获取源文件名失败");
 		}
 
-		// 在字符串末尾添加分隔符
-		String uploadPath = addSeparator(savePath);
+		File destFile = new File(new File(addSeparator(savePath)).getAbsolutePath() + separator + originalFilename);
 
-		// 判断目录是否存在
-		File dirFile = new File(uploadPath);
-		if(dirFile.exists() || dirFile.mkdirs()){
-			// 判断文件是否存在
-			File destFile = new File(dirFile.getAbsolutePath() + separator + originalFilename);
-			if (destFile.exists()) {
-				throw new MyMessageException("文件已存在");
-			}
-			// 输出到文件
-			try {
-				file.transferTo(destFile);
-			} catch (IOException e) {
-				String exMsg = MessageFormat.format("文件上传失败: msg = {0}", e.getMessage());
-				throw new MyMessageException(exMsg);
-			}
-			return replaceSeparator(destFile.getAbsolutePath());
-		}else {
-			throw new MyMessageException("保存路径不存在");
+		try {
+			writeFile(file.getBytes(), destFile, true);
+		} catch (IOException e) {
+			throw new MyMessageException("读取上传文件流失败");
 		}
+
+		return replaceSeparator(destFile.getAbsolutePath());
 	}
 
     /**
@@ -123,14 +124,16 @@ public class FileUtil extends FileUtils {
      * 根据响应头部标识操作文档
      * @param response 响应
      * @param filePath 文档路径
-     * @param header 响应头部标识
+     * @param header 响应头部标识 eg: attachment, inline等
      */
     public static void fileOutOperation(HttpServletResponse response, String filePath, String header) {
         response.reset();
         try {
             File file = new File(filePath);
-            @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
-            @Cleanup OutputStream outputStream = response.getOutputStream();
+			@Cleanup
+			FileInputStream fileInputStream = new FileInputStream(file);
+			@Cleanup
+			OutputStream outputStream = response.getOutputStream();
             // 下载attachment,下载时文件名必须带有后缀名,不然下载后的文件不正确,例如：合同.pdf,头像.png
             response.setHeader("Content-Disposition", header + "; filename="+ URLEncoder.encode(file.getName(), "UTF-8"));
             IOUtils.write(IOUtils.toByteArray(fileInputStream), outputStream);
@@ -182,7 +185,8 @@ public class FileUtil extends FileUtils {
 	public static String getFileName(String filePath) {
 		String s = replaceSeparator(filePath);
 		String fileFullName = s.substring(s.lastIndexOf(separator)+1);
-		return fileFullName.substring(0, fileFullName.lastIndexOf("."));
+		int endIndex = fileFullName.lastIndexOf(".");
+		return fileFullName.substring(0, endIndex<0 ? fileFullName.length() : endIndex);
 	}
 
 	/**

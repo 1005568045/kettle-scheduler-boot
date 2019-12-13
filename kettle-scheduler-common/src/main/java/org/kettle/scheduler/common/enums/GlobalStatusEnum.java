@@ -43,6 +43,10 @@ public enum GlobalStatusEnum implements BaseEnum<String> {
      * 系统处理业务的执行状态：超时
      */
     TIMEOUT("1111", "超时"),
+	/**
+	 * 系统保存数据的时候违反唯一值约束
+	 */
+	DATA_INTEGRITY_ERROR("9996", "违反唯一值约束"),
     /**
      * 系统处理quartz定时任务执行状态：失败
      */
