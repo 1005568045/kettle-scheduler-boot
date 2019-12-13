@@ -15,7 +15,7 @@ import org.kettle.scheduler.system.api.api.SysJobApi;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.JobReq;
 import org.kettle.scheduler.system.api.response.JobRes;
-import org.kettle.scheduler.system.biz.constant.KettleConfig;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.service.SysJobService;
 import org.springframework.validation.annotation.Validated;

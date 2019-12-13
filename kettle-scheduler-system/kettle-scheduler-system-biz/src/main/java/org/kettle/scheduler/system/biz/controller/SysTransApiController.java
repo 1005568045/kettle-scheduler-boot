@@ -15,7 +15,7 @@ import org.kettle.scheduler.system.api.api.SysTransApi;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
-import org.kettle.scheduler.system.biz.constant.KettleConfig;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.service.SysTransService;
 import org.springframework.validation.annotation.Validated;

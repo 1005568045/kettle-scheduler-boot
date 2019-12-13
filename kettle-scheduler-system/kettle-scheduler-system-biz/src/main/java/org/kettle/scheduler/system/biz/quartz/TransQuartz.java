@@ -10,7 +10,7 @@ import org.kettle.scheduler.core.execute.TransExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
-import org.kettle.scheduler.system.biz.constant.KettleConfig;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;

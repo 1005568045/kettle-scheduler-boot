@@ -1,4 +1,4 @@
-package org.kettle.scheduler.system.biz.constant;
+package org.kettle.scheduler.core.constant;
 
 import lombok.Data;
 import org.kettle.scheduler.common.utils.FileUtil;
@@ -31,7 +31,17 @@ public class KettleConfig {
 	 */
 	public static String uploadPath;
 
-    public void setLogFilePath(String logFilePath) {
+	/**
+	 * kettle所在路径，初始化会自动生成.kettle文件在该目录
+	 */
+	public static String kettleHome;
+
+	/**
+	 * kettle插件包所在路径 eg: D:\Development\kettle\8.3\data-integration\plugins
+	 */
+	public static String kettlePluginPackages;
+
+	public void setLogFilePath(String logFilePath) {
         KettleConfig.logFilePath = FileUtil.replaceSeparator(logFilePath);;
     }
 
@@ -41,5 +51,13 @@ public class KettleConfig {
 
 	public void setUploadPath(String uploadPath) {
 		KettleConfig.uploadPath = uploadPath;
+	}
+
+	public void setKettleHome(String kettleHome) {
+		KettleConfig.kettleHome = kettleHome;
+	}
+
+	public void setKettlePluginPackages(String kettlePluginPackages) {
+		KettleConfig.kettlePluginPackages = kettlePluginPackages;
 	}
 }

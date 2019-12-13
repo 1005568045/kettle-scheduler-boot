@@ -10,7 +10,7 @@ import org.kettle.scheduler.core.execute.JobExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
-import org.kettle.scheduler.system.biz.constant.KettleConfig;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
