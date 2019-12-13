@@ -2,6 +2,7 @@ package org.kettle.scheduler.core.execute;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.utils.CollectionUtil;
+import org.kettle.scheduler.common.utils.FileUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
@@ -62,7 +63,7 @@ public class TransExecute {
      */
     public static String run(String fullPathName, Map<String, String> params, LogLevel logLevel) throws KettleException {
         // 通过ktr全路径名获取ktr元数据
-        TransMeta tm = new TransMeta(fullPathName);
+        TransMeta tm = new TransMeta(FileUtil.replaceSeparator(fullPathName));
         // 设置日志级别
         if (logLevel != null) {
             tm.setLogLevel(logLevel);
@@ -75,17 +76,17 @@ public class TransExecute {
      * 运行资源库中的ktr
      *
      * @param rep 资源库对象
-     * @param relDir ktr所在目录的相对路径
+     * @param transPath ktr所在路径
      * @param transName ktr名称
      * @param versionLabel 版本号，传入null表示执行最新的ktr
      * @param params ktr需要的命名参数
      * @param logLevel 日志级别
      */
-    public static String run(AbstractRepository rep, String relDir, String transName, String versionLabel, Map<String, String> params, LogLevel logLevel) throws KettleException {
+    public static String run(AbstractRepository rep, String transPath, String transName, String versionLabel, Map<String, String> params, LogLevel logLevel) throws KettleException {
         // 根据相对目录地址获取ktr所在目录信息
-        RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(relDir);
+        RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(transPath));
         // 在指定资源库的目录下找到要执行的转换
-        TransMeta tm = rep.loadTransformation(transName, rdi, new ProgressNullMonitorListener(), true, versionLabel);
+        TransMeta tm = rep.loadTransformation(FileUtil.getFileName(transName), rdi, new ProgressNullMonitorListener(), true, versionLabel);
         // 设置日志级别
         if (logLevel != null) {
             tm.setLogLevel(logLevel);

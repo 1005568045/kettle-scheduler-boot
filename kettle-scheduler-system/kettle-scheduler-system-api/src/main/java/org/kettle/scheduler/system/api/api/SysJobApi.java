@@ -56,12 +56,11 @@ public interface SysJobApi {
      * 更新作业
      *
      * @param req {@link JobReq}
-	 * @param jobFile {@link MultipartFile}
      * @return {@link Result}
      */
     @ApiOperation(value = "更新作业")
     @PutMapping("/update.do")
-    Result update(JobReq req, MultipartFile jobFile);
+    Result update(@RequestBody JobReq req);
 
     /**
      * 根据条件查询作业列表

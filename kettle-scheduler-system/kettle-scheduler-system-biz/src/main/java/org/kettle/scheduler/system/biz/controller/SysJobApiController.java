@@ -49,7 +49,10 @@ public class SysJobApiController implements SysJobApi {
     	// 参数验证
 		validatedParam(req);
 		// 保存上传文件
-		getJobPath(req, jobFile);
+		if (jobFile == null || jobFile.isEmpty()) {
+			throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
+		}
+		req.setJobPath(FileUtil.uploadFile(jobFile, KettleConfig.uploadPath));
 		// 保存结果
         jobService.add(req);
         return Result.ok();
@@ -86,11 +89,7 @@ public class SysJobApiController implements SysJobApi {
      * @return {@link Result}
      */
     @Override
-    public Result update(@Validated({Update.class, Default.class}) JobReq req, MultipartFile jobFile) {
-		// 参数验证
-		validatedParam(req);
-		// 保存上传文件
-		getJobPath(req, jobFile);
+    public Result update(@Validated({Update.class, Default.class}) JobReq req) {
         jobService.update(req);
         return Result.ok();
     }
@@ -176,23 +175,6 @@ public class SysJobApiController implements SysJobApi {
 				if (!StringUtil.isEmpty(result2)) {
 					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
 				}
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getJobType()));
-		}
-	}
-
-	private void getJobPath(JobReq req, MultipartFile jobFile) {
-		switch (RunTypeEnum.getEnum(req.getJobType())) {
-			case FILE:
-				if (jobFile == null || jobFile.isEmpty()) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
-				}
-				req.setJobPath(FileUtil.uploadFile(jobFile, KettleConfig.uploadPath));
-				break;
-			case REP:
-				String path = req.getJobPath().substring(0, req.getJobPath().lastIndexOf("/"));
-				req.setJobPath(StringUtil.isEmpty(path) ? FileUtil.separator : path);
 				break;
 			default:
 				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getJobType()));

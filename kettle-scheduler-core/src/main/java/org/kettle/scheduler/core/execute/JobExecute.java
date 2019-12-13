@@ -2,6 +2,7 @@ package org.kettle.scheduler.core.execute;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.utils.CollectionUtil;
+import org.kettle.scheduler.common.utils.FileUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
@@ -64,7 +65,7 @@ public class JobExecute {
      */
     public static String run(String fullPathName, Map<String, String> params, LogLevel logLevel) throws KettleException {
         // 通过ktr全路径名获取ktr元数据
-        JobMeta jm = new JobMeta(fullPathName, null);
+        JobMeta jm = new JobMeta(FileUtil.replaceSeparator(fullPathName), null);
         // 设置日志级别
         if (logLevel != null) {
             jm.setLogLevel(logLevel);
@@ -76,17 +77,17 @@ public class JobExecute {
     /**
      * 运行资源库中的kjb
      * @param rep 资源库对象
-     * @param relDir kjb所在目录的相对路径
+     * @param jobPath kjb所在路径
      * @param jobName kjb名称
      * @param versionLabel 版本号，传入null表示执行最新的kjb
      * @param params kjb需要的命名参数
      * @param logLevel 日志级别
      */
-    public static String run(AbstractRepository rep, String relDir, String jobName, String versionLabel, Map<String, String> params, LogLevel logLevel) throws KettleException {
+    public static String run(AbstractRepository rep, String jobPath, String jobName, String versionLabel, Map<String, String> params, LogLevel logLevel) throws KettleException {
         // 根据相对目录地址获取ktr所在目录信息
-        RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(relDir);
+        RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(jobPath));
         // 在指定资源库的目录下找到要执行的转换
-        JobMeta jm = rep.loadJob(jobName, rdi, new ProgressNullMonitorListener(), versionLabel);
+        JobMeta jm = rep.loadJob(FileUtil.getFileName(jobName), rdi, new ProgressNullMonitorListener(), versionLabel);
         // 设置日志级别
         if (logLevel != null) {
             jm.setLogLevel(logLevel);

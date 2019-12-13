@@ -5,10 +5,12 @@ import org.kettle.scheduler.common.enums.GlobalStatusEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
+import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.quartz.dto.QuartzDTO;
 import org.kettle.scheduler.quartz.manage.QuartzManage;
 import org.kettle.scheduler.system.api.enums.RunStatusEnum;
+import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.JobReq;
 import org.kettle.scheduler.system.api.response.JobRes;
 import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
@@ -71,14 +73,28 @@ public class SysJobService {
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Integer id) {
-        jobRepository.deleteById(id);
+		Optional<Job> optional = jobRepository.findById(id);
+		if (optional.isPresent()) {
+			Job job = optional.get();
+			if (RunTypeEnum.FILE.getCode().equals(job.getJobType())) {
+				FileUtil.deleteFile(job.getJobPath());
+			}
+			jobRepository.delete(job);
+		} else {
+			throw new MyMessageException("删除资源不存在");
+		}
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Integer> ids) {
         List<Job> jobs = jobRepository.findAllById(ids);
-        jobRepository.deleteInBatch(jobs);
-    }
+		jobs.forEach(job -> {
+			if (RunTypeEnum.FILE.getCode().equals(job.getJobType())) {
+				FileUtil.deleteFile(job.getJobPath());
+			}
+		});
+		jobRepository.deleteInBatch(jobs);
+	}
 
     @Transactional(rollbackFor = Exception.class)
     public void update(JobReq req) {

@@ -148,7 +148,7 @@ public class FileUtil extends FileUtils {
      * @return {@link String}
      */
     public static String replaceSeparator(String str) {
-        return StringUtil.isEmpty(str) ? "" : str.replaceAll("\\\\", "/");
+        return StringUtil.isEmpty(str) ? "" : str.replaceAll("\\\\", separator);
     }
 
 	/**
@@ -181,7 +181,7 @@ public class FileUtil extends FileUtils {
 	 */
 	public static String getFileName(String filePath) {
 		String s = replaceSeparator(filePath);
-		String fileFullName = s.substring(s.lastIndexOf("/")+1);
+		String fileFullName = s.substring(s.lastIndexOf(separator)+1);
 		return fileFullName.substring(0, fileFullName.lastIndexOf("."));
 	}
 
@@ -192,6 +192,50 @@ public class FileUtil extends FileUtils {
 	 */
 	public static String getFileFullName(String filePath) {
 		String s = replaceSeparator(filePath);
-		return s.substring(s.lastIndexOf("/")+1);
+		return s.substring(s.lastIndexOf(separator)+1);
+	}
+
+	/**
+	 * 删除文件
+	 * @param filePath 文件路径
+	 */
+	public static void deleteFile(String filePath) {
+		File file = new File(filePath);
+		if (file.exists() && file.isFile()) {
+			try {
+				forceDelete(file);
+			} catch (IOException e) {
+				String msg = "文件删除失败";
+				log.error(msg, e);
+				throw new MyMessageException(msg);
+			}
+		}
+	}
+
+	/**
+	 * 删除目录
+	 * @param dirPath 目录路径
+	 */
+	public static void deleteDir(String dirPath) {
+		File file = new File(dirPath);
+		if (file.exists() && file.isDirectory()) {
+			try {
+				deleteDirectory(file);
+			} catch (IOException e) {
+				String msg = "目录删除失败";
+				log.error(msg, e);
+				throw new MyMessageException(msg);
+			}
+		}
+	}
+
+	/**
+	 * 获取当前文件的父路径
+	 * @param filePath 文件路径
+	 * @return {@link String} 父级路径
+	 */
+	public static String getParentPath(String filePath) {
+		String s = replaceSeparator(filePath);
+		return s.substring(0, s.lastIndexOf(separator));
 	}
 }
