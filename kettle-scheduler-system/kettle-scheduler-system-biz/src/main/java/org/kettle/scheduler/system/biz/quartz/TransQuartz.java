@@ -109,11 +109,10 @@ public class TransQuartz implements Job {
      * @return {@link AbstractRepository}
      */
     private AbstractRepository getAbstractRepository(Integer transRepositoryId) {
-        RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
-
-        AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
-        if (repository == null) {
-            Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
+		AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
+		if (repository == null) {
+			RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
+			Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
             if (!optionalRepository.isPresent()) {
                 throw new MyMessageException("资源库不存在");
             }

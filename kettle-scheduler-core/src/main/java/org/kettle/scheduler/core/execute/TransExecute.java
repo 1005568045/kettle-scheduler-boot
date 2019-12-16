@@ -3,11 +3,10 @@ package org.kettle.scheduler.core.execute;
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.utils.CollectionUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
+import org.kettle.scheduler.core.log.KettleLogUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogLevel;
-import org.pentaho.di.core.logging.LoggingBuffer;
 import org.pentaho.di.repository.AbstractRepository;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.trans.Trans;
@@ -44,10 +43,9 @@ public class TransExecute {
         // 线程等待，直到ktr执行完成
         trans.waitUntilFinished();
         // 执行完成后获取日志
-        LoggingBuffer appender = KettleLogStore.getAppender();
-        String logText = appender.getBuffer(trans.getLogChannelId(), true).toString();
-        // 判断执行过程中是否有错误, 有错误就抛出错误日志
-        if (trans.getErrors() > 0) {
+		String logText = KettleLogUtil.getLogText(trans.getLogChannelId(), true, trans.getLogDate().getTime());
+		// 判断执行过程中是否有错误, 有错误就抛出错误日志
+		if (trans.getErrors() > 0) {
             throw new KettleException(logText);
         }
         // 没有错误就返回正常执行日志

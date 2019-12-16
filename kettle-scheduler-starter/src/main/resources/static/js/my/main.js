@@ -227,6 +227,9 @@ function queryParams(params) {
         page: {
             size: 10,
             number: 1
+        },
+        query: {
+            monitorStatus: 1
         }
     });
 }

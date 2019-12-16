@@ -60,7 +60,7 @@ public class SysJobService {
 	 * @return {@link QuartzDTO}
 	 */
 	private QuartzDTO getQuartzDTO(Job job, String cron) {
-		String categoryId = job.getCategoryId()==null ? "null" : String.valueOf(job.getCategoryId());
+		String categoryId = job.getCategoryId()==null ? "-" : String.valueOf(job.getCategoryId());
 
 		QuartzDTO dto = new QuartzDTO();
 		dto.setJobName("JOB@" + job.getId());

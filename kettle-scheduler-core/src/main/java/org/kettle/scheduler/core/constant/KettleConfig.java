@@ -27,12 +27,12 @@ public class KettleConfig {
     public static Charset encoding;
 
 	/**
-	 * ktr或kjb文件保存路径
+	 * ktr或kjb文件保存路径，单个文件执行的时候需要保存ktr、kjb文件
 	 */
 	public static String uploadPath;
 
 	/**
-	 * kettle所在路径，初始化会自动生成.kettle文件在该目录
+	 * kettle所在路径，初始化会自动生成.kettle文件在该目录,kettle.properties,repositories.xml,shared.xml都在里面
 	 */
 	public static String kettleHome;
 

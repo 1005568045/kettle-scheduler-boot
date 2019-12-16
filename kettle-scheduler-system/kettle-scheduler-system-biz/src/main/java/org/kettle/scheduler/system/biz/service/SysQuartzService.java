@@ -57,7 +57,7 @@ public class SysQuartzService {
 
     public PageOut<QuartzRes> findQuartzListByPage(QuartzReq query, PageHelper pageHelper) {
         // 默认排序
-		Pageable pageable = pageHelper.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
+		Pageable pageable = pageHelper.getPageable();
         // 查询
 		Page<Quartz> pageList;
 		if (query!=null) {

@@ -3,11 +3,10 @@ package org.kettle.scheduler.core.execute;
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.utils.CollectionUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
+import org.kettle.scheduler.core.log.KettleLogUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.logging.LogLevel;
-import org.pentaho.di.core.logging.LoggingBuffer;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.AbstractRepository;
@@ -47,9 +46,8 @@ public class JobExecute {
         // 线程等待，直到kjb执行完成
         job.waitUntilFinished();
         // 执行完成后获取日志
-        LoggingBuffer appender = KettleLogStore.getAppender();
-        String logText = appender.getBuffer(job.getLogChannelId(), true).toString();
-        // 判断执行过程中是否有错误
+		String logText = KettleLogUtil.getLogText(job.getLogChannelId(), true, job.getLogDate().getTime());
+		// 判断执行过程中是否有错误
         if (job.getErrors() > 0) {
             throw new KettleException(logText);
         }

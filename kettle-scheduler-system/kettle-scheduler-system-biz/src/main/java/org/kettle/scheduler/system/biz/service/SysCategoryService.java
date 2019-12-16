@@ -52,16 +52,16 @@ public class SysCategoryService {
 
     public PageOut<CategoryRes> findCategoryListByPage(CategoryReq query, PageHelper page) {
         // 排序
-        Sort sort = page.getSorts().isEmpty() ? Sort.by(Sort.Direction.DESC, "addTime") : page.getSorts();
-        // 查询
+		Pageable pageable = page.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
+		// 查询
 		Page<Category> pageList;
 		if (query != null) {
 			Category category = BeanUtil.copyProperties(query, Category.class);
 			ExampleMatcher matcher = ExampleMatcher.matchingAll().withIgnoreCase();
 			Example<Category> example = Example.of(category, matcher);
-			pageList = categoryRepository.findAll(example, PageRequest.of(page.getNumber(), page.getSize(), sort));
+			pageList = categoryRepository.findAll(example, pageable);
 		} else {
-			pageList = categoryRepository.findAll(PageRequest.of(page.getNumber(), page.getSize(), sort));
+			pageList = categoryRepository.findAll(pageable);
 		}
         // 封装数据
         List<CategoryRes> collect = pageList.get().map(t -> BeanUtil.copyProperties(t, CategoryRes.class)).collect(Collectors.toList());

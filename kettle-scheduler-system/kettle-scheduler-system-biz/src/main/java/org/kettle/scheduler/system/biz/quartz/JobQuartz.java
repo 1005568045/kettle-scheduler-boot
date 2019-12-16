@@ -30,6 +30,7 @@ import java.util.Optional;
 
 /**
  * 作业定时任务执行器
+ * 因为定时器的job类和kettle的job类名一样，因此这里采用继承{@code org.quartz。InterruptableJob}类
  * @author lyf
  */
 @Slf4j
@@ -105,11 +106,10 @@ public class JobQuartz implements InterruptableJob {
      * @return {@link AbstractRepository}
      */
     private AbstractRepository getAbstractRepository(Integer transRepositoryId) {
-        RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
-
-        AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
-        if (repository == null) {
-            Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
+		AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
+		if (repository == null) {
+			RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
+			Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
             if (!optionalRepository.isPresent()) {
                 throw new MyMessageException("资源库不存在");
             }
