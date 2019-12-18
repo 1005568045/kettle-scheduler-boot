@@ -3,6 +3,7 @@ package org.kettle.scheduler.core.execute;
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.utils.CollectionUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
+import org.kettle.scheduler.common.utils.JsonUtil;
 import org.kettle.scheduler.core.log.KettleLogUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
@@ -37,6 +38,7 @@ public class JobExecute {
         job.setDaemon(true);
         // 传入kjb需要的变量
         if (CollectionUtil.isNotEmpty(params)) {
+        	log.info("传入kettle的参数：{}", JsonUtil.toJsonString(params));
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 job.setParameterValue(entry.getKey(), entry.getValue());
             }
