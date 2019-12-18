@@ -9,14 +9,12 @@
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  安装过程中需要根据mysql数据库的版本设置数据库连接的driver-class-name，5.x版本的mysql数据库使用com.mysql.jdbc.Driver，6.0以上的使用com.mysql.cj.jdbc.Driver
 
 #### 使用说明
 1.  执行kettle-scheduler-starter下面docs下面的kettle-scheduler-调度平台脚本.sql脚本创建表
 
-2.  生成环境执行时修改application-prod.yml中的数据库连接配置，开发环境修改application-dev.yml中的数据库配置
+2.  生成环境执行时修改application-prod.yml中的数据库连接配置，开发环境修改application-dev.yml中的数据库配置，如果需要修改端口就在application.yml中修改
 
 3.  修改application-kettle.yml配置，设置日志存储路径、kettle脚本保存路径、kettle-home路径（如果没有指定home路径，那么.kettle文件夹就在当前用户根路径下）
 

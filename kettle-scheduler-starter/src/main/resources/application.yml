@@ -13,7 +13,7 @@ spring:
       - swagger
       - shiro
       - kettle
-  aop: # 设置动态代理方式为cglib
+  aop: # 设置动态代理方式为cglib，否在shiro代理会失败
     proxy-target-class: true
   http:
     encoding: # post请求中文乱码配置
