@@ -63,6 +63,12 @@ public class Job extends BasicEntity implements Serializable {
     @Column(name = "job_quartz")
     private Integer jobQuartz;
 
+	/**
+	 * 同步策略(T+n)方式
+	 */
+	@Column(name = "sync_strategy")
+	private String syncStrategy;
+
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）
      */

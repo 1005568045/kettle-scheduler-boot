@@ -63,6 +63,12 @@ public class Trans extends BasicEntity implements Serializable {
     @Column(name = "trans_quartz")
     private Integer transQuartz;
 
+	/**
+	 * 同步策略(T+n)方式
+	 */
+	@Column(name = "sync_strategy")
+	private String syncStrategy;
+
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）
      */

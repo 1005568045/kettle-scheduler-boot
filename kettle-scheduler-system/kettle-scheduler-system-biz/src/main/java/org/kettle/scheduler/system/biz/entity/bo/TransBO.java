@@ -79,6 +79,12 @@ public class TransBO extends BasicEntity implements Serializable {
 	@Column(name = "quartz_cron")
 	private String quartzCron;
 
+	/**
+	 * 同步策略(T+n)方式
+	 */
+	@Column(name = "sync_strategy")
+	private String syncStrategy;
+
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）
      */

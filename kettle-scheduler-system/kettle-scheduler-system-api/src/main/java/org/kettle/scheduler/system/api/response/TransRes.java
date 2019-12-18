@@ -72,7 +72,7 @@ public class TransRes extends BasicVO implements Serializable {
     /**
      * 定时策略（外键ID）
      */
-    @ApiModelProperty(value = "定时策略")
+    @ApiModelProperty(value = "定时策略（外键ID）")
     private Integer transQuartz;
 
 	/**
@@ -86,6 +86,12 @@ public class TransRes extends BasicVO implements Serializable {
 	 */
 	@ApiModelProperty(value = "定时策略")
 	private String quartzCron;
+
+	/**
+	 * 同步策略
+	 */
+	@ApiModelProperty(value = "同步策略")
+	private String syncStrategy;
 
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）

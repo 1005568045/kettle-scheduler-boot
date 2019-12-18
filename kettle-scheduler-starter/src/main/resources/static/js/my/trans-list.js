@@ -83,6 +83,9 @@ function getTransList() {
                 field: 'quartzDescription',
                 title: '执行策略'
             }, {
+                field: 'syncStrategy',
+                title: '同步策略'
+            }, {
                 field: 'transLogLevelStr',
                 title: '日志级别'
             }, {

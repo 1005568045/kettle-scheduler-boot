@@ -94,6 +94,9 @@ function submitListener() {
             transQuartz:{
                 required: true
             },
+            syncStrategy:{
+                checkRegex: '^((T\\+)\\d+)$'
+            },
             transLogLevel: {
                 required: true
             },
@@ -104,6 +107,9 @@ function submitListener() {
         messages: {
             transQuartz:{
                 required: icon + "请选择转换执行策略"
+            },
+            syncStrategy:{
+                checkRegex: icon + "同步策略只能是T+N(N是正整数)"
             },
             transLogLevel: {
                 required: icon + "请选择转换的日志记录级别"
@@ -170,6 +176,7 @@ function initData(){
                     $("#transQuartz").find("option[value=" + Trans.transQuartz + "]").prop("selected",true);
                     $("#transLogLevel").find("option[value=" + Trans.transLogLevel + "]").prop("selected",true);
                     $("#transDescription").val(Trans.transDescription);
+                    $("#syncStrategy").val(Trans.syncStrategy);
                 } else {
                     layer.msg(data.message, {icon: 2});
                 }
@@ -183,3 +190,12 @@ function initData(){
         layer.msg("获取编辑信息失败", {icon: 5});
     }
 }
+
+// 自定义校验
+$.validator.addMethod("checkRegex", function (value, element, param) {
+    if (!value) {
+        return true;
+    }
+    var regExp = new RegExp(param);
+    return regExp.test(value);
+}, "值与规则不匹配");

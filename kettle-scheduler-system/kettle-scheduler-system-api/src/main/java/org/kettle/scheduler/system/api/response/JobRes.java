@@ -72,8 +72,14 @@ public class JobRes extends BasicVO implements Serializable {
     /**
      * 定时策略（外键ID）
      */
-    @ApiModelProperty(value = "定时策略")
+    @ApiModelProperty(value = "定时策略（外键ID）")
     private Integer jobQuartz;
+
+	/**
+	 * 同步策略
+	 */
+	@ApiModelProperty(value = "同步策略")
+	private String syncStrategy;
 
 	/**
 	 * 任务描述

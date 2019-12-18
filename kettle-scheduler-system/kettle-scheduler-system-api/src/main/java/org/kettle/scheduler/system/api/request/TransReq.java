@@ -9,6 +9,7 @@ import org.kettle.scheduler.system.api.basic.BasicVO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**
@@ -68,6 +69,13 @@ public class TransReq extends BasicVO implements Serializable {
     @ApiModelProperty(value = "定时策略")
 	@NotNull(message = "定时策略不能为空")
     private Integer transQuartz;
+
+	/**
+	 * 同步策略
+	 */
+	@ApiModelProperty(value = "同步策略")
+	@Pattern(message = "同步策略格式错误，只能是T+正整数", regexp = "^((T\\+)\\d+)|(^$)$")
+    private String syncStrategy;
 
     /**
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）

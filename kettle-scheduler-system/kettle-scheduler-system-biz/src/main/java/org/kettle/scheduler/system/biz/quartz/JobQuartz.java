@@ -2,15 +2,13 @@ package org.kettle.scheduler.system.biz.quartz;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
-import org.kettle.scheduler.common.utils.BeanUtil;
-import org.kettle.scheduler.common.utils.FileUtil;
-import org.kettle.scheduler.common.utils.SpringContextUtil;
+import org.kettle.scheduler.common.utils.*;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.execute.JobExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
-import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
@@ -26,6 +24,8 @@ import org.quartz.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,6 +53,14 @@ public class JobQuartz implements InterruptableJob {
 
         // 获取作业
         Job job = jobService.getJobById(jobId);
+        // 设置执行参数
+		Map<String, String> params = new HashMap<>(2);
+		if (StringUtil.hasText(job.getSyncStrategy())) {
+			Integer day = Integer.valueOf(job.getSyncStrategy().substring(2, job.getSyncStrategy().length()));
+
+			params.put("start_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayStartTime(), -day)));
+			params.put("end_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayEndTime(), -day)));
+		}
         // 执行作业并返回日志
         String logText = "";
         try {
@@ -61,7 +69,7 @@ public class JobQuartz implements InterruptableJob {
                 case REP:
                     logText = JobExecute.run(getAbstractRepository(job.getJobRepositoryId())
                             , job.getJobPath(), job.getJobName()
-                            , null, null
+                            , null, params
                             , LogLevel.getLogLevelForCode(job.getJobLogLevel()));
                     break;
                 case FILE:

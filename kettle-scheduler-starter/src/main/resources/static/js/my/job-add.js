@@ -87,6 +87,15 @@ $.validator.addMethod("checkFileType", function (file, element, param) {
     return getFileType(file) === param
 }, "只能上传kjb文件");
 
+// 自定义校验
+$.validator.addMethod("checkRegex", function (value, element, param) {
+    if (!value) {
+        return true;
+    }
+    var regExp = new RegExp(param);
+    return regExp.test(value);
+}, "值与规则不匹配");
+
 function submitListener() {
     var icon = "<i class='fa fa-times-circle'></i> ";
         $("#RepositoryJobForm").validate({
@@ -117,6 +126,9 @@ function submitListener() {
             jobQuartz:{
                 required: true
             },
+            syncStrategy:{
+                checkRegex: '^((T\\+)\\d+)$'
+            },
             jobLogLevel: {
                 required: true
             },
@@ -145,6 +157,9 @@ function submitListener() {
             },
             jobQuartz:{
                 required: icon + "请选择作业执行策略"
+            },
+            syncStrategy:{
+                checkRegex: icon + "同步策略只能是T+N(N是正整数)"
             },
             jobLogLevel: {
                 required: icon + "请选择作业的日志记录级别"

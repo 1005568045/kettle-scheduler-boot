@@ -2,15 +2,13 @@ package org.kettle.scheduler.system.biz.quartz;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
-import org.kettle.scheduler.common.utils.BeanUtil;
-import org.kettle.scheduler.common.utils.FileUtil;
-import org.kettle.scheduler.common.utils.SpringContextUtil;
+import org.kettle.scheduler.common.utils.*;
+import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.execute.TransExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
-import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
@@ -29,6 +27,8 @@ import org.quartz.JobExecutionException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -56,6 +56,14 @@ public class TransQuartz implements Job {
 
         // 获取转换
         Trans trans = transService.getTransById(transId);
+		// 设置执行参数
+		Map<String, String> params = new HashMap<>(2);
+		if (StringUtil.hasText(trans.getSyncStrategy())) {
+			Integer day = Integer.valueOf(trans.getSyncStrategy().substring(2, trans.getSyncStrategy().length()));
+
+			params.put("start_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayStartTime(), -day)));
+			params.put("end_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayEndTime(), -day)));
+		}
         // 执行转换并返回日志
         String logText = "";
         try {
@@ -64,7 +72,7 @@ public class TransQuartz implements Job {
                 case REP:
                     logText = TransExecute.run(getAbstractRepository(trans.getTransRepositoryId())
                             , trans.getTransPath(), trans.getTransName()
-                            , null, null
+                            , null, params
                             , LogLevel.getLogLevelForCode(trans.getTransLogLevel()));
                     break;
                 case FILE:

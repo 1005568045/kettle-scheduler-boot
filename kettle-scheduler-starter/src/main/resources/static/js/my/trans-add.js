@@ -236,6 +236,9 @@ function submitListener() {
             transQuartz:{
                 required: true
             },
+            syncStrategy:{
+                checkRegex: '^((T\\+)\\d+)$'
+            },
             transLogLevel: {
                 required: true
             },
@@ -264,6 +267,9 @@ function submitListener() {
             },
             transQuartz:{
                 required: icon + "请选择转换执行策略"
+            },
+            syncStrategy:{
+                checkRegex: icon + "同步策略只能是T+N(N是正整数)"
             },
             transLogLevel: {
                 required: icon + "请选择转换的日志记录级别"
@@ -352,3 +358,12 @@ function getFileType(filePath) {
 $.validator.addMethod("checkFileType", function (file, element, param) {
     return getFileType(file) === param
 }, "只能上传ktr文件");
+
+// 自定义校验
+$.validator.addMethod("checkRegex", function (value, element, param) {
+    if (!value) {
+        return true;
+    }
+    var regExp = new RegExp(param);
+    return regExp.test(value);
+}, "值与规则不匹配");

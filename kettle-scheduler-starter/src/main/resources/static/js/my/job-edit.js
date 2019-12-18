@@ -30,12 +30,24 @@ $.validator.setDefaults({
     validClass: "help-block m-b-none"
 });
 
+// 自定义校验
+$.validator.addMethod("checkRegex", function (value, element, param) {
+    if (!value) {
+        return true;
+    }
+    var regExp = new RegExp(param);
+    return regExp.test(value);
+}, "值与规则不匹配");
+
 function submitListener() {
     var icon = "<i class='fa fa-times-circle'></i> ";
     $("#RepositoryJobForm").validate({
         rules: {
             jobQuartz:{
                 required: true
+            },
+            syncStrategy:{
+                checkRegex: '^((T\\+)\\d+)$'
             },
             jobLogLevel: {
                 required: true
@@ -47,6 +59,9 @@ function submitListener() {
         messages: {
             jobQuartz:{
                 required: icon + "请选择作业执行策略"
+            },
+            syncStrategy:{
+                checkRegex: icon + "同步策略只能是T+N(N是正整数)"
             },
             jobLogLevel: {
                 required: icon + "请选择作业的日志记录级别"
@@ -169,6 +184,7 @@ function initData(){
                     $("#jobQuartz").find("option[value=" + job.jobQuartz + "]").prop("selected",true);
                     $("#jobLogLevel").find("option[value=" + job.jobLogLevel + "]").prop("selected",true);
                     $("#jobDescription").val(job.jobDescription);
+                    $("#syncStrategy").val(job.syncStrategy);
                 } else {
                     layer.msg(data.message, {icon: 2});
                 }
