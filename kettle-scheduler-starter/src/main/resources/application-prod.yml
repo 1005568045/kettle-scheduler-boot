@@ -1,6 +1,6 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:mysql://192.168.200.247:3306/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://192.168.200.247:3306/kettle-db?serverTimezone=UTC&useSSL=false
     username: root
     password: songcw
     driver-class-name: com.mysql.jdbc.Driver
@@ -8,11 +8,8 @@ spring:
     show-sql: true # sql打印
     database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
     open-in-view: false # false关闭懒加载
-  thymeleaf:
-    cache: false #开发过程关闭页面缓存
 logging: # 日志记录
   level:
     root: info
-    org.kettle.scheduler: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace # 打印sql参数
+    org.kettle.scheduler: info
   file: /logs/${spring.application.name}.log
