@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8080
   servlet: # 访问路径
     context-path: /
   tomcat:
@@ -8,7 +8,7 @@ spring:
   application:
     name: kettle-scheduler
   profiles:
-    active: dev # 激活分支
+    active: prod # 激活分支
     include: # 引入自定义配置文件
       - swagger
       - shiro
