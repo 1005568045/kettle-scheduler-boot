@@ -8,7 +8,7 @@ spring:
   application:
     name: kettle-scheduler
   profiles:
-    active: prod # 激活分支
+    active: dev # 激活分支
     include: # 引入自定义配置文件
       - swagger
       - shiro
