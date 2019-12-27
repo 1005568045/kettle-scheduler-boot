@@ -1,6 +1,6 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:mysql://10.51.13.133:3306/bi_scheduler?serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://10.51.13.133:3306/bi_scheduler?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
     username: wuhe
     password: Xhwl_Wh@2019
     driver-class-name: com.mysql.jdbc.Driver
