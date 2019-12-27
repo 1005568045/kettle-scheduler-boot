@@ -18,4 +18,9 @@
 
 
 
+###docker容器跑应用
+1.编写Dockerfile  
+2.制作镜像   docker build -t 镜像名称  .     
+3.跑镜像    docker run -d -p 8088:8080 --name xxx  镜像名称                                                        
+
 
