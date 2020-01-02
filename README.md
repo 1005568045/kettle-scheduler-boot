@@ -18,7 +18,7 @@
 
 
 
-###docker容器跑应用
+### docker容器跑应用
 1.多模块在父模块使用命令打包即可。
 2.编写Dockerfile。项目中已写好dockerfile  
 3.制作镜像   docker build -t 镜像名称  .   （dockerfile在此目录下）   
