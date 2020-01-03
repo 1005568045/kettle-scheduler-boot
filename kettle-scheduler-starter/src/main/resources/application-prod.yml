@@ -4,6 +4,10 @@ spring:
     username: wuhe
     password: Xhwl_Wh@2019
     driver-class-name: com.mysql.jdbc.Driver
+    hikari:
+      connection-timeout: 18000000
+      maximum-pool-size: 30
+      minimum-idle: 10
   jpa:
     show-sql: true # sql打印
     database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
