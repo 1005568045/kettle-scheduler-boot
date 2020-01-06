@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageHelper;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  * @author lyf
  */
 @Service
+@Slf4j
 public class SysRepositoryService {
     private final RepositoryRepository repRepository;
 
@@ -99,6 +101,7 @@ public class SysRepositoryService {
             // 遍历获取资源库信息
             return RepositoryUtil.getRepositoryTreeList(repository, "/", objectType);
         } else {
+            log.error("获取资源库信息失败");
             return null;
         }
     }
